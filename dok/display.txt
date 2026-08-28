@@ -25,7 +25,6 @@ Bewebung
 		- Wie / Was: email / Portal / WHatsapp, Telefon
 		- Inhalt
 		- Informationstext
-		
 	
 	Online Portal
 		- URL
