@@ -15,3 +15,10 @@
 
 # Markdown
 *.md text eol=lf
+
+#Documents
+*.txt text eol=lf
+*.doc text eol=lf
+*.docx text eol=lf
+*.xls text eol=lf
+*.xlsx text eol=lf
