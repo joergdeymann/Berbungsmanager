@@ -1,0 +1,641 @@
+/* ============================================================
+   APPLICATION PAGE
+============================================================ */
+
+.application-page {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 24px;
+    color: #202733;
+}
+
+
+/* ============================================================
+   TOOLBAR
+============================================================ */
+
+.application-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-bottom: 24px;
+    padding: 18px 22px;
+
+    background: #ffffff;
+    border: 1px solid #e2e6eb;
+    border-radius: 16px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.application-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    flex: 1;
+}
+
+.application-title h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.application-subtitle {
+    display: block;
+    margin-top: 3px;
+
+    color: #7a8491;
+    font-size: 13px;
+}
+
+.application-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: #eef4ff;
+    font-size: 24px;
+}
+
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.toolbar-button,
+.action-button,
+.small-button,
+.output-action {
+    border: 0;
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+.toolbar-button {
+    padding: 10px 15px;
+
+    border-radius: 9px;
+
+    background: #f1f3f6;
+    color: #394150;
+
+    font-weight: 600;
+}
+
+.toolbar-button:hover,
+.action-button:hover,
+.small-button:hover {
+    transform: translateY(-1px);
+}
+
+.toolbar-button.primary,
+.action-button.primary {
+    background: #315efb;
+    color: white;
+
+    box-shadow: 0 4px 12px rgba(49, 94, 251, 0.25);
+}
+
+.action-button.secondary {
+    background: #eef1f5;
+    color: #354052;
+}
+
+.small-button {
+    padding: 7px 12px;
+
+    border-radius: 8px;
+
+    background: #eef3ff;
+    color: #315efb;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   CARDS
+============================================================ */
+
+.application-card {
+    margin-bottom: 22px;
+    padding: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e5ea;
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.035);
+}
+
+.import-card {
+    border-left: 4px solid #315efb;
+}
+
+
+/* ============================================================
+   SECTION HEADER
+============================================================ */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
+}
+
+.section-header > div {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.section-icon {
+    font-size: 27px;
+}
+
+.section-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+}
+
+.section-header p {
+    margin: 4px 0 0;
+
+    color: #7a8491;
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   SUBSECTIONS
+============================================================ */
+
+.subsection {
+    margin-top: 20px;
+    padding: 20px;
+
+    background: #fafbfc;
+
+    border: 1px solid #e7eaee;
+    border-radius: 13px;
+}
+
+.subsection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    margin-bottom: 18px;
+}
+
+.subsection-header h3 {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+.subsection-header span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #89929d;
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   FORM
+============================================================ */
+
+.field-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.field-wide {
+    grid-column: span 2;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field label {
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #596372;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 10px 12px;
+
+    border: 1px solid #d9dee5;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #202733;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.field textarea {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: #315efb;
+
+    box-shadow:
+        0 0 0 3px rgba(49, 94, 251, 0.1);
+}
+
+
+/* ============================================================
+   IMPORT
+============================================================ */
+
+.large-input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 15px;
+
+    border: 1px solid #d9dee5;
+    border-radius: 10px;
+
+    resize: vertical;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+}
+
+.large-input:focus {
+    border-color: #315efb;
+
+    box-shadow:
+        0 0 0 3px rgba(49, 94, 251, 0.1);
+}
+
+.import-actions {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+
+/* ============================================================
+   DYNAMIC FIELDS
+============================================================ */
+
+.dynamic-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dynamic-field {
+    padding: 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #e0e4e9;
+    border-radius: 10px;
+}
+
+.dynamic-field-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #424b58;
+}
+
+.desired-field {
+    border-left: 3px solid #d9a441;
+}
+
+
+/* ============================================================
+   ICON BUTTON
+============================================================ */
+
+.icon-button {
+    width: 28px;
+    height: 28px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #f1f3f6;
+
+    color: #77808d;
+
+    cursor: pointer;
+
+    font-size: 17px;
+}
+
+.icon-button:hover {
+    background: #ffe8e8;
+    color: #c0392b;
+}
+
+
+/* ============================================================
+   CONTACT
+============================================================ */
+
+.important-section {
+    border: 1px solid #cddcff;
+    background: #f7f9ff;
+}
+
+.important-badge {
+    padding: 5px 9px !important;
+
+    border-radius: 20px;
+
+    background: #e7edff;
+
+    color: #315efb !important;
+
+    font-size: 11px !important;
+    font-weight: 600;
+}
+
+.contact-actions {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+
+/* ============================================================
+   BENEFITS
+============================================================ */
+
+.benefits-container {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.benefit-item {
+    display: flex;
+    gap: 12px;
+
+    padding: 15px;
+
+    background: #fafbfc;
+
+    border: 1px solid #e2e6ea;
+    border-radius: 11px;
+}
+
+.benefit-icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #fff3d8;
+
+    font-size: 20px;
+}
+
+.benefit-content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.benefit-content input,
+.benefit-content textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    border: 1px solid #dfe3e8;
+    border-radius: 7px;
+
+    padding: 8px;
+
+    font-family: inherit;
+}
+
+.benefit-title {
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   SOURCES
+============================================================ */
+
+.source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.source-row {
+    display: grid;
+
+    grid-template-columns:
+        220px
+        minmax(0, 1fr)
+        32px;
+
+    gap: 12px;
+
+    align-items: end;
+
+    padding: 14px;
+
+    background: #fafbfc;
+
+    border: 1px solid #e2e6ea;
+    border-radius: 10px;
+}
+
+.source-url-field {
+    min-width: 0;
+}
+
+
+/* ============================================================
+   OUTPUT
+============================================================ */
+
+.output-card {
+    border-top: 3px solid #315efb;
+}
+
+.output-actions {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.output-action {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    padding: 18px;
+
+    background: #f7f9fc;
+
+    border: 1px solid #e1e5ea;
+    border-radius: 11px;
+
+    text-align: left;
+}
+
+.output-action:hover {
+    background: #eef3ff;
+
+    border-color: #cbd8ff;
+
+    box-shadow:
+        0 5px 15px rgba(49, 94, 251, 0.08);
+}
+
+.output-action span {
+    margin-bottom: 10px;
+
+    font-size: 24px;
+}
+
+.output-action strong {
+    font-size: 14px;
+}
+
+.output-action small {
+    margin-top: 5px;
+
+    color: #7b8490;
+
+    line-height: 1.4;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 900px) {
+
+    .field-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .benefits-container,
+    .output-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .source-row {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .application-page {
+        padding: 12px;
+    }
+
+    .application-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .application-title {
+        order: -1;
+
+        width: 100%;
+    }
+
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field-wide {
+        grid-column: span 1;
+    }
+
+    .application-card {
+        padding: 16px;
+    }
+
+    .subsection {
+        padding: 14px;
+    }
+
+}

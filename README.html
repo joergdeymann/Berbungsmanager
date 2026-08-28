@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Bewerbungsmanager – Dokumentation & Roadmap</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1050px;margin:0 auto;padding:40px;line-height:1.65;background:#f3f5f7;color:#222}
+section{background:#fff;padding:25px;margin:20px 0;border-radius:10px}
+h1{font-size:34px}h2{border-bottom:2px solid #e4e7ea;padding-bottom:8px}
+pre{background:#eef1f4;padding:18px;border-radius:8px;overflow:auto}
+</style>
+</head>
+<body>
+<h1>📋 Bewerbungsmanager</h1>
+<p>Dokumentation und Roadmap des Projekts.</p>
+
+<section>
+<h2>1. Ziel des Projekts</h2>
+<p>Die Anwendung dient zur zentralen Verwaltung von Firmen und Bewerbungen. Stellenanzeigen können aus dem Internet kopiert und in ein Eingabefeld eingefügt werden. Anschließend werden Informationen analysiert und den passenden Bereichen zugeordnet.</p>
+</section>
+
+<section>
+<h2>2. Hauptfunktionen</h2>
+<ul>
+<li>Übersicht aller Firmen und Bewerbungen</li>
+<li>Standardsortierung alphabetisch nach Firmenname A–Z</li>
+<li>Alternative Sortierung Z–A sowie nach Datum</li>
+<li>Suche nach Firmenname und Ort</li>
+<li>Neue Bewerbung anlegen</li>
+<li>Bewerbung bearbeiten und löschen</li>
+<li>Detailansicht aller Informationen</li>
+<li>Stellenanzeige aus dem Internet einfügen</li>
+<li>Automatische regelbasierte Analyse</li>
+<li>Lokale Speicherung im Browser</li>
+</ul>
+</section>
+
+<section>
+<h2>3. Datenbereiche</h2>
+<ul>
+<li><strong>Firma:</strong> Name, Adresse, Ort, Webseite und Telefonnummern</li>
+<li><strong>Kontakt:</strong> Ansprechpartner und Kommunikationsdaten</li>
+<li><strong>Bewerbung:</strong> Status, Datum, Bewerbungsweg und Quelle</li>
+<li><strong>Online-Portal:</strong> URL und Benutzername</li>
+<li><strong>Kommunikation:</strong> E-Mail, WhatsApp, Telefon und Termine</li>
+<li><strong>Fähigkeiten:</strong> Anforderungen aus der Stellenanzeige</li>
+<li><strong>Arbeiten:</strong> Tätigkeiten der ausgeschriebenen Stelle</li>
+<li><strong>Firma:</strong> Beschreibung des Unternehmens</li>
+<li><strong>Benefits:</strong> Homeoffice, Weiterbildung usw.</li>
+<li><strong>Übriges:</strong> Freie Notizen und weitere Informationen</li>
+</ul>
+</section>
+
+<section>
+<h2>4. Klassen- und Architekturstruktur</h2>
+<pre>
+Application
+│
+├── company
+├── contacts
+├── application
+├── portal
+├── communication
+├── skills
+├── tasks
+├── companyDescription
+├── benefits
+└── notes
+
+ApplicationRepository
+├── getAll()
+├── getById()
+├── save()
+└── delete()
+
+JobTextAnalyzer
+└── analyze()
+
+Router
+
+Views
+├── OverviewView
+├── EditorView
+└── DetailView
+</pre>
+</section>
+
+<section>
+<h2>5. Aktuelle automatische Analyse</h2>
+<p>Der erste Stand arbeitet bewusst ohne externe KI oder API. Der JobTextAnalyzer erkennt derzeit anhand von Schlüsselwörtern unter anderem:</p>
+<ul>
+<li>Programmiersprachen und Technologien</li>
+<li>Soft Skills</li>
+<li>Benefits</li>
+<li>Telefonnummern</li>
+<li>E-Mail-Adressen</li>
+<li>Firmenbezeichnungen mit GmbH, AG, KG usw.</li>
+<li>Zeilen, die wahrscheinlich Tätigkeiten oder Aufgaben beschreiben</li>
+</ul>
+<p>Alle erkannten Daten können vor dem Speichern manuell überprüft und geändert werden.</p>
+</section>
+
+<section>
+<h2>6. Roadmap</h2>
+
+<h3>Phase 1 – Basis</h3>
+<ul>
+<li>Firmenübersicht</li>
+<li>Alphabetische Sortierung</li>
+<li>Suche</li>
+<li>Erstellen, Bearbeiten und Löschen</li>
+<li>Detailansicht</li>
+<li>localStorage</li>
+</ul>
+
+<h3>Phase 2 – Bewerbung und Kommunikation</h3>
+<ul>
+<li>Mehrere Ansprechpartner</li>
+<li>Mehrere E-Mail-Adressen</li>
+<li>Kommunikationsverlauf</li>
+<li>Termine und Vorstellungsgespräche</li>
+<li>Absagen und Zusagen</li>
+<li>Status-Historie</li>
+</ul>
+
+<h3>Phase 3 – Bessere Textanalyse</h3>
+<ul>
+<li>Erkennung von Abschnitten wie „Ihre Aufgaben“ und „Ihr Profil“</li>
+<li>Automatische Erkennung von Adresse und Ort</li>
+<li>Bessere Firmenerkennung</li>
+<li>Duplikaterkennung</li>
+<li>Trennung zwischen Muss- und Kann-Anforderungen</li>
+</ul>
+
+<h3>Phase 4 – Persönliches Fähigkeitenprofil</h3>
+<ul>
+<li>Eigene Fähigkeiten zentral hinterlegen</li>
+<li>Stellenanforderungen automatisch vergleichen</li>
+<li>Übereinstimmung in Prozent berechnen</li>
+<li>Fehlende oder neue Fähigkeiten anzeigen</li>
+</ul>
+
+<h3>Phase 5 – Node.js und Datenbank</h3>
+<ul>
+<li>Backend API</li>
+<li>MariaDB oder MySQL</li>
+<li>Mehrgeräte-Synchronisation</li>
+<li>Backup</li>
+<li>Import und Export</li>
+<li>Sichere Speicherung sensibler Daten</li>
+</ul>
+
+<h3>Phase 6 – Erweiterungen</h3>
+<ul>
+<li>PDF-Export</li>
+<li>Dokumentenverwaltung</li>
+<li>Lebenslauf und Anschreiben einer Bewerbung zuordnen</li>
+<li>Erinnerungen</li>
+<li>Statistiken</li>
+<li>Kanban-Ansicht</li>
+<li>Dashboard</li>
+<li>Spätere KI-Analyse über eine Server-Schnittstelle</li>
+</ul>
+</section>
+
+<section>
+<h2>7. Projekt starten</h2>
+<p>Da ES-Module verwendet werden, sollte das Projekt über einen lokalen Webserver geöffnet werden, zum Beispiel mit Visual Studio Code und einer lokalen Server-Erweiterung oder einem eigenen Node.js-Webserver.</p>
+<pre>
+bewerbungsmanager/
+├── index.html
+├── README.html
+├── css/
+│   └── style.css
+└── js/
+    ├── app.js
+    ├── core/
+    │   └── Router.js
+    ├── models/
+    │   └── Application.js
+    ├── services/
+    │   ├── ApplicationRepository.js
+    │   └── JobTextAnalyzer.js
+    └── views/
+        ├── OverviewView.js
+        ├── EditorView.js
+        └── DetailView.js
+</pre>
+</section>
+</body>
+</html>

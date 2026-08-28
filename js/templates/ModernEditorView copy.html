@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/modernstyle.css">
+</head>
+<body>
+    
+<div class="application-page">
+
+    <!-- =========================================================
+         TOOLBAR
+    ========================================================== -->
+    <div class="application-toolbar">
+
+
+        <div class="application-title">
+            <span class="application-icon">📄</span>
+
+            <div>
+                <h1 id="viewTitle">Bewerbung</h1>
+                <span class="application-subtitle">
+                    Bewerbungsdaten erfassen und vorbereiten
+                </span>
+            </div>
+        </div>
+
+        <button class="toolbar-button" id="back">
+            ← Übersicht
+        </button>
+        <button class="toolbar-button primary" id="save">
+            💾 Speichern
+        </button>
+
+    </div>
+
+
+    <!-- =========================================================
+         EINLESEN
+    ========================================================== -->
+    <section class="application-card import-card">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-icon">📥</span>
+
+                <div>
+                    <h2>Stellenanzeige einlesen</h2>
+                    <p>
+                        Stellenanzeige einfügen und automatisch analysieren lassen.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="field">
+
+            <label for="originalText">
+                Stellenanzeige / Text aus dem Internet
+            </label>
+
+            <textarea
+                id="originalText"
+                class="large-input"
+                rows="12"
+                placeholder="Komplette Stellenanzeige hier einfügen ..."
+            ></textarea>
+
+        </div>
+
+        <div class="import-actions">
+
+            <button class="action-button primary" id="analyze">
+                🔍 Text analysieren
+            </button>
+
+            <button class="action-button secondary" id="clearOriginalText">
+                ↻ Zurücksetzen
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FIRMA
+    ========================================================== -->
+    <section class="application-card">
+
+        <div class="section-header collapsible-header">
+
+            <div>
+                <span class="section-icon">🏢</span>
+
+                <div>
+                    <h2>Firma</h2>
+                    <p>
+                        Alle Informationen über das Unternehmen.
+                    </p>
+                </div>
+            </div>
+
+            <button class="collapse-button">
+                −
+            </button>
+
+        </div>
+
+
+        <!-- STAMMDATEN -->
+        <div class="subsection">
+
+            <div class="subsection-header">
+                <div>
+                    <h3>Stammdaten</h3>
+                    <span>Grundlegende Unternehmensdaten</span>
+                </div>
+            </div>
+
+            <div class="field-grid">
+
+                <div class="field">
+                    <label>Firmenname</label>
+                    <input id="companyName">
+                </div>
+
+                <div class="field">
+                    <label>Branche</label>
+                    <input id="industry">
+                </div>
+
+                <div class="field">
+                    <label>Unternehmensgröße</label>
+                    <input id="companySize">
+                </div>
+
+                <div class="field">
+                    <label>Gegründet</label>
+                    <input id="founded">
+                </div>
+
+                <div class="field field-wide">
+                    <label>Webseite</label>
+                    <input id="website">
+                </div>
+
+                <div class="field">
+                    <label>Straße</label>
+                    <input id="street">
+                </div>
+
+                <div class="field">
+                    <label>PLZ</label>
+                    <input id="zip">
+                </div>
+
+                <div class="field">
+                    <label>Ort</label>
+                    <input id="city">
+                </div>
+
+                <div class="field">
+                    <label>Land</label>
+                    <input id="country">
+                </div>
+
+                <div class="field">
+                    <label>Telefonnummern</label>
+                    <textarea
+                        id="phones"
+                        rows="4"
+                        placeholder="Eine Telefonnummer pro Zeile"
+                    ></textarea>
+                </div>
+
+                <div class="field">
+                    <label>E-Mail-Adressen</label>
+                    <textarea
+                        id="emails"
+                        rows="4"
+                        placeholder="Eine E-Mail-Adresse pro Zeile"
+                    ></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Verifiziert am</label>
+                    <input type="date" id="verifiedAt">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FIRMENBESCHREIBUNG -->
+        <div class="subsection">
+
+            <div class="subsection-header">
+
+                <div>
+                    <h3>Firmenbeschreibung</h3>
+                    <span>
+                        Informationen über das Unternehmen und seine Tätigkeit
+                    </span>
+                </div>
+
+                <button class="small-button add-field">
+                    + Feld
+                </button>
+
+            </div>
+
+
+            <div class="dynamic-fields" data-group="company-description">
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Vorstellung der Firma</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="companyDescription"
+                        rows="6"
+                        placeholder="Was macht das Unternehmen? Wie stellt es sich selbst dar?"
+                    ></textarea>
+
+                </div>
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Tätigkeitsbeschreibung</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="tasks"
+                        rows="6"
+                        placeholder="Welche Arbeiten führt die Firma durch?"
+                    ></textarea>
+
+                </div>
+
+
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Spezialisierungen</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="specialties"
+                        rows="5"
+                        placeholder="Eine Spezialisierung pro Zeile"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ANSPRECHPARTNER -->
+        <div class="subsection important-section">
+
+            <div class="subsection-header">
+
+                <div>
+                    <h3>👤 Ansprechpartner</h3>
+                    <span>
+                        Wichtige Informationen für die spätere Bewerbung
+                    </span>
+                </div>
+
+                <span class="important-badge">
+                    Für Bewerbung verwenden
+                </span>
+
+            </div>
+
+
+            <div class="field-grid">
+
+                <div class="field">
+                    <label>Name</label>
+                    <input id="contactName">
+                </div>
+
+                <div class="field">
+                    <label>Position</label>
+                    <input id="contactRole">
+                </div>
+
+                <div class="field">
+                    <label>E-Mail</label>
+                    <input id="contactEmail">
+                </div>
+
+                <div class="field">
+                    <label>Telefon</label>
+                    <input id="contactPhone">
+                </div>
+
+            </div>
+
+
+            <div class="contact-actions">
+
+                <button class="action-button secondary">
+                    📧 Bewerbung an Ansprechpartner vorbereiten
+                </button>
+
+                <button class="action-button secondary">
+                    📋 Kontaktdaten kopieren
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         STELLE
+    ========================================================== -->
+    <section class="application-card">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-icon">💼</span>
+
+                <div>
+                    <h2>Stelle</h2>
+                    <p>
+                        Informationen zur ausgeschriebenen Position.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ECKDATEN -->
+        <div class="subsection">
+
+            <div class="subsection-header">
+                <div>
+                    <h3>Eckdaten</h3>
+                    <span>Die wichtigsten Angaben zur Stelle</span>
+                </div>
+            </div>
+
+            <div class="field-grid">
+
+                <div class="field field-wide">
+                    <label>Gesuchte Stelle</label>
+                    <input id="jobTitle">
+                </div>
+
+                <div class="field">
+                    <label>Arbeitsort</label>
+                    <input id="jobLocation">
+                </div>
+
+                <div class="field">
+                    <label>Beschäftigungsart</label>
+                    <input
+                        id="employmentType"
+                        placeholder="Vollzeit, Teilzeit ..."
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Arbeitsmodell</label>
+                    <select id="remote"></select>
+                </div>
+
+                <div class="field">
+                    <label>Voraussichtliches Gehalt</label>
+                    <input
+                        id="salary"
+                        placeholder="z. B. 55.000–65.000 € brutto/Jahr"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Kennziffer / Referenznummer</label>
+                    <input id="referenceNumber">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STELLENBESCHREIBUNG -->
+        <div class="subsection">
+
+            <div class="subsection-header">
+
+                <div>
+                    <h3>Stellenbeschreibung</h3>
+                    <span>
+                        Aufgaben und Verantwortungsbereiche
+                    </span>
+                </div>
+
+                <button class="small-button add-field">
+                    + Feld
+                </button>
+
+            </div>
+
+
+            <div class="dynamic-fields" data-group="job-description">
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Beschreibung</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="jobDescription"
+                        rows="7"
+                        placeholder="Was soll in dieser Position gemacht werden?"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ANFORDERUNGEN -->
+        <div class="subsection">
+
+            <div class="subsection-header">
+
+                <div>
+                    <h3>🎯 Anforderungen</h3>
+                    <span>
+                        Anforderungen an den Bewerber
+                    </span>
+                </div>
+
+                <button class="small-button add-field">
+                    + Feld
+                </button>
+
+            </div>
+
+
+            <div class="dynamic-fields" data-group="requirements">
+
+                <div class="dynamic-field desired-field">
+
+                    <div class="dynamic-field-title">
+                        <span>★ Muss-Anforderungen</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="requiredQualifications"
+                        rows="6"
+                        placeholder="Was wird zwingend vorausgesetzt?"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Fachliche Fähigkeiten / Technologien</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="skills"
+                        rows="6"
+                        placeholder="z. B. JavaScript, PHP, MySQL ..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Persönliche Anforderungen</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="personalQualifications"
+                        rows="6"
+                        placeholder="Welche persönlichen Eigenschaften werden erwartet?"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="dynamic-field">
+
+                    <div class="dynamic-field-title">
+                        <span>Wünschenswerte Kenntnisse</span>
+                        <button class="icon-button remove-field">×</button>
+                    </div>
+
+                    <textarea
+                        id="preferredQualifications"
+                        rows="6"
+                        placeholder="Was wäre zusätzlich von Vorteil?"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         BENEFITS
+    ========================================================== -->
+    <section class="application-card">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-icon">🎁</span>
+
+                <div>
+                    <h2>Benefits</h2>
+                    <p>
+                        Leistungen und Vorteile des Arbeitgebers.
+                    </p>
+                </div>
+            </div>
+
+            <button class="small-button add-benefit">
+                + Benefit
+            </button>
+
+        </div>
+
+
+        <div
+            id="benefitsContainer"
+            class="benefits-container"
+        >
+
+            <div class="benefit-item">
+
+                <div class="benefit-icon">
+                    🎁
+                </div>
+
+                <div class="benefit-content">
+
+                    <input
+                        class="benefit-title"
+                        placeholder="Benefit"
+                    >
+
+                    <textarea
+                        placeholder="Beschreibung des Benefits"
+                        rows="3"
+                    ></textarea>
+
+                </div>
+
+                <button class="icon-button remove-benefit">
+                    ×
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         QUELLEN
+    ========================================================== -->
+    <section class="application-card">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-icon">🌐</span>
+
+                <div>
+                    <h2>Quellen</h2>
+                    <p>
+                        Webseiten und soziale Netzwerke des Unternehmens.
+                    </p>
+                </div>
+            </div>
+
+            <button class="small-button" id="addSource">
+                + Quelle
+            </button>
+
+        </div>
+
+
+        <div class="source-list" id="sourceList">
+
+            <div class="source-row">
+
+                <div class="field">
+                    <label>Quelle</label>
+                    <input
+                        class="source-name"
+                        value=""
+                    >
+                </div>
+
+                <div class="field source-url-field">
+                    <label>Adresse</label>
+                    <input
+                        class="source-url"
+                        placeholder="https://..."
+                    >
+                </div>
+
+                <button class="icon-button remove-source">
+                    ×
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         BEWERBUNG / AUSGABE
+    ========================================================== -->
+    <section class="application-card output-card">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-icon">📤</span>
+
+                <div>
+                    <h2>Bewerbung & Ausgabe</h2>
+                    <p>
+                        Vorbereitung für E-Mail, Bewerbungsportale und Kopieren.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="output-actions">
+
+            <button class="output-action .flex-column">
+                <div>
+                    <span>📧</span>
+                    <strong>E-Mail erstellen</strong>
+                </div>
+                <small>
+                    Ansprechpartner und Stelleninformationen übernehmen
+                </small>
+            </button>
+
+            <button class="output-action">
+                <div>
+                    <span>🌐</span>
+                    <strong>Portal vorbereiten</strong>
+                </div>
+                <small>
+                    Felder für ein Bewerbungsportal bereitstellen
+                </small>
+            </button>
+
+            <button class="output-action">
+                <div>
+                    <span>📋</span>
+                    <strong>Felder kopieren</strong>
+                </div>
+
+                <small>
+                    Einzelne Informationen schnell übernehmen
+                </small>
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         NOTIZEN
+    ========================================================== -->
+    <section class="application-card">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-icon">📝</span>
+
+                <div>
+                    <h2>Notizen</h2>
+                    <p>
+                        Freie Informationen zur Bewerbung.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <textarea
+            id="notes"
+            class="large-input"
+            rows="7"
+            placeholder="Weitere Notizen ..."
+        ></textarea>
+
+    </section>
+
+</div>
+</body>
+</html>

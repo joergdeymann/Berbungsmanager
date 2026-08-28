@@ -1,0 +1,35 @@
+Firma
+	- Einsortierte Felder
+	- Firmenbeschreibung + Welche Arbweiten werden gemacht
+	- Ansprechpartner und Position
+	
+Stelle
+	- Einsortierte Felder
+	- Stellenbeschreibung
+	- Anforderungen / Persönliche Anforderungen
+	- Wünschenswerte Kenntnisse
+
+Benefits
+		
+Quellen
+	- Auflistung als eingabefelder: 
+	[Linkedin] - [Link der Adressse]
+	[Instagramm] - [Link der Adressse]
+	
+	
+
+Bewebung
+	Berwerbungs history
+		- Status: Information, Aufnahme, Bewerbung, Fachgespräch, Fachgespräch, Nachhaken 
+		- Datum
+		- Wie / Was: email / Portal / WHatsapp, Telefon
+		- Inhalt
+		- Informationstext
+		
+	
+	Online Portal
+		- URL
+		- Benutzername
+		- Passwort
+		
+	
