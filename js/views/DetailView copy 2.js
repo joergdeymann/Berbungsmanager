@@ -56,7 +56,7 @@ export class DetailView {
 
                     <button class="danger"
                         data-action = "delete"
-                        >
+                        data-id="#/delete/${encodeURIComponent(application.id)}">
                         Löschen
                     </button>
                 </nav>

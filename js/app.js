@@ -14,8 +14,14 @@ const router = new Router(root, {
   "/detail/:id": (params) => new DetailView(repository, params.id)
 });
 
-document.querySelectorAll("[data-route]").forEach(button => {
-  button.addEventListener("click", () => location.hash = button.dataset.route);
+// document.querySelectorAll("[data-route]").forEach(button => {
+//   button.addEventListener("click", () => location.hash = button.dataset.route);
+// });
+document.addEventListener("click", event => {
+    const button = event.target.closest("[data-route]");
+    if (!button) return;
+        console.log("DATA ROUTE:", button.dataset.route);
+    location.hash = button.dataset.route;
 });
 
 router.start();

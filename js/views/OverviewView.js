@@ -7,6 +7,20 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 }
 
+function toGermanDate(date) {
+    if (!date) return "";
+
+    const parsed = new Date(date);
+
+    return Number.isNaN(parsed.getTime())
+        ? date
+        : parsed.toLocaleDateString("de-DE", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+}
+
 const STATUS = {
     ENTWURF: "Nicht beworben",
     BEWORBEN: "Beworben",
@@ -100,9 +114,9 @@ export class OverviewView {
                         <span class="toggler">${escapeHtml(item.job?.title || "Keine Stelle angegeben")}</span>
                         <small class="toggler">${escapeHtml(item.company?.city || "—")}</small>
                         </div>
-                        <span class="status-badge ${statusClass} toggler">${escapeHtml(status)} ${escapeHtml(item.application?.appliedAt || "")}</span>
+                        <span class="status-badge ${statusClass} toggler">${escapeHtml(status)} ${escapeHtml(toGermanDate(item.application?.appliedAt || ""))}</span>
                         <span class="status-badge ${statusClass} toggler toggler-none">${escapeHtml(status)}</span>
-                        <span><span class="application-date toggler toggler-none">${escapeHtml(item.application?.appliedAt || "")}</span></span>
+                        <span><span class="application-date toggler toggler-none">${escapeHtml(toGermanDate(item.application?.appliedAt || ""))}</span></span>
                         <div class="application-actions">
                         <button data-view="${item.id}">Ansicht</button>
                         <button data-edit="${item.id}">Update</button>
