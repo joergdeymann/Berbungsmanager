@@ -1,0 +1,166 @@
+/* =========================================================
+   Übersicht – Toolbar
+   ========================================================= */
+
+.overview-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-bottom: 8px;
+}
+
+/* Gemeinsames Design für Input und Select */
+.overview-toolbar input,
+.overview-toolbar select {
+    height: 44px;
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-main);
+
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+
+    outline: none;
+    transition: var(--transition);
+}
+
+/* Suchfeld */
+.overview-toolbar input {
+    flex: 1;
+    min-width: 220px;
+}
+
+/* Platzhalter */
+.overview-toolbar input::placeholder {
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* Selects */
+.overview-toolbar select {
+    min-width: 160px;
+    cursor: pointer;
+
+    appearance: auto;
+}
+
+/* Hover */
+.overview-toolbar input:hover,
+.overview-toolbar select:hover {
+    border-color: var(--secondary-hover);
+    background: var(--bg-card);
+}
+
+/* Fokus */
+.overview-toolbar input:focus,
+.overview-toolbar select:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-card);
+
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* =========================================================
+   Primär-Button
+   ========================================================= */
+
+.overview-toolbar .primary {
+    height: 44px;
+
+    padding: 0 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-sm);
+
+    background: var(--primary);
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    white-space: nowrap;
+
+    transition: var(--transition);
+}
+
+.overview-toolbar .primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.overview-toolbar .primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.overview-toolbar .primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+button.width8em {
+    width: 8em;
+}
+
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 850px) {
+    .overview-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .overview-toolbar input {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .overview-toolbar select {
+        flex: 1;
+    }
+
+    .overview-toolbar .primary {
+        flex: 1;
+    }
+}
+
+@media (max-width: 550px) {
+    .overview-toolbar {
+        
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .overview-toolbar input,
+    .overview-toolbar select,
+    .overview-toolbar .primary {
+        width: 100%;
+        min-width: 100%;
+    }
+}

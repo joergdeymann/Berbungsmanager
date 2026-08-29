@@ -1,101 +1,726 @@
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+const STATUS_CLASS = {
+  "Nicht beworben": "status-draft",
+  "Beworben": "status-applied",
+  "Eingangsbestätigung": "status-confirmed",
+  "Rückruf erhalten": "status-callback",
+  "Angenommen": "status-accepted",
+  "Abgelehnt": "status-rejected"
+};
+
 export class DetailView {
-  constructor(repository, id) {
-    this.repository = repository;
-    this.id = id;
-  }
-
-  render(root) {
-    const application = this.repository.getById(this.id);
-
-    if (!application) {
-      location.hash = "#/";
-      return;
+    constructor(repository, id) {
+        this.repository = repository;
+        this.id = id;
     }
 
-    const renderList = items => items.length
-      ? "<ul>" + items.map(item => `<li>${item}</li>`).join("") + "</ul>"
-      : "<p class='muted'>Keine Angaben</p>";
-
-    root.innerHTML = `
-      <div class="toolbar">
-        <button id="back">← Übersicht</button>
-        <button class="primary" id="edit">Bearbeiten</button>
-        <button class="danger" id="delete">Löschen</button>
-      </div>
-
-      <div class="card">
-        <h1>${application.company.name || "Unbenannte Firma"}</h1>
-         <p>${application.company.street || ""}<br>${application.company.zip || ""} ${application.company.city || ""}<br>${application.company.country || ""}</p>
-        <p><strong>Telefon:</strong> ${application.company.phones.join(", ") || "—"}</p>
-         <p><strong>E-Mail:</strong> ${application.company.emails.join(", ") || "—"}</p>
-        <p><strong>Webseite:</strong> ${application.company.website || "—"}</p>
-         <p><strong>Verifizierte Seite:</strong> ${application.company.verifiedAt || "—"}</p>
-        <p><span class="badge">${application.remote}</span></p>
-      </div>
-
-       <div class="card">
-         <h2>🏭 Firmenprofil</h2>
-         <p><strong>Branche:</strong> ${application.companyInformation.industry || "—"}</p>
-         <p><strong>Größe:</strong> ${application.companyInformation.size || "—"}</p>
-         <p><strong>Gegründet:</strong> ${application.companyInformation.founded || "—"}</p>
-         <p><strong>Spezialgebiete:</strong> ${(application.companyInformation.specialties || []).join(", ") || "—"}</p>
-         <p>${application.companyInformation.description || "Keine Firmenbeschreibung vorhanden."}</p>
-       </div>
-
-       <div class="card">
-         <h2>💼 Stelle</h2>
-         <p><strong>Gesucht wird:</strong> ${application.job.title || "Keine Angabe"}</p>
-         <p><strong>Ort:</strong> ${application.job.location || "—"}</p>
-         <p><strong>Gehalt:</strong> ${application.job.salary || "Keine Angabe"}</p>
-         <p><strong>Kennziffer:</strong> ${application.job.referenceNumber || "—"}</p>
-       </div>
-
-       <div class="card">
-         <h2>👤 Ansprechpartner</h2>
-         <p>${application.contacts[0]?.name || "Keine Angabe"}${application.contacts[0]?.role ? ` · ${application.contacts[0].role}` : ""}</p>
-         <p><strong>Quelle:</strong> ${application.application.source || "Keine Angabe"}</p>
-       </div>
-
-      <div class="grid">
-        <div class="card">
-          <h2>📩 Bewerbung</h2>
-          <p><strong>Status:</strong> ${application.application.status}</p>
-          <p><strong>Datum:</strong> ${application.application.appliedAt || "—"}</p>
-          <p><strong>Weg:</strong> ${application.application.method || "—"}</p>
-          <p><strong>Quelle:</strong> ${application.application.source || "—"}</p>
-        </div>
-
-        <div class="card">
-          <h2>🌐 Online-Portal</h2>
-          <p><strong>URL:</strong> ${application.portal.url || "—"}</p>
-          <p><strong>Benutzer:</strong> ${application.portal.username || "—"}</p>
-          <p class="muted">Passwort wird aus Sicherheitsgründen nicht angezeigt.</p>
-        </div>
-      </div>
-
-      <div class="card section"><h2>🧠 Fähigkeiten</h2>${renderList(application.skills)}</div>
-      <div class="card section"><h2>💻 Welche Arbeiten werden gemacht?</h2>${renderList(application.tasks)}</div>
-       <div class="card section"><h2>🏭 Was macht die Firma?</h2><p>${application.companyInformation.description || "Keine Angaben"}</p></div>
-       <div class="card section"><h2>🎁 Benefits</h2>${renderList(application.benefits)}</div>
-       <div class="card section"><h2>🌐 Social – Benefits</h2>${renderList(application.social?.benefits || [])}</div>
-       <div class="card section"><h2>🌱 Social Impact</h2>${renderList(application.social?.impact || [])}</div>
-       <div class="card section"><h2>🔎 Im Fokus</h2>${renderList(application.social?.focus || [])}</div>
-      <div class="card section"><h2>📝 Übriges</h2><p>${application.notes || "Keine Angaben"}</p></div>
-
-      <div class="card section">
-        <h2>📄 Original-Stellenanzeige</h2>
-        <pre>${application.originalText || "Keine Angaben"}</pre>
-      </div>
-    `;
-
-    root.querySelector("#back").onclick = () => location.hash = "#/";
-    root.querySelector("#edit").onclick = () => location.hash = "#/edit/" + application.id;
-
-    root.querySelector("#delete").onclick = () => {
-      if (confirm("Bewerbung wirklich löschen?")) {
-        this.repository.delete(application.id);
+    render(root) {
+        const application = this.repository.getById(this.id);
+        if (!application) {
         location.hash = "#/";
+        return;
+        }
+
+        const list = items => items?.length
+        ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+        : `<p class="muted">Keine Angaben</p>`;
+
+        const contact = application.contacts?.[0] || {};
+        const status = application.application?.status || "Nicht beworben";
+        const communication = application.communication || [];
+
+        root.innerHTML = `
+            <header class="header header2 pb-0">
+                <span class="status-badge ${STATUS_CLASS[status] || "status-draft"}">
+                ${escapeHtml(status)}
+                </span>
+
+                <div class="shrink-to-left">
+                    <h1>${escapeHtml(application.company?.name || "Unbenannte Firma")}</h1>
+                    <p>${escapeHtml(application.job?.title || "Keine Stelle angegeben")}</p>
+                </div>
+
+                <nav class="header-detail-view">
+                    <button class="primary"
+                        data-route="#/edit/${encodeURIComponent(application.id)}">
+                        Bearbeiten
+                    </button>
+
+                    <button class="danger"
+                        data-route="#/delete/${encodeURIComponent(application.id)}">
+                        Löschen
+                    </button>
+                </nav>
+            </header>
+
+            <header class="header header2">
+                <nav class="detail-navigation">
+                    <button type="button" data-section="company">Firma</button>
+                    <button type="button" data-section="contact">Ansprechpartner</button>
+                    <button type="button" data-section="job">Stelle</button>
+                    <button type="button" data-section="requirements">Anforderungen</button>
+                    <button type="button" data-section="benefits">Benefits</button>
+                    <button type="button" data-section="sources">Quellen</button>
+                    <button type="button" data-section="application">Bewerbung & Ausgabe</button>
+                    <button type="button" data-section="communication">Telefonate</button>
+                </nav>
+            </header>
+
+            <main id="detailContent"></main>
+        `;
+
+        const content = root.querySelector("#detailContent");
+        const buttons = root.querySelectorAll("[data-section]");
+
+        buttons.forEach(button => {
+            button.addEventListener("click", () => {
+                const section = button.dataset.section;
+
+                content.innerHTML = this.getTemplate(section, application);
+
+                buttons.forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+                button.classList.add("active");
+
+                this.bindSectionEvents(root, application, section);
+            });
+        });
+
+        // Standardmäßig Firma anzeigen
+        const defaultButton = root.querySelector('[data-section="company"]');
+
+        if (defaultButton) {
+            defaultButton.click();
+        }
+    }
+
+
+    companyTemplate(application) {
+        return `
+            <section class="card section">
+                <h2>🏢 Firmeninformation</h2>
+
+                <p>
+                    <strong>Firma:</strong>
+                    ${escapeHtml(application.company?.name || "—")}
+                </p>
+
+                <p>
+                    <strong>Adresse:</strong><br>
+                    ${escapeHtml(application.company?.street || "")}<br>
+                    ${escapeHtml(application.company?.zip || "")}
+                    ${escapeHtml(application.company?.city || "")}<br>
+                    ${escapeHtml(application.company?.country || "")}
+                </p>
+
+                <p>
+                    <strong>Webseite:</strong>
+                    ${this.link(application.company?.website)}
+                </p>
+
+                <p>
+                    <strong>Branche:</strong>
+                    ${escapeHtml(application.companyInformation?.industry || "—")}
+                </p>
+
+                <p>
+                    <strong>Größe:</strong>
+                    ${escapeHtml(application.companyInformation?.size || "—")}
+                </p>
+
+                <p>
+                    <strong>Gegründet:</strong>
+                    ${escapeHtml(application.companyInformation?.founded || "—")}
+                </p>
+
+                <p>
+                    <strong>Spezialisierungen:</strong>
+                    ${escapeHtml(
+                    (application.companyInformation?.specialties || []).join(", ") || "—"
+                )}
+                </p>
+
+                <p>
+                    ${escapeHtml(
+                    application.companyInformation?.description ||
+                    "Keine Firmenbeschreibung vorhanden."
+                )}
+                </p>
+            </section>
+        `;
+    }
+
+    contactTemplate(application) {
+      const contact = application.contacts?.[0] || {};
+
+      return `
+        <section class="card section">
+            <h2>👤 Ansprechpartner</h2>
+
+            <p>
+                <strong>Name:</strong>
+                ${escapeHtml(contact.name || "—")}
+            </p>
+
+            <p>
+                <strong>Position:</strong>
+                ${escapeHtml(contact.role || "—")}
+            </p>
+
+            <p>
+                <strong>E-Mail:</strong>
+                ${escapeHtml(
+                contact.email ||
+                application.company?.emails?.[0] ||
+                "—"
+            )}
+            </p>
+
+            <p>
+                <strong>Telefon:</strong>
+                ${escapeHtml(
+                contact.phone ||
+                application.company?.phones?.[0] ||
+                "—"
+            )}
+            </p>
+        </section>
+      `;
+    }
+    
+    jobTemplate(application) {
+        const list = items => items?.length
+            ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`
+            ).join("")}</ul>`
+            : `<p class="muted">Keine Angaben</p>`;
+
+      return `
+        <section class="card section">
+            <h2>💼 Stelle</h2>
+
+            <p>
+                <strong>Gesuchte Stelle:</strong>
+                ${escapeHtml(application.job?.title || "—")}
+            </p>
+
+            <p>
+                <strong>Arbeitsort:</strong>
+                ${escapeHtml(application.job?.location || "—")}
+            </p>
+
+            <p>
+                <strong>Beschäftigungsart:</strong>
+                ${escapeHtml(application.job?.employmentType || "—")}
+            </p>
+
+            <p>
+                <strong>Arbeitsmodell:</strong>
+                ${escapeHtml(application.job?.workModel || "—")}
+            </p>
+
+            <p>
+                <strong>Gehalt:</strong>
+                ${escapeHtml(application.job?.salary || "—")}
+            </p>
+
+            <p>
+                <strong>Kennziffer:</strong>
+                ${escapeHtml(application.job?.referenceNumber || "—")}
+            </p>
+
+            <h3>Aufgaben</h3>
+            ${list(application.tasks)}
+        </section>
+      `;
+    }
+
+requirementsTemplate(application) {
+    const list = items => items?.length
+        ? `<ul>${items.map(item =>
+            `<li>${escapeHtml(item)}</li>`
+        ).join("")}</ul>`
+        : `<p class="muted">Keine Angaben</p>`;
+
+    return `
+        <section class="card section">
+            <h2>🎯 Anforderungen</h2>
+
+            <h3>Muss-Anforderungen</h3>
+            ${list(application.qualifications?.required)}
+
+            <h3>Fachliche Fähigkeiten / Technologien</h3>
+            ${list(application.skills)}
+
+            <h3>Persönliche Anforderungen</h3>
+            ${list(application.qualifications?.personal)}
+
+            <h3>Wünschenswerte Kenntnisse</h3>
+            ${list(application.qualifications?.preferred)}
+        </section>
+    `;
+}
+
+benefitsTemplate(application) {
+    const list = items => items?.length
+        ? `<ul>${items.map(item =>
+            `<li>${escapeHtml(item)}</li>`
+        ).join("")}</ul>`
+        : `<p class="muted">Keine Angaben</p>`;
+
+    return `
+        <section class="card section">
+            <h2>🎁 Benefits</h2>
+
+            ${list(application.benefits)}
+        </section>
+    `;
+}
+sourcesTemplate(application) {
+    const importedUrls =
+        application.sources?.importedUrls || [];
+
+    return `
+        <section class="card section">
+            <h2>🌐 Quellen</h2>
+
+            <p>
+                <strong>Stellenanzeige:</strong>
+                ${this.link(
+                    application.sources?.jobPosting ||
+                    application.application?.jobUrl
+                )}
+            </p>
+
+            <p>
+                <strong>Unternehmensseite:</strong>
+                ${this.link(
+                    application.sources?.companyWebsite ||
+                    application.company?.website
+                )}
+            </p>
+
+            ${
+                importedUrls.length
+                    ? `
+                        <h3>Weitere Quellen</h3>
+                        <ul>
+                            ${importedUrls.map(url => `
+                                <li>
+                                    ${this.link(url)}
+                                </li>
+                            `).join("")}
+                        </ul>
+                    `
+                    : ""
+            }
+
+            <p>
+                <strong>Quelle:</strong>
+                ${escapeHtml(
+                    application.application?.source || "—"
+                )}
+            </p>
+        </section>
+    `;
+}
+applicationTemplate(application) {
+    const status =
+        application.application?.status ||
+        "Nicht beworben";
+
+    return `
+        <section class="card section">
+
+            <h2>📤 Bewerbung & Ausgabe</h2>
+
+            <div class="detail-grid">
+
+                <div>
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="status-badge ${
+                            STATUS_CLASS[status] ||
+                            "status-draft"
+                        }">
+                            ${escapeHtml(status)}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Beworben am:</strong>
+                        ${escapeHtml(
+                            application.application?.appliedAt ||
+                            "—"
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Bewerbungsweg:</strong>
+                        ${escapeHtml(
+                            application.application?.method ||
+                            "—"
+                        )}
+                    </p>
+                </div>
+
+                <div>
+                    <p>
+                        <strong>Portal:</strong>
+                        ${this.link(
+                            application.portal?.url
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Benutzer:</strong>
+                        ${escapeHtml(
+                            application.portal?.username ||
+                            "—"
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <h3>Unterlagen</h3>
+
+            <div class="document-actions">
+                ${this.documentButton(
+                    "Anschreiben",
+                    application.documents?.coverLetter
+                )}
+
+                ${this.documentButton(
+                    "Lebenslauf",
+                    application.documents?.resume
+                )}
+            </div>
+
+        </section>
+    `;
+}
+applicationTemplate(application) {
+    const status =
+        application.application?.status ||
+        "Nicht beworben";
+
+    return `
+        <section class="card section">
+
+            <h2>📤 Bewerbung & Ausgabe</h2>
+
+            <div class="detail-grid">
+
+                <div>
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="status-badge ${
+                            STATUS_CLASS[status] ||
+                            "status-draft"
+                        }">
+                            ${escapeHtml(status)}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Beworben am:</strong>
+                        ${escapeHtml(
+                            application.application?.appliedAt ||
+                            "—"
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Bewerbungsweg:</strong>
+                        ${escapeHtml(
+                            application.application?.method ||
+                            "—"
+                        )}
+                    </p>
+                </div>
+
+                <div>
+                    <p>
+                        <strong>Portal:</strong>
+                        ${this.link(
+                            application.portal?.url
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Benutzer:</strong>
+                        ${escapeHtml(
+                            application.portal?.username ||
+                            "—"
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <h3>Unterlagen</h3>
+
+            <div class="document-actions">
+                ${this.documentButton(
+                    "Anschreiben",
+                    application.documents?.coverLetter
+                )}
+
+                ${this.documentButton(
+                    "Lebenslauf",
+                    application.documents?.resume
+                )}
+            </div>
+
+        </section>
+    `;
+}
+applicationTemplate(application) {
+    const status =
+        application.application?.status ||
+        "Nicht beworben";
+
+    return `
+        <section class="card section">
+
+            <h2>📤 Bewerbung & Ausgabe</h2>
+
+            <div class="detail-grid">
+
+                <div>
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="status-badge ${
+                            STATUS_CLASS[status] ||
+                            "status-draft"
+                        }">
+                            ${escapeHtml(status)}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Beworben am:</strong>
+                        ${escapeHtml(
+                            application.application?.appliedAt ||
+                            "—"
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Bewerbungsweg:</strong>
+                        ${escapeHtml(
+                            application.application?.method ||
+                            "—"
+                        )}
+                    </p>
+                </div>
+
+                <div>
+                    <p>
+                        <strong>Portal:</strong>
+                        ${this.link(
+                            application.portal?.url
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Benutzer:</strong>
+                        ${escapeHtml(
+                            application.portal?.username ||
+                            "—"
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <h3>Unterlagen</h3>
+
+            <div class="document-actions">
+                ${this.documentButton(
+                    "Anschreiben",
+                    application.documents?.coverLetter
+                )}
+
+                ${this.documentButton(
+                    "Lebenslauf",
+                    application.documents?.resume
+                )}
+            </div>
+
+        </section>
+    `;
+}
+    getTemplate(section, application) {
+      switch (section) {
+
+        case "company":
+          return this.companyTemplate(application);
+
+        case "contact":
+          return this.contactTemplate(application);
+
+        case "job":
+          return this.jobTemplate(application);
+
+        case "requirements":
+          return this.requirementsTemplate(application);
+
+        case "benefits":
+          return this.benefitsTemplate(application);
+
+        case "sources":
+          return this.sourcesTemplate(application);
+
+        case "application":
+          return this.applicationTemplate(application);
+
+        case "communication":
+          return this.communicationTemplate(application);
+
+        default:
+          return this.companyTemplate(application);
       }
-    };
-  }
+    }
+
+    //   root.querySelector("#back").onclick = () => location.hash = "#/";
+    //   root.querySelector("#edit").onclick = () => location.hash = "#/edit/" + encodeURIComponent(application.id);
+    //   root.querySelector("#delete").onclick = () => {
+    //     if (confirm("Bewerbung wirklich löschen?")) {
+    //       this.repository.delete(application.id);
+    //       location.hash = "#/";
+    //     }
+    //   };
+
+    //   root.querySelector("#addCommunication").onclick = () => {
+    //     const textarea = root.querySelector("#communicationText");
+    //     const text = textarea.value.trim();
+    //     if (!text) return;
+    //     application.communication = application.communication || [];
+    //     application.communication.push({
+    //       id: crypto.randomUUID(),
+    //       type: "Telefonat",
+    //       text,
+    //       date: new Date().toISOString()
+    //     });
+    //     this.repository.save(application);
+    //     this.render(root);
+    //   };
+
+    //   root.querySelectorAll("[data-edit-communication]").forEach(button => {
+    //     button.onclick = () => {
+    //       const entry = application.communication.find(item => item.id === button.dataset.editCommunication);
+    //       if (!entry) return;
+    //       const value = prompt("Telefonnotiz bearbeiten:", entry.text);
+    //       if (value === null) return;
+    //       entry.text = value.trim();
+    //       this.repository.save(application);
+    //       this.render(root);
+    //     };
+    //   });
+    // }
+
+    // communicationItem(item) {
+    //   const date = item.date ? new Date(item.date).toLocaleString("de-DE") : "";
+    //   return `<div class="communication-item"><div><strong>${escapeHtml(item.type || "Notiz")}</strong><small>${escapeHtml(date)}</small></div><p>${escapeHtml(item.text)}</p><button data-edit-communication="${escapeHtml(item.id)}">Ändern</button></div>`;
+    // }
+
+    link(url) {
+        if (!url) return "—";
+        const safe = escapeHtml(url);
+        return `<a href="${safe}" target="_blank" rel="noopener">${safe}</a>`;
+    }
+
+    documentButton(label, url) {
+        if (!url) return `<span class="muted">${label}: nicht hinterlegt</span>`;
+        const safe = escapeHtml(url);
+        return `<a class="output-action" href="${safe}" target="_blank" rel="noopener">📄 ${label} öffnen</a>`;
+    }
+
+bindSectionEvents(root, application, section) {
+    if (section === "communication") {
+
+        const addButton = root.querySelector("#addCommunication");
+
+        if (addButton) {
+            addButton.onclick = () => {
+
+                const textarea =
+                    root.querySelector("#communicationText");
+
+                const text = textarea.value.trim();
+
+                if (!text) return;
+
+                application.communication =
+                    application.communication || [];
+
+                application.communication.push({
+                    id: crypto.randomUUID(),
+                    type: "Telefonat",
+                    text,
+                    date: new Date().toISOString()
+                });
+
+                this.repository.save(application);
+
+                root.querySelector("#detailContent").innerHTML =
+                    this.communicationTemplate(application);
+
+                this.bindSectionEvents(
+                    root,
+                    application,
+                    "communication"
+                );
+            };
+        }
+
+        root.querySelectorAll(
+            "[data-edit-communication]"
+        ).forEach(button => {
+
+            button.onclick = () => {
+
+                const entry =
+                    application.communication.find(
+                        item =>
+                            item.id ===
+                            button.dataset.editCommunication
+                    );
+
+                if (!entry) return;
+
+                const value = prompt(
+                    "Telefonnotiz bearbeiten:",
+                    entry.text
+                );
+
+                if (value === null) return;
+
+                entry.text = value.trim();
+
+                this.repository.save(application);
+
+                root.querySelector("#detailContent").innerHTML =
+                    this.communicationTemplate(application);
+
+                this.bindSectionEvents(
+                    root,
+                    application,
+                    "communication"
+                );
+            };
+        });
+    }
+}    
 }

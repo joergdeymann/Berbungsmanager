@@ -38,6 +38,9 @@ export class Application {
             referenceNumber:
                 data.job?.referenceNumber || "",
 
+            description:
+                data.job?.description || "",
+
             workModel:
                 data.job?.workModel ||
                 data.remote ||
@@ -54,7 +57,15 @@ export class Application {
          */
         this.application = {
             status:
-                data.application?.status || "Entwurf",
+                ({
+                    Entwurf: "Nicht beworben",
+                    "Nicht beworben": "Nicht beworben",
+                    Beworben: "Beworben",
+                    "Eingangsbestätigung": "Eingangsbestätigung",
+                    "Rückruf erhalten": "Rückruf erhalten",
+                    Angenommen: "Angenommen",
+                    Abgelehnt: "Abgelehnt"
+                })[data.application?.status] || "Nicht beworben",
 
             appliedAt:
                 data.application?.appliedAt || "",
@@ -91,6 +102,14 @@ export class Application {
          */
         this.communication =
             data.communication || [];
+
+        /*
+         * Bewerbungsunterlagen
+         */
+        this.documents = {
+            coverLetter: data.documents?.coverLetter || "",
+            resume: data.documents?.resume || ""
+        };
 
         /*
          * Anforderungen

@@ -1,260 +1,328 @@
 import { Application } from "../models/Application.js";
 import { ApplicationAnalyzer } from "../services/analysis/ApplicationAnalyzer.js";
 
+const STATUSES = [
+  "Nicht beworben",
+  "Beworben",
+  "Eingangsbestätigung",
+  "Rückruf erhalten",
+  "Angenommen",
+  "Abgelehnt"
+];
+
 export class EditorView {
-	constructor(repository, id = null) {
-		this.repository = repository;
-		this.id = id;
-		this.analyzer = new ApplicationAnalyzer();
-	}
+  constructor(repository, id = null) {
+    this.repository = repository;
+    this.id = id;
+    this.analyzer = new ApplicationAnalyzer();
+  }
 
-	formatDate(date) {
-		const parsedDate = new Date(date);
+  formatDate(date) {
+    if (!date) return "";
+    const parsed = new Date(date);
+    return Number.isNaN(parsed.getTime()) ? date : parsed.toISOString().split("T")[0];
+  }
 
-        if (!isNaN(parsedDate)) {
-            return  parsedDate.toISOString().split('T')[0];
-        }
-		return date;
-	}
+  async render(root) {
+    const application = this.id ? this.repository.getById(this.id) : new Application();
+    if (!application) {
+      location.hash = "#/";
+      return;
+    }
 
-	async render(root) {
-		const application = this.id
-			? this.repository.getById(this.id)
-			: new Application();
+    const templateUrl = new URL("../templates/ModernEditorView.html", import.meta.url);
+    const response = await fetch(templateUrl);
+    if (!response.ok) {
+      console.error(`HTML-Template konnte nicht geladen werden: ${response.statusText}`);
+      return;
+    }
 
-		if (!application) {
-			location.hash = "#/";
-			return;
-		}
+    const htmlText = await response.text();
+    const doc = new DOMParser().parseFromString(htmlText, "text/html");
+    const templateContent = doc.body;
 
-		// FIX: Holt das Template relativ zur Position dieser EditorView.js-Datei
-		// '../templates/EditorView.html' wandert von der JS-Datei aus exakt in den richtigen Ordner.
-		const templateUrl = new URL('../templates/ModernEditorView.html', import.meta.url);
-		const response = await fetch(templateUrl);
+    const applicationSection = document.createElement("section");
+    applicationSection.className = "application-card editor-application-section";
+    applicationSection.innerHTML = `
+      <div class="section-header">
+        <div>
+          <span class="section-icon">📤</span>
+          <div>
+            <h2>Bewerbung</h2>
+            <p>Status, Bewerbungstermin, Portal und Unterlagen.</p>
+          </div>
+        </div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>Status</label>
+          <select id="status">${STATUSES.map(status => `<option value="${status}">${status}</option>`).join("")}</select>
+        </div>
+        <div class="field">
+          <label>Beworben am</label>
+          <input type="date" id="appliedAt">
+        </div>
+        <div class="field">
+          <label>Bewerbungsweg</label>
+          <input id="method" placeholder="E-Mail, Portal, persönlich ...">
+        </div>
+        <div class="field">
+          <label>Quelle</label>
+          <input id="source" placeholder="LinkedIn, Indeed, Unternehmenswebsite ...">
+        </div>
+        <div class="field field-wide">
+          <label>Link zur Stellenanzeige</label>
+          <input id="jobUrl" placeholder="https://...">
+        </div>
+        <div class="field field-wide">
+          <label>Portal-Adresse</label>
+          <input id="portalUrl" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>Portal Benutzername</label>
+          <input id="portalUser">
+        </div>
+        <div class="field">
+          <label>Portal Passwort</label>
+          <input type="password" id="portalPassword">
+        </div>
+        <div class="field field-wide">
+          <label>Anschreiben – URL oder Dateipfad</label>
+          <input id="coverLetter" placeholder="file:///... oder https://...">
+        </div>
+        <div class="field field-wide">
+          <label>Lebenslauf – URL oder Dateipfad</label>
+          <input id="resume" placeholder="file:///... oder https://...">
+        </div>
+      </div>
+    `;
 
-		if (!response.ok) {
-			console.error(`HTML-Template konnte nicht geladen werden: ${response.statusText}`);
-			return;
-		}
-		const htmlText = await response.text();
-		// 1. HTML-Template asynchron einlesen
-		// const response = await fetch("./views/template/EditorView.html");
-		// const htmlText = await response.text();
+    const outputCard = [...templateContent.querySelectorAll("section")].find(section =>
+      section.classList.contains("output-card")
+    );
+    if (outputCard) outputCard.before(applicationSection);
+    else templateContent.appendChild(applicationSection);
 
-		// HTML in ein temporäres Dokument-Fragment umwandeln
-		const parser = new DOMParser();
-		const doc = parser.parseFromString(htmlText, "text/html");
-		const templateContent = doc.body;
+    root.innerHTML = "";
+    while (templateContent.firstChild) root.appendChild(templateContent.firstChild);
 
-		// Lokaler Helper, um Elemente im noch nicht eingehängten DOM anzusprechen
-		const $ = selector => templateContent.querySelector(selector);
+    const get = id => root.querySelector("#" + id)?.value || "";
+    const set = (id, value) => {
+      const element = root.querySelector("#" + id);
+      if (element) element.value = value ?? "";
+    };
+    const list = id => get(id).split("\n").map(x => x.trim()).filter(Boolean);
 
-		// 2. Formular-Felder strukturiert mit den Objektdaten befüllen
-		// $("#viewTitle").textContent = this.id ? "Bewerbung bearbeiten" : "Neue Bewerbung";
-		// $("#originalText").value = application.originalText || "";
+    root.querySelector("#viewTitle").textContent = this.id ? "Bewerbung bearbeiten" : "Neue Bewerbung";
 
-		// $("#companyName").value = application.company?.name || "";
-		// $("#street").value = application.company?.street || "";
-		// $("#zip").value = application.company?.zip || "";
-		// $("#city").value = application.company?.city || "";
-		// $("#country").value = application.company?.country || "";
-		// $("#website").value = application.company?.website || "";
-		// $("#verifiedAt").value = application.company?.verifiedAt || application.companyInformation?.verifiedAt || "";
-		// $("#industry").value = application.companyInformation?.industry || "";
-		// $("#companySize").value = application.companyInformation?.size || "";
-		// $("#founded").value = application.companyInformation?.founded || "";
+    set("originalText", application.originalText);
+    set("companyName", application.company?.name);
+    set("industry", application.companyInformation?.industry);
+    set("companySize", application.companyInformation?.size);
+    set("founded", application.companyInformation?.founded);
+    set("website", application.company?.website);
+    set("street", application.company?.street);
+    set("zip", application.company?.zip);
+    set("city", application.company?.city);
+    set("country", application.company?.country);
+    set("phones", (application.company?.phones || []).join("\n"));
+    set("emails", (application.company?.emails || []).join("\n"));
+    set("verifiedAt", application.company?.verifiedAt || application.companyInformation?.verifiedAt);
+    set("companyDescription", application.companyInformation?.description);
+    set("tasks", (application.tasks || []).join("\n"));
+    set("specialties", (application.companyInformation?.specialties || []).join("\n"));
+    set("contactName", application.contacts?.[0]?.name);
+    set("contactRole", application.contacts?.[0]?.role);
+    set("contactEmail", application.contacts?.[0]?.email || application.company?.emails?.[0]);
+    set("contactPhone", application.contacts?.[0]?.phone || application.company?.phones?.[0]);
+    set("jobTitle", application.job?.title);
+    set("jobLocation", application.job?.location);
+    set("employmentType", application.job?.employmentType);
+    set("remote", application.job?.workModel || "Unbekannt");
+    set("salary", application.job?.salary);
+    set("referenceNumber", application.job?.referenceNumber);
+    set("jobDescription", (application.job?.description || application.tasks || []).join?.("\n") || application.job?.description || "");
+    set("requiredQualifications", (application.qualifications?.required || []).join("\n"));
+    set("skills", (application.skills || []).join("\n"));
+    set("personalQualifications", (application.qualifications?.personal || []).join("\n"));
+    set("preferredQualifications", (application.qualifications?.preferred || []).join("\n"));
+    set("benefits", (application.benefits || []).join("\n"));
+    set("notes", application.notes);
+    set("status", application.application?.status || "Nicht beworben");
+    set("appliedAt", application.application?.appliedAt);
+    set("method", application.application?.method);
+    set("source", application.application?.source);
+    set("jobUrl", application.application?.jobUrl);
+    set("portalUrl", application.portal?.url);
+    set("portalUser", application.portal?.username);
+    set("portalPassword", application.portal?.password);
+    set("coverLetter", application.documents?.coverLetter);
+    set("resume", application.documents?.resume);
 
-		// $("#phones").value = (application.company?.phones || []).join("\n");
-		// $("#emails").value = (application.company?.emails || []).join("\n");
+    const sourceList = root.querySelector("#sourceList");
+    if (sourceList && application.sources?.importedUrls?.length) {
+      sourceList.innerHTML = application.sources.importedUrls.map(source => `
+        <div class="source-row">
+          <div class="field"><label>Quelle</label><input class="source-name" value="${this.escapeAttribute(source.name || "")}"></div>
+          <div class="field source-url-field"><label>Adresse</label><input class="source-url" value="${this.escapeAttribute(source.url || "")}" placeholder="https://..."></div>
+          <label></label><button type="button" class="icon-button remove-source">×</button>
+        </div>`).join("");
+    }
 
-		// $("#jobTitle").value = application.job?.title || "";
-		// $("#jobLocation").value = application.job?.location || "";
-		// $("#employmentType").value = application.job?.employmentType || "";
-		// $("#salary").value = application.job?.salary || "";
-		// $("#referenceNumber").value = application.job?.referenceNumber || "";
+    const remote = root.querySelector("#remote");
+    if (remote && !remote.options.length) {
+      remote.innerHTML = ["Unbekannt", "Vor Ort", "Hybrid", "Remote"].map(value => `<option value="${value}">${value}</option>`).join("");
+      remote.value = application.job?.workModel || "Unbekannt";
+    }
 
-		// // Selektoren dynamisch aufbauen
-		// $("#remote").innerHTML = ["Unbekannt", "Remote", "Hybrid", "Vor Ort"]
-		//   .map(x => `<option ${application.remote === x ? "selected" : ""}>${x}</option>`)
-		//   .join("");
+    root.querySelector("#back").onclick = () => location.hash = "#/";
+    root.querySelector("#clearOriginalText").onclick = () => set("originalText", "");
 
-		// $("#contactName").value = application.contacts?.[0]?.name || "";
-		// $("#contactRole").value = application.contacts?.[0]?.role || "";
+    root.querySelector("#analyze").onclick = () => this.applyAnalysis(root, get("originalText"));
+    root.querySelector("#save").onclick = () => this.save(root, application, get, list);
 
-		// $("#source").innerHTML = ["", "LinkedIn", "Instagram", "Indeed", "StepStone", "XING", "Unternehmenswebsite", "Sonstige"]
-		//   .map(source => `<option value="${source}" ${application.application?.source === source ? "selected" : ""}>${source || "Bitte auswählen"}</option>`)
-		//   .join("");
+    this.bindDynamicFields(root);
+  }
 
-		// $("#jobUrl").value = application.application?.jobUrl || "";
-		// $("#status").value = application.application?.status || "";
-		// $("#appliedAt").value = application.application?.appliedAt || "";
-		// $("#method").value = application.application?.method || "";
+  applyAnalysis(root, text) {
+    const result = this.analyzer.analyze(text);
+    const set = (id, value) => {
+      const element = root.querySelector("#" + id);
+      if (element) element.value = value ?? "";
+    };
+    const join = value => (value || []).join("\n");
 
-		// $("#portalUrl").value = application.portal?.url || "";
-		// $("#portalUser").value = application.portal?.username || "";
-		// $("#portalPassword").value = application.portal?.password || "";
+    set("companyName", result.companyName);
+    set("street", result.company?.street);
+    set("zip", result.company?.zip);
+    set("city", result.company?.city);
+    set("country", result.company?.country);
+    set("website", result.company?.website);
+    set("verifiedAt", this.formatDate(result.company?.verifiedAt));
+    set("industry", result.companyInformation?.industry);
+    set("companySize", result.companyInformation?.size);
+    set("founded", result.companyInformation?.founded);
+    set("specialties", join(result.companyInformation?.specialties));
+    set("jobTitle", result.job?.title);
+    set("jobLocation", result.job?.location);
+    set("employmentType", result.job?.employmentType);
+    set("salary", result.job?.salary);
+    set("referenceNumber", result.job?.referenceNumber);
+    set("contactName", result.contact?.name);
+    set("contactRole", result.contact?.role);
+    set("phones", join(result.phones));
+    set("emails", join(result.emails));
+    set("tasks", join(result.tasks));
+    set("skills", join(result.skills));
+    set("requiredQualifications", join(result.qualifications?.required));
+    set("preferredQualifications", join(result.qualifications?.preferred));
+    set("personalQualifications", join(result.qualifications?.personal));
+    set("companyDescription", result.companyInformation?.description);
+    set("benefits", join(result.benefits));
+    if (!root.querySelector("#source")?.value) set("source", result.source);
+    if (!root.querySelector("#contactEmail")?.value && result.emails?.length) set("contactEmail", result.emails[0]);
+    if (!root.querySelector("#contactPhone")?.value && result.phones?.length) set("contactPhone", result.phones[0]);
+    if (result.job?.workModel && result.job.workModel !== "Unbekannt") set("remote", result.job.workModel);
+  }
 
-		// $("#requiredQualifications").value = (application.qualifications?.required || []).join("\n");
-		// $("#skills").value = (application.skills || []).join("\n");
-		// $("#preferredQualifications").value = (application.qualifications?.preferred || []).join("\n");
-		// $("#personalQualifications").value = (application.qualifications?.personal || []).join("\n");
+  save(root, application, get, list) {
+    application.originalText = get("originalText");
+    application.company = {
+      name: get("companyName"), street: get("street"), zip: get("zip"), city: get("city"), country: get("country"),
+      website: get("website"), verifiedAt: get("verifiedAt"), phones: list("phones"), emails: list("emails")
+    };
+    application.companyInformation = {
+      ...application.companyInformation,
+      description: get("companyDescription"), industry: get("industry"), size: get("companySize"),
+      founded: get("founded"), verifiedAt: get("verifiedAt"), specialties: list("specialties")
+    };
+    application.job = {
+      ...application.job,
+      title: get("jobTitle"), location: get("jobLocation"), employmentType: get("employmentType"),
+      workModel: get("remote"), salary: get("salary"), referenceNumber: get("referenceNumber"), description: get("jobDescription")
+    };
+    application.contacts = get("contactName") || get("contactRole") || get("contactEmail") || get("contactPhone")
+      ? [{ name: get("contactName"), role: get("contactRole"), email: get("contactEmail"), phone: get("contactPhone") }]
+      : [];
+    application.application = {
+      ...application.application,
+      status: get("status") || "Nicht beworben",
+      appliedAt: get("appliedAt"), method: get("method"), source: get("source"), jobUrl: get("jobUrl")
+    };
+    application.portal = { url: get("portalUrl"), username: get("portalUser"), password: get("portalPassword") };
+    application.documents = { coverLetter: get("coverLetter"), resume: get("resume") };
 
-		// $("#companyDescription").value = application.companyDescription || "";
-		// $("#tasks").value = (application.tasks || []).join("\n");
-		// $("#specialties").value = (application.companyInformation?.specialties || []).join("\n");
-		// $("#benefits").value = (application.benefits || []).join("\n");
-		// $("#socialBenefits").value = (application.social?.benefits || []).join("\n");
-		// $("#socialImpact").value = (application.social?.impact || []).join("\n");
-		// $("#socialFocus").value = (application.social?.focus || []).join("\n");
-		// $("#notes").value = application.notes || "";
+    application.sources = {
+      jobPosting: get("jobUrl"),
+      companyWebsite: get("website"),
+      importedUrls: [...root.querySelectorAll("#sourceList .source-row")].map(row => ({
+        name: row.querySelector(".source-name")?.value.trim() || "",
+        url: row.querySelector(".source-url")?.value.trim() || ""
+      })).filter(source => source.name || source.url)
+    };
+    application.skills = list("skills");
+    application.tasks = list("tasks");
+    application.qualifications = {
+      required: list("requiredQualifications"), preferred: list("preferredQualifications"), personal: list("personalQualifications")
+    };
+    application.benefits = list("benefits");
+    application.social = application.social || { benefits: [], impact: [], focus: [] };
+    application.social.benefits = application.social.benefits?.length ? application.social.benefits : application.benefits;
+    application.notes = get("notes");
 
-		// 3. Das fertig befüllte HTML-Gerüst an das App-Root übergeben
-		root.innerHTML = "";
-		while (templateContent.firstChild) {
-			root.appendChild(templateContent.firstChild);
-		}
+    this.repository.save(application);
+    location.hash = "#/detail/" + encodeURIComponent(application.id);
+  }
 
-		// Interne Helfer für Lesezugriffe nach dem Einhängen ins Haupt-Dokument
-		const get = id => root.querySelector("#" + id).value;
-		const list = id => get(id).split("\n").map(x => x.trim()).filter(Boolean);
+  escapeAttribute(value) {
+    return String(value ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
 
-		// 4. Interaktions- & Event-Listener binden
-		root.querySelector("#back").onclick = () => location.hash = "#/";
+  bindDynamicFields(root) {
+    root.querySelectorAll(".collapsible-header").forEach(header => {
+      const button = header.querySelector(".collapse-button");
+      if (!button) return;
+      button.onclick = () => {
+        const content = header.parentElement.querySelectorAll(":scope > .subsection");
+        const hidden = [...content].every(element => element.style.display === "none");
+        content.forEach(element => element.style.display = hidden ? "" : "none");
+        button.textContent = hidden ? "−" : "+";
+      };
+    });
 
-		root.querySelector("#analyze").onclick = () => {
-			const result = this.analyzer.analyze(get("originalText"));
+    root.querySelectorAll(".add-field").forEach(button => {
+      button.onclick = () => {
+        const group = button.closest(".subsection")?.querySelector(".dynamic-fields");
+        if (!group) return;
+        const field = document.createElement("div");
+        field.className = "dynamic-field";
+        field.innerHTML = `<div class="dynamic-field-title"><span>Zusätzliches Feld</span><button type="button" class="icon-button remove-field">×</button></div><textarea rows="4" placeholder="Zusätzliche Information"></textarea>`;
+        field.querySelector(".remove-field").onclick = () => field.remove();
+        group.appendChild(field);
+      };
+    });
 
-			if (result.companyName) root.querySelector("#companyName").value = result.companyName;
-			if (result.company) {
-				root.querySelector("#street").value = result.company.street || "";
-				root.querySelector("#zip").value = result.company.zip || "";
-				root.querySelector("#city").value = result.company.city || "";
-				root.querySelector("#country").value = result.company.country || "";
-				root.querySelector("#website").value = result.company.website || "";
-				root.querySelector("#verifiedAt").value = this.formatDate(result.company.verifiedAt) || "";
-				root.querySelector("#industry").value = result.companyInformation?.industry || "";
-				root.querySelector("#companySize").value = result.companyInformation?.size || "";
-				root.querySelector("#founded").value = result.companyInformation?.founded || "";
-				root.querySelector("#specialties").value = (result.companyInformation?.specialties || []).join("\n");
-			}
-			if (result.job) {
-				root.querySelector("#jobTitle").value = result.job.title || "";
-				root.querySelector("#jobLocation").value = result.job.location || "";
-				root.querySelector("#employmentType").value = result.job.employmentType || "";
-				root.querySelector("#salary").value = result.job.salary || "";
-				root.querySelector("#referenceNumber").value = result.job.referenceNumber || "";
-			}
-			if (result.contact) {
-				root.querySelector("#contactName").value = result.contact.name || "";
-				root.querySelector("#contactRole").value = result.contact.role || "";
-			}
-			if (result.source) root.querySelector("#notes").value = result.source;
-			if (result.source) {
-				const lastSourceName = root.querySelector(".source-list .source-row:last-of-type .source-name");
-				lastSourceName.value = result.source;
-			}
+    root.querySelectorAll(".add-benefit").forEach(button => {
+      button.onclick = () => {
+        const container = root.querySelector("#benefitsContainer");
+        if (!container) return;
+        const item = document.createElement("div");
+        item.className = "benefit-item";
+        item.innerHTML = `<div class="benefit-icon">🎁</div><div class="benefit-content"><input class="benefit-title" placeholder="Benefit"><textarea rows="3" placeholder="Beschreibung des Benefits"></textarea></div><button type="button" class="icon-button remove-benefit">×</button>`;
+        item.querySelector(".remove-benefit").onclick = () => item.remove();
+        container.appendChild(item);
+      };
+    });
 
-			if (result.job?.workModel && result.job.workModel !== "Unbekannt") {
-				root.querySelector("#remote").value = result.job.workModel;
-			}
-
-			root.querySelector("#phones").value = (result.phones || []).join("\n");
-			root.querySelector("#tasks").value = (result.tasks || []).join("\n");
-			root.querySelector("#skills").value = (result.skills || []).join("\n");
-			root.querySelector("#emails").value = (result.emails || []).join("\n");
-			root.querySelector("#requiredQualifications").value = (result.qualifications?.required || []).join("\n");
-			root.querySelector("#preferredQualifications").value = (result.qualifications?.preferred || []).join("\n");
-			root.querySelector("#personalQualifications").value = (result.qualifications?.personal || []).join("\n");
-			root.querySelector("#companyDescription").value = result.companyInformation?.description || "";
-			// root.querySelector("#socialImpact").value = (result.social?.impact || []).join("\n");
-			// root.querySelector("#socialFocus").value = (result.social?.focus || []).join("\n");
-			root.querySelector("#benefits").value = (result.benefits || []).join("\n");
-			root.querySelector("#benefits").value += (result.social?.benefits || result.benefits || []).join("\n"); // Stichpunkte als art button zeigen, Später ein Runder Button sieht dann schick aus
-
-
-
-			if (result.emails?.length) {
-				if (root.querySelector("#contactEmail").value == "") {
-					root.querySelector("#contactEmail").value = result.emails[0];
-				}
-			}
-			if (result.phones?.length) {
-				if (root.querySelector("#contactPhone").value == "") {
-					root.querySelector("#contactPhone").value = result.phones[0];
-				}
-			}
-
-		};
-
-		root.querySelector("#save").onclick = () => {
-			application.originalText = get("originalText");
-
-			application.company = {
-				name: get("companyName"),
-				street: get("street"),
-				zip: get("zip"),
-				city: get("city"),
-				country: get("country"),
-				website: get("website"),
-				verifiedAt: get("verifiedAt"),
-				phones: list("phones"),
-				emails: list("emails")
-			};
-
-			application.remote = get("remote");
-			application.job = {
-				...application.job,
-				title: get("jobTitle"),
-				location: get("jobLocation"),
-				employmentType: get("employmentType"),
-				salary: get("salary"),
-				referenceNumber: get("referenceNumber")
-			};
-			application.contacts = [{
-				name: get("contactName"),
-				role: get("contactRole")
-			}].filter(contact => contact.name || contact.role);
-
-			application.application = {
-				status: get("status"),
-				appliedAt: get("appliedAt"),
-				method: get("method"),
-				source: get("source"),
-				jobUrl: get("jobUrl")
-			};
-
-			application.portal = {
-				url: get("portalUrl"),
-				username: get("portalUser"),
-				password: get("portalPassword")
-			};
-
-			application.skills = list("skills");
-			application.tasks = list("tasks");
-			application.companyInformation.description = get("companyDescription");
-			application.companyInformation.industry = get("industry");
-			application.companyInformation.size = get("companySize");
-			application.companyInformation.verifiedAt = get("verifiedAt");
-			application.companyInformation.founded = get("founded");
-			application.companyInformation.specialties = list("specialties");
-			application.benefits = list("benefits");
-			application.social = {
-				benefits: list("socialBenefits"), impact: list("socialImpact"), focus: list("socialFocus")
-			};
-
-			if (!application.social.benefits.length) {
-				application.social.benefits = application.benefits;
-			}
-
-			application.notes = get("notes");
-			application.qualifications = {
-				required: list("requiredQualifications"),
-				preferred: list("preferredQualifications"),
-				personal: list("personalQualifications")
-			};
-
-			this.repository.save(application);
-			location.hash = "#/detail/" + application.id;
-		};
-	}
+    root.querySelectorAll(".remove-source").forEach(button => button.onclick = () => button.closest(".source-row")?.remove());
+    root.querySelector("#addSource")?.addEventListener("click", () => {
+      const list = root.querySelector("#sourceList");
+      if (!list) return;
+      const row = document.createElement("div");
+      row.className = "source-row";
+      row.innerHTML = `<div class="field"><label>Quelle</label><input class="source-name"></div><div class="field source-url-field"><label>Adresse</label><input class="source-url" placeholder="https://..."></div><label></label><button type="button" class="icon-button remove-source">×</button>`;
+      row.querySelector(".remove-source").onclick = () => row.remove();
+      list.appendChild(row);
+    });
+  }
 }

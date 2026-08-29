@@ -5,7 +5,7 @@ Wenn die dateien wegen den Zeilenende meckern
     git config --local --get core.autocrlf
 
     git config --global core.autocrlf false
-    git config --local core.autocrlf false
+    git config --local gitcore.autocrlf false
 
 2. .gitattributes anlegen
     # Alle Textdateien automatisch erkennen
