@@ -22,3 +22,6 @@
 *.docx text eol=lf
 *.xls text eol=lf
 *.xlsx text eol=lf
+
+#Images
+*.svg text eol=lf

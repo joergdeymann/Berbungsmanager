@@ -285,6 +285,7 @@ benefitsTemplate(application) {
         </section>
     `;
 }
+
 sourcesTemplate(application) {
     const importedUrls =
         application.sources?.importedUrls || [];
@@ -333,6 +334,7 @@ sourcesTemplate(application) {
         </section>
     `;
 }
+
 applicationTemplate(application) {
     const status =
         application.application?.status ||
@@ -409,158 +411,87 @@ applicationTemplate(application) {
         </section>
     `;
 }
-applicationTemplate(application) {
-    const status =
-        application.application?.status ||
-        "Nicht beworben";
+
+communicationTemplate(application) {
+    const communication =
+        application.communication || [];
 
     return `
         <section class="card section">
 
-            <h2>📤 Bewerbung & Ausgabe</h2>
+            <h2>📞 Telefonate / Kommunikation</h2>
 
-            <div class="detail-grid">
+            <div id="communicationList">
 
-                <div>
-                    <p>
-                        <strong>Status:</strong>
-                        <span class="status-badge ${
-                            STATUS_CLASS[status] ||
-                            "status-draft"
-                        }">
-                            ${escapeHtml(status)}
-                        </span>
-                    </p>
-
-                    <p>
-                        <strong>Beworben am:</strong>
-                        ${escapeHtml(
-                            application.application?.appliedAt ||
-                            "—"
-                        )}
-                    </p>
-
-                    <p>
-                        <strong>Bewerbungsweg:</strong>
-                        ${escapeHtml(
-                            application.application?.method ||
-                            "—"
-                        )}
-                    </p>
-                </div>
-
-                <div>
-                    <p>
-                        <strong>Portal:</strong>
-                        ${this.link(
-                            application.portal?.url
-                        )}
-                    </p>
-
-                    <p>
-                        <strong>Benutzer:</strong>
-                        ${escapeHtml(
-                            application.portal?.username ||
-                            "—"
-                        )}
-                    </p>
-                </div>
+                ${
+                    communication.length
+                        ? communication
+                            .map(item =>
+                                this.communicationItem(item)
+                            )
+                            .join("")
+                        : `
+                            <p class="muted">
+                                Noch keine Telefonnotizen vorhanden.
+                            </p>
+                        `
+                }
 
             </div>
 
-            <h3>Unterlagen</h3>
+            <div class="communication-add">
 
-            <div class="document-actions">
-                ${this.documentButton(
-                    "Anschreiben",
-                    application.documents?.coverLetter
-                )}
+                <textarea
+                    id="communicationText"
+                    rows="4"
+                    placeholder="Informationen zum Telefonat eingeben ..."
+                ></textarea>
 
-                ${this.documentButton(
-                    "Lebenslauf",
-                    application.documents?.resume
-                )}
+                <button
+                    class="primary"
+                    id="addCommunication"
+                >
+                    Telefonat speichern
+                </button>
+
             </div>
 
         </section>
     `;
-}
-applicationTemplate(application) {
-    const status =
-        application.application?.status ||
-        "Nicht beworben";
+    }
 
-    return `
-        <section class="card section">
+    communicationItem(item) {
+        const date = item.date
+            ? new Date(item.date).toLocaleString("de-DE")
+            : "";
 
-            <h2>📤 Bewerbung & Ausgabe</h2>
-
-            <div class="detail-grid">
+        return `
+            <div class="communication-item">
 
                 <div>
-                    <p>
-                        <strong>Status:</strong>
-                        <span class="status-badge ${
-                            STATUS_CLASS[status] ||
-                            "status-draft"
-                        }">
-                            ${escapeHtml(status)}
-                        </span>
-                    </p>
+                    <strong>
+                        ${escapeHtml(item.type || "Notiz")}
+                    </strong>
 
-                    <p>
-                        <strong>Beworben am:</strong>
-                        ${escapeHtml(
-                            application.application?.appliedAt ||
-                            "—"
-                        )}
-                    </p>
-
-                    <p>
-                        <strong>Bewerbungsweg:</strong>
-                        ${escapeHtml(
-                            application.application?.method ||
-                            "—"
-                        )}
-                    </p>
+                    <small>
+                        ${escapeHtml(date)}
+                    </small>
                 </div>
 
-                <div>
-                    <p>
-                        <strong>Portal:</strong>
-                        ${this.link(
-                            application.portal?.url
-                        )}
-                    </p>
+                <p>
+                    ${escapeHtml(item.text)}
+                </p>
 
-                    <p>
-                        <strong>Benutzer:</strong>
-                        ${escapeHtml(
-                            application.portal?.username ||
-                            "—"
-                        )}
-                    </p>
-                </div>
+                <button
+                    data-edit-communication="${escapeHtml(item.id)}"
+                >
+                    Ändern
+                </button>
 
             </div>
+        `;
+    }
 
-            <h3>Unterlagen</h3>
-
-            <div class="document-actions">
-                ${this.documentButton(
-                    "Anschreiben",
-                    application.documents?.coverLetter
-                )}
-
-                ${this.documentButton(
-                    "Lebenslauf",
-                    application.documents?.resume
-                )}
-            </div>
-
-        </section>
-    `;
-}
     getTemplate(section, application) {
       switch (section) {
 
@@ -647,80 +578,80 @@ applicationTemplate(application) {
         return `<a class="output-action" href="${safe}" target="_blank" rel="noopener">📄 ${label} öffnen</a>`;
     }
 
-bindSectionEvents(root, application, section) {
-    if (section === "communication") {
+    bindSectionEvents(root, application, section) {
+        if (section === "communication") {
 
-        const addButton = root.querySelector("#addCommunication");
+            const addButton = root.querySelector("#addCommunication");
 
-        if (addButton) {
-            addButton.onclick = () => {
+            if (addButton) {
+                addButton.onclick = () => {
 
-                const textarea =
-                    root.querySelector("#communicationText");
+                    const textarea =
+                        root.querySelector("#communicationText");
 
-                const text = textarea.value.trim();
+                    const text = textarea.value.trim();
 
-                if (!text) return;
+                    if (!text) return;
 
-                application.communication =
-                    application.communication || [];
+                    application.communication =
+                        application.communication || [];
 
-                application.communication.push({
-                    id: crypto.randomUUID(),
-                    type: "Telefonat",
-                    text,
-                    date: new Date().toISOString()
-                });
+                    application.communication.push({
+                        id: crypto.randomUUID(),
+                        type: "Telefonat",
+                        text,
+                        date: new Date().toISOString()
+                    });
 
-                this.repository.save(application);
+                    this.repository.save(application);
 
-                root.querySelector("#detailContent").innerHTML =
-                    this.communicationTemplate(application);
+                    root.querySelector("#detailContent").innerHTML =
+                        this.communicationTemplate(application);
 
-                this.bindSectionEvents(
-                    root,
-                    application,
-                    "communication"
-                );
-            };
-        }
+                    this.bindSectionEvents(
+                        root,
+                        application,
+                        "communication"
+                    );
+                };
+            }
 
-        root.querySelectorAll(
-            "[data-edit-communication]"
-        ).forEach(button => {
+            root.querySelectorAll(
+                "[data-edit-communication]"
+            ).forEach(button => {
 
-            button.onclick = () => {
+                button.onclick = () => {
 
-                const entry =
-                    application.communication.find(
-                        item =>
-                            item.id ===
-                            button.dataset.editCommunication
+                    const entry =
+                        application.communication.find(
+                            item =>
+                                item.id ===
+                                button.dataset.editCommunication
+                        );
+
+                    if (!entry) return;
+
+                    const value = prompt(
+                        "Telefonnotiz bearbeiten:",
+                        entry.text
                     );
 
-                if (!entry) return;
+                    if (value === null) return;
 
-                const value = prompt(
-                    "Telefonnotiz bearbeiten:",
-                    entry.text
-                );
+                    entry.text = value.trim();
 
-                if (value === null) return;
+                    this.repository.save(application);
 
-                entry.text = value.trim();
+                    root.querySelector("#detailContent").innerHTML =
+                        this.communicationTemplate(application);
 
-                this.repository.save(application);
-
-                root.querySelector("#detailContent").innerHTML =
-                    this.communicationTemplate(application);
-
-                this.bindSectionEvents(
-                    root,
-                    application,
-                    "communication"
-                );
-            };
-        });
-    }
-}    
+                    this.bindSectionEvents(
+                        root,
+                        application,
+                        "communication"
+                    );
+                };
+            });
+        }
+    }    
 }
