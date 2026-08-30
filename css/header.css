@@ -61,3 +61,7 @@ button {
 .shrink-to-left {
    margin-right: auto;
 }
+.detail-navigation button.active {
+    background-color: #444;
+    color: white;
+}

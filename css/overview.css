@@ -111,9 +111,15 @@
    flex-direction: column;
    gap: 4px;
 }
-.application-main strong { font-size: 16px; }
-.application-main small { color: var(--text-muted); }
-.application-date { white-space: nowrap; }
+.application-main strong {
+   font-size: 16px;
+}
+.application-main small {
+   color: var(--text-muted);
+}
+.application-date {
+   white-space: nowrap;
+}
 .application-actions {
    display: flex;
    justify-content: flex-end;
@@ -133,42 +139,67 @@
    width: 80px;
    text-align: center;
    line-height: 1.5em;
+   hyphens: auto;
+   overflow-wrap: break-word;
+   word-wrap: break-word;
+}
+.status-badge:hover {
+    box-shadow: inset 0 0 0 2px  rgba(0,0,0,0.1);
+    cursor: pointer;
 }
 
-.status-draft { background: #e5e7eb; color: #374151; }
-.status-applied { background: #dbeafe; color: #1d4ed8; }
-.status-confirmed { background: #fef3c7; color: #92400e; }
-.status-callback { background: #ede9fe; color: #6d28d9; }
-.status-accepted { background: #dcfce7; color: #166534; }
-.status-rejected { background: #fee2e2; color: #991b1b; }
+
+.status-draft {
+   background: #e5e7eb;
+   color: #374151;
+}
+.status-applied {
+   background: #dbeafe;
+   color: #1d4ed8;
+}
+.status-confirmed {
+   background: #fef3c7;
+   color: #92400e;
+}
+.status-callback {
+   background: #ede9fe;
+   color: #6d28d9;
+}
+.status-accepted {
+   background: #dcfce7;
+   color: #166534;
+}
+.status-rejected {
+   background: #fee2e2;
+   color: #991b1b;
+}
 
 .import-card {
    border-left: 4px solid var(--primary);
 }
 
-
 #list {
    display: flex;
-   flex-direction:column;
-   margin-left:10%;
+   flex-direction: column;
+   margin-left: 10%;
    margin-right: 10%;
    gap: 12px;
 }
 
 #list.compact {
-    gap: 2px;
+   gap: 2px;
 }
 #list:not(.compact) .toggler.toggler-none {
-    display: none;
+   display: none;
 }
 
-#list.compact  .toggler:not(.toggler-none) {
-    display: none;
+#list.compact .toggler:not(.toggler-none) {
+   display: none;
 }
 
 #list.compact .status-badge {
-    border-radius: 7px;
-    height: unset;
-    white-space: nowrap;
-    padding: 10px 15px;
+   border-radius: 7px;
+   height: unset;
+   white-space: nowrap;
+   padding: 10px 15px;
 }
