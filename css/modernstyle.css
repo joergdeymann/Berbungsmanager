@@ -48,6 +48,8 @@
 body {
     background-color: var(--bg-card);
     font-family: Arial, sans-serif;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
 }
 textarea {
     width: 100%;

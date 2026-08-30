@@ -8,43 +8,39 @@ export class ContactTemplate extends DetailBaseTemplate {
         const contact = application.contacts?.[0] || {};
 
         return `
-            <section class="card section">
+            <section class="application-card subsection-display">
+                <section class="section-header section">
+                    <div>
+                        <span class="section-icon">👤</span>
+                        <div>
+                            <h2>Ansprechpartner</h2>
+                            <p>Hier können die Daten des / der Ansprechpartner eingesehen werden</p>
+                        </div
+                    </div>
+                </section>
+                
+                <div class="subsection">
+                    <div class="field">
+                        <label>Name</label>
+                        <p>${HtmlUtils.escape(contact.name || "—")}</p>
+                    </div>
 
-                <h2>👤 Ansprechpartner</h2>
+                    <div class="field">
+                        <label>Position:</label>
+                        <p>${HtmlUtils.escape(contact.role || "—")}</p>
+                    </div>
+                    <div class="field">
+                        <label>Telefon:</label>
+                        <p>${HtmlUtils.escape(contact.phone || application.company?.phones?.[0] || "—")}</p>
+                    </div>
+                    <div class="field">
+                        <label>E-Mail:</label>
+                        <p>${HtmlUtils.escape(contact.email || application.company?.emails?.[0] || "—")}</p>
+                    </div>
 
-                <p>
-                    <strong>Name:</strong>
-                    ${HtmlUtils.escape(
-                        contact.name || "—"
-                    )}
-                </p>
-
-                <p>
-                    <strong>Position:</strong>
-                    ${HtmlUtils.escape(
-                        contact.role || "—"
-                    )}
-                </p>
-
-                <p>
-                    <strong>E-Mail:</strong>
-                    ${HtmlUtils.escape(
-                        contact.email ||
-                        application.company?.emails?.[0] ||
-                        "—"
-                    )}
-                </p>
-
-                <p>
-                    <strong>Telefon:</strong>
-                    ${HtmlUtils.escape(
-                        contact.phone ||
-                        application.company?.phones?.[0] ||
-                        "—"
-                    )}
-                </p>
-
+                </div>
             </section>
         `;
+         
     }
 }

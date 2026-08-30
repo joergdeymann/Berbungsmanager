@@ -1,3 +1,8 @@
+.header:not(.header2) {
+   border-top-left-radius: var(--radius-md);
+   border-top-right-radius: var(--radius-md);
+}
+
 .header {
    color: #fff;
    padding: 20px 5%;

@@ -5,54 +5,50 @@ export class SourcesTemplate extends DetailBaseTemplate {
 
     render(application) {
 
-        const importedUrls =
-            application.sources?.importedUrls || [];
+        const importedUrls = application.sources?.importedUrls || [];
 
         return `
-            <section class="card section">
 
-                <h2>🌐 Quellen</h2>
+            <section class="application-card subsection-display">
+                <section class="section-header section">
+                    <div>
+                        <span class="section-icon">🎁</span>
+                        <div>
+                            <h2>Quellen</h2>
+                            <p>Information wo die Daten herkommen</p>
+                        </div
+                    </div>
+                </section>
+                
+                <div class="subsection">
+                    <div class="field">
+                        <label>Gesuchte Stelle</label>
+                        <p>${HtmlUtils.escape(application.job?.title || "—")}</p>
+                    </div>
 
-                <p>
-                    <strong>Stellenanzeige:</strong>
-                    ${this.link(
-                        application.sources?.jobPosting ||
-                        application.application?.jobUrl
-                    )}
-                </p>
+                    
+                    <div class="field">
+                        <label>Stellenanzeige</label>
+                        ${this.link([application.sources?.jobPosting, application.application?.jobUrl])}
+                    </div>
 
-                <p>
-                    <strong>Unternehmensseite:</strong>
-                    ${this.link(
-                        application.sources?.companyWebsite ||
-                        application.company?.website
-                    )}
-                </p>
+                    <div class="field">
+                        <label>Unternehmensseite</label>
+                        ${this.link([application.sources?.companyWebsite, application.company?.website])}
+                    </div>
 
-                ${
-                    importedUrls.length
-                        ? `
-                            <h3>Weitere Quellen</h3>
+                    <div class="field">
+                        <label>Quelle</label>
+                        <p>${this.link(application.application?.source)}</p>
+                    </div>
 
-                            <ul>
-                                ${importedUrls.map(url => `
-                                    <li>
-                                        ${this.link(url)}
-                                    </li>
-                                `).join("")}
-                            </ul>
-                        `
-                        : ""
-                }
-
-                <p>
-                    <strong>Quelle:</strong>
-                    ${HtmlUtils.escape(
-                        application.application?.source || "—"
-                    )}
-                </p>
-
+                    <div class="field">
+                        <label>Weitere Quellen</label>
+                        ${this.link(importedUrls)}
+                    </div>
+                </div>
             </section>
         `;
+
     }
 }
