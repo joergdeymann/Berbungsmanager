@@ -17,6 +17,10 @@
    background: rgba(32, 43, 56,0.95);
 }
 
+nav.detail-navigation {
+   justify-content: center !important;
+}
+
 .m-0 {
    margin: 0;
 }
@@ -69,4 +73,12 @@ button {
 .detail-navigation button.active {
     background-color: #444;
     color: white;
+}
+
+
+nav {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }

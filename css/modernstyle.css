@@ -43,7 +43,7 @@
    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
    --important-border-color: rgba(0,0,0,0.7);
    --important-border-size: 2px;
-   
+   font-size: clamp(0.6vh, 1.5vh , 2rem);
 }
 body {
     background-color: var(--bg-card);
