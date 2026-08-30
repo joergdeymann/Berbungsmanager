@@ -6,8 +6,12 @@ import { BenefitsTemplate } from "../templates/detail/BenefitsTemplate.js";
 import { SourcesTemplate } from "../templates/detail/SourcesTemplate.js";
 import { ApplicationTemplate } from "../templates/detail/ApplicationTemplate.js";
 import { CommunicationTemplate } from "../templates/detail/CommunicationTemplate.js";
-import { HtmlUtils } from "../utils/HtmlUtils.js";
-import { StatusUtils } from "../utils/StatusUtils.js";
+
+import { DetailHeaderTemplate } from "../templates/detail/DetailHeaderTemplate.js";
+import { DetailNavigationTemplate } from "../templates/detail/DetailNavigationTemplate.js";
+
+import { DetailNavigationController } from "./DetailNavigationController.js";
+import { CommunicationSectionController } from "./CommunicationSectionController.js";
 
 
 export class DetailView {
@@ -27,213 +31,90 @@ export class DetailView {
             application: new ApplicationTemplate(),
             communication: new CommunicationTemplate()
         };
+
+        this.headerTemplate =
+            new DetailHeaderTemplate();
+
+        this.navigationTemplate =
+            new DetailNavigationTemplate();
+
+        this.communicationController =
+            new CommunicationSectionController(repository);
     }
 
 
     render(root) {
 
-        const application = this.repository.getById(this.id);
+        const application =
+            this.repository.getById(this.id);
 
         if (!application) {
             location.hash = "#/";
             return;
         }
 
-        const status =
-            application.application?.status ||
-            "Nicht beworben";
+        this.navigation = new DetailNavigationController(
+            section => this.showSection(root, application, section)
+        );
 
-        root.innerHTML = `
-            <header class="header header2 pb-0">
+        root.innerHTML =
+            this.headerTemplate.render(application) +
+            this.navigationTemplate.render();
 
-                <span class="status-badge ${StatusUtils.getClass(status)}">
-                    ${HtmlUtils.escape(status)}
-                </span>
+        this.bindDelete(root, application);
+        this.navigation.bind(root);
 
-                <div class="shrink-to-left">
-
-                    <h1>
-                        ${HtmlUtils.escape(
-                            application.company?.name ||
-                            "Unbenannte Firma"
-                        )}
-                    </h1>
-
-                    <p>
-                        ${HtmlUtils.escape(
-                            application.job?.title ||
-                            "Keine Stelle angegeben"
-                        )}
-                    </p>
-
-                </div>
-
-                <nav class="header-detail-view">
-
-                    <button
-                        class="primary"
-                        data-route="#/edit/${encodeURIComponent(application.id)}">
-                        Bearbeiten
-                    </button>
-
-                    <button
-                        class="danger"
-                        data-action="delete">
-                        Löschen
-                    </button>
-
-                </nav>
-
-            </header>
+        this.showSection(
+            root,
+            application,
+            "company"
+        );
+    }
 
 
-            <header class="header header2">
+    bindDelete(root, application) {
 
-                <nav class="detail-navigation">
-
-                    <button
-                        type="button"
-                        data-section="company">
-                        Firma
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="contact">
-                        Ansprechpartner
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="job">
-                        Stelle
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="requirements">
-                        Anforderungen
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="benefits">
-                        Benefits
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="sources">
-                        Quellen
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="application">
-                        Bewerbung & Ausgabe
-                    </button>
-
-                    <button
-                        type="button"
-                        data-section="communication">
-                        Telefonate
-                    </button>
-
-                </nav>
-
-            </header>
-
-
-            <main id="detailContent"></main>
-        `;
-
-
-        // Löschen
-
-        const deleteButton =
+        const button =
             root.querySelector('[data-action="delete"]');
 
-        if (deleteButton) {
-
-            deleteButton.onclick = () => {
-
-                if (!confirm("Bewerbung wirklich löschen?")) {
-                    return;
-                }
-
-                this.repository.delete(application.id);
-
-                location.hash = "#/";
-            };
+        if (!button) {
+            return;
         }
 
+        button.onclick = () => {
 
-        // Navigation
+            if (!confirm("Bewerbung wirklich löschen?")) {
+                return;
+            }
+
+            this.repository.delete(application.id);
+            location.hash = "#/";
+        };
+    }
+
+
+    showSection(root, application, section) {
 
         const content =
             root.querySelector("#detailContent");
 
-        const buttons =
-            root.querySelectorAll("[data-section]");
+        content.innerHTML =
+            this.getTemplate(section, application);
 
+        this.bindSectionEvents(
+            root,
+            application,
+            section
+        );
 
-        buttons.forEach(button => {
-
-            button.addEventListener("click", () => {
-
-                const section =
-                    button.dataset.section;
-
-                content.innerHTML =
-                    this.getTemplate(
-                        section,
-                        application
-                    );
-
-
-                // Aktiven Button setzen
-
-                buttons.forEach(btn => {
-                    btn.classList.remove("active");
-                });
-
-                button.classList.add("active");
-
-
-                // Events des jeweiligen Templates
-
-                this.bindSectionEvents(
-                    root,
-                    application,
-                    section
-                );
-            });
-        });
-
-
-        // Standardmäßig Firma anzeigen
-
-        const defaultButton =
-            root.querySelector(
-                '[data-section="company"]'
-            );
-
-        if (defaultButton) {
-            defaultButton.click();
-        }
+        this.navigation.setActiveSection(root, section);
     }
 
 
     getTemplate(section, application) {
 
         const template =
-            this.templates[section];
-
-        if (!template) {
-            return this.templates.company.render(
-                application
-            );
-        }
+            this.templates[section] || this.templates.company;
 
         return template.render(application);
     }
@@ -245,114 +126,10 @@ export class DetailView {
             return;
         }
 
-
-        // Telefonat hinzufügen
-
-        const addButton =
-            root.querySelector("#addCommunication");
-
-        if (addButton) {
-
-            addButton.onclick = () => {
-
-                const textarea =
-                    root.querySelector(
-                        "#communicationText"
-                    );
-
-                const text =
-                    textarea.value.trim();
-
-                if (!text) {
-                    return;
-                }
-
-
-                application.communication =
-                    application.communication || [];
-
-
-                application.communication.push({
-
-                    id: crypto.randomUUID(),
-
-                    type: "Telefonat",
-
-                    text: text,
-
-                    date: new Date().toISOString()
-                });
-
-
-                this.repository.save(application);
-
-
-                root.querySelector(
-                    "#detailContent"
-                ).innerHTML =
-                    this.templates.communication.render(
-                        application
-                    );
-
-
-                this.bindSectionEvents(
-                    root,
-                    application,
-                    "communication"
-                );
-            };
-        }
-
-
-        // Telefonnotiz bearbeiten
-
-        root.querySelectorAll(
-            "[data-edit-communication]"
-        ).forEach(button => {
-
-            button.onclick = () => {
-
-                const entry =
-                    application.communication.find(
-                        item =>
-                            item.id ===
-                            button.dataset.editCommunication
-                    );
-
-                if (!entry) {
-                    return;
-                }
-
-
-                const value = prompt(
-                    "Telefonnotiz bearbeiten:",
-                    entry.text
-                );
-
-                if (value === null) {
-                    return;
-                }
-
-
-                entry.text = value.trim();
-
-                this.repository.save(application);
-
-
-                root.querySelector(
-                    "#detailContent"
-                ).innerHTML =
-                    this.templates.communication.render(
-                        application
-                    );
-
-
-                this.bindSectionEvents(
-                    root,
-                    application,
-                    "communication"
-                );
-            };
-        });
+        this.communicationController.bind(
+            root,
+            application,
+            () => this.showSection(root, application, "communication")
+        );
     }
 }
