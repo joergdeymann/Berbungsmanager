@@ -13,7 +13,6 @@ export class DetailNavigationController {
         buttons.forEach(button => {
 
             button.addEventListener("click", () => {
-
                 this.onSectionChange(
                     button.dataset.section
                 );

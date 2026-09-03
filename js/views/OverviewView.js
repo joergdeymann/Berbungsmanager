@@ -109,22 +109,24 @@ export class OverviewView {
                 const action = this.getAction(item);
                 return `
                     <div class="application-card application-row">
-                        <div class="application-main">
-                        <strong>${escapeHtml(item.company?.name || "Unbenannte Firma")}</strong>
-                        <span class="toggler">${escapeHtml(item.job?.title || "Keine Stelle angegeben")}</span>
-                        <small class="toggler">${escapeHtml(item.company?.city || "—")}</small>
+                        <div class="flex-row left-side">
+                            <span class="status-badge ${statusClass}">${escapeHtml(status)}<br>${escapeHtml(toGermanDate(item.application?.appliedAt || ""))}</span>
+
+                            <div class="application-main">
+                                <strong>${escapeHtml(item.company?.name || "Unbenannte Firma")}</strong>
+                                <span class="toggler">${escapeHtml(item.job?.title || "Keine Stelle angegeben")}</span>
+                                <small class="toggler">${escapeHtml(item.company?.city || "—")}</small>
+                            </div>
                         </div>
-                        <span class="status-badge ${statusClass} toggler">${escapeHtml(status)} ${escapeHtml(toGermanDate(item.application?.appliedAt || ""))}</span>
-                        <span class="status-badge ${statusClass} toggler toggler-none">${escapeHtml(status)}</span>
-                        <span><span class="application-date toggler toggler-none">${escapeHtml(toGermanDate(item.application?.appliedAt || ""))}</span></span>
+
                         <div class="application-actions">
-                        <button data-view="${item.id}">Ansicht</button>
-                        <button data-edit="${item.id}">Update</button>
-                        ${action ? `<button class="primary" data-action="${item.id}">${escapeHtml(action.label)}</button>` : ""}
-                        ${status === STATUS.RUECKRUF ? `
-                            <button data-decision="accepted" data-id="${item.id}">Angenommen</button>
-                            <button class="danger" data-decision="rejected" data-id="${item.id}">Abgelehnt</button>
-                        ` : ""}
+                            <button data-view="${item.id}">Ansicht</button>
+                            <button data-edit="${item.id}">Update</button>
+                            ${action ? `<button class="primary" data-action="${item.id}">${escapeHtml(action.label)}</button>` : ""}
+                            ${status === STATUS.RUECKRUF ? `
+                                <button data-decision="accepted" data-id="${item.id}">Angenommen</button>
+                                <button class="danger" data-decision="rejected" data-id="${item.id}">Abgelehnt</button>
+                            ` : ""}
                         </div>
                     </div>
                     `;

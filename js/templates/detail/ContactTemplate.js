@@ -9,7 +9,7 @@ export class ContactTemplate extends DetailBaseTemplate {
 
         return `
             <section class="application-card subsection-display">
-                <section class="section-header section">
+                <section class="section-header">
                     <div>
                         <span class="section-icon">👤</span>
                         <div>
@@ -19,7 +19,7 @@ export class ContactTemplate extends DetailBaseTemplate {
                     </div>
                 </section>
                 
-                <div class="subsection">
+                <section class="section-body">
                     <div class="field">
                         <label>Name</label>
                         <p>${HtmlUtils.escape(contact.name || "—")}</p>
@@ -38,7 +38,7 @@ export class ContactTemplate extends DetailBaseTemplate {
                         <p>${HtmlUtils.escape(contact.email || application.company?.emails?.[0] || "—")}</p>
                     </div>
 
-                </div>
+                </section>
             </section>
         `;
          

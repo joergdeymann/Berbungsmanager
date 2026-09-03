@@ -8,9 +8,8 @@ export class SourcesTemplate extends DetailBaseTemplate {
         const importedUrls = application.sources?.importedUrls || [];
 
         return `
-
             <section class="application-card subsection-display">
-                <section class="section-header section">
+                <section class="section-header">
                     <div>
                         <span class="section-icon">🎁</span>
                         <div>
@@ -20,7 +19,7 @@ export class SourcesTemplate extends DetailBaseTemplate {
                     </div>
                 </section>
                 
-                <div class="subsection">
+                <section class="section-body">
                     <div class="field">
                         <label>Gesuchte Stelle</label>
                         <p>${HtmlUtils.escape(application.job?.title || "—")}</p>
@@ -46,7 +45,7 @@ export class SourcesTemplate extends DetailBaseTemplate {
                         <label>Weitere Quellen</label>
                         ${this.link(importedUrls)}
                     </div>
-                </div>
+                </section>
             </section>
         `;
 

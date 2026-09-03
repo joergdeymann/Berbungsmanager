@@ -7,7 +7,7 @@ export class JobTemplate extends DetailBaseTemplate {
 
         return `
             <section class="application-card subsection-display">
-                <section class="section-header section">
+                <section class="section-header">
                     <div>
                         <span class="section-icon">💼</span>
                         <div>
@@ -17,7 +17,7 @@ export class JobTemplate extends DetailBaseTemplate {
                     </div>
                 </section>
                 
-                <div class="subsection">
+                <section class="section-body">
                     <div class="field">
                         <label>Gesuchte Stelle</label>
                         <p>${HtmlUtils.escape(application.job?.title || "—")}</p>
@@ -46,47 +46,9 @@ export class JobTemplate extends DetailBaseTemplate {
                         <label>Aufgaben</label>
                         ${this.list(application.tasks|| "—")}
                     </div>                    
-                </div>
+                </section>
             </section>
         `;
 
-        return `
-            <section class="card section">
-
-
-                <p>
-                    <strong>Beschäftigungsart:</strong>
-                    ${HtmlUtils.escape(
-                        application.job?.employmentType || "—"
-                    )}
-                </p>
-
-                <p>
-                    <strong>Arbeitsmodell:</strong>
-                    ${HtmlUtils.escape(
-                        application.job?.workModel || "—"
-                    )}
-                </p>
-
-                <p>
-                    <strong>Gehalt:</strong>
-                    ${HtmlUtils.escape(
-                        application.job?.salary || "—"
-                    )}
-                </p>
-
-                <p>
-                    <strong>Kennziffer:</strong>
-                    ${HtmlUtils.escape(
-                        application.job?.referenceNumber || "—"
-                    )}
-                </p>
-
-                <h3>Aufgaben</h3>
-
-                ${this.list(application.tasks)}
-
-            </section>
-        `;
     }
 }

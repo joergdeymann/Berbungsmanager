@@ -73,38 +73,23 @@
    border: 1px solid var(--border-color);
    border-radius: var(--radius-lg);
    box-shadow: var(--shadow-sm);
-   transition: var(--transition);
+   transition: var(--transition);   
 }
 
 .application-card:hover {
    box-shadow: var(--shadow-md);
 }
 
-/* ============================================================
-   CARDS
-============================================================ */
-.application-card {
-   /* margin-bottom: 24px; */
-   padding: 8px;
-   background: var(--bg-card);
-   border: 1px solid var(--border-color);
-   border-radius: var(--radius-lg);
-   box-shadow: var(--shadow-sm);
-   transition: var(--transition);
-}
-
-.application-card:hover {
-   box-shadow: var(--shadow-md);
-}
 /* ============================================================
    BEWERBUNGSSTATUS / ÜBERSICHT / DETAIL
 ============================================================ */
 .application-row {
-   display: grid;
-   grid-template-columns: minmax(220px, 2fr) auto auto minmax(260px, 2fr);
-   gap: 16px;
-   align-items: center;
-   /* margin-bottom: 12px; */
+    display: flex;
+    /* grid-template-columns: minmax(220px, 2fr) auto auto minmax(260px, 2fr); */
+    gap: 16px;
+    align-items: center;
+    /* margin-bottom: 12px; */
+    /* justify-content: center;*/
 }
 .application-main {
    display: flex;
@@ -125,6 +110,7 @@
    justify-content: flex-end;
    flex-wrap: wrap;
    gap: 8px;
+   flex-direction: row-reverse;
 }
 
 .status-badge {
@@ -181,8 +167,8 @@
 #list {
    display: flex;
    flex-direction: column;
-   margin-left: 10%;
-   margin-right: 10%;
+   /* margin-left: 10%;
+   margin-right: 10%; */
    gap: 12px;
 }
 
@@ -197,9 +183,26 @@
    display: none;
 }
 
-#list.compact .status-badge {
-   border-radius: 7px;
-   height: unset;
-   white-space: nowrap;
-   padding: 10px 15px;
+.compact .status-badge {
+    border-radius: 10px;
+    /* white-space: nowrap; */
+    padding: 4px 0px;
+    width: 140px;
+    height: 2.5em;
+}
+
+.flex-col {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+}
+.flex-row {
+   display: flex;
+   flex-direction: row;
+}
+
+.left-side {
+   gap: 8px;
+   flex:1;
+   align-items: center;
 }

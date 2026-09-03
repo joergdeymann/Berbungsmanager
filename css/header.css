@@ -1,3 +1,13 @@
+body>header,
+main 
+{
+   max-width: 1024px;
+   margin: 0 auto;
+   box-sizing: border-box;
+}
+
+
+
 .header:not(.header2) {
    border-top-left-radius: var(--radius-md);
    border-top-right-radius: var(--radius-md);
@@ -5,7 +15,7 @@
 
 .header {
    color: #fff;
-   padding: 20px 5%;
+   padding: 20px 16px;
    display: flex;
    justify-content: space-between;
    align-items: center;
@@ -58,7 +68,16 @@ button {
    transition: background-color 0.2s ease, color 0.2s ease;
 
 }
-.header button {
+button {
+   background: #34485b;
+   color: #fff;
+}
+
+button:hover {
+   background-color: rgb(72, 92, 111);
+   color: orange;
+}
+/* .header button {
    background: #34485b;
    color: #fff;
 }
@@ -66,7 +85,7 @@ button {
 .header button:hover {
    background-color: rgb(72, 92, 111);
    color: orange;
-}
+} */
 .shrink-to-left {
    margin-right: auto;
 }

@@ -1,0 +1,17 @@
+.danger {
+   background: rgba(184, 50, 50,1) !important;
+   color: #fff !important;
+}
+button[data-decision="accepted"] {
+   background: rgb(26, 175, 75) !important;
+   color: #fff !important;
+}
+.primary {
+   background: rgba(22, 119, 210,1) !important;
+   color: #fff !important;
+}
+.danger:hover,
+.accepted:hover,
+.primary:hover {
+    filter: brightness(1.2);
+}

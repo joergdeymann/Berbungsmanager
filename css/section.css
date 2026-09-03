@@ -1,0 +1,41 @@
+/* ============================================================
+   SECTION Angaben
+============================================================ */
+
+.section-body {
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ============================================================
+   Subsection angaben Angaben - Anpasseb umbenennen
+============================================================ */
+.subsection-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+    background-color: var(--bg-page);
+} 
+.subsection-display:first-of-type {  
+    border-top-left-radius: unset;
+    border-top-right-radius: unset;
+}
+
+
+/* ============================================================
+   FIELD Angaben
+============================================================ */
+.field-with-button {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.03);
+    color: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 8px;
+}

@@ -9,81 +9,112 @@ export class ApplicationTemplate extends DetailBaseTemplate {
         const status =
             application.application?.status ||
             "Nicht beworben";
-
-        return `
-            <section class="card section">
-
-                <h2>📤 Bewerbung & Ausgabe</h2>
-
-                <div class="detail-grid">
-
+        
+            return `
+            <section class="application-card subsection-display ">
+                <section class="section-header section">
                     <div>
-
-                        <p>
-                            <strong>Status:</strong>
-
-                            <span class="status-badge ${StatusUtils.getClass(status)}">
-                                ${HtmlUtils.escape(status)}
-                            </span>
-                        </p>
-
-                        <p>
-                            <strong>Beworben am:</strong>
-                            ${HtmlUtils.escape(
-                                application.application?.appliedAt ||
-                                "—"
-                            )}
-                        </p>
-
-                        <p>
-                            <strong>Bewerbungsweg:</strong>
-                            ${HtmlUtils.escape(
-                                application.application?.method ||
-                                "—"
-                            )}
-                        </p>
-
+                        <span class="section-icon">📤</span>
+                        <div>
+                            <h2>Bewerbung & Ausgabe</h2>
+                            <p>Histroy der Bewerbungsschritte , Möglichkeiten Bewerbung zu versenden</p>
+                        </div
+                    </div>
+                </section>
+                
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Beworben am</label>
+                        <p>${HtmlUtils.escape(application.application?.appliedAt || "—")}</p>
                     </div>
 
-                    <div>
-
-                        <p>
-                            <strong>Portal:</strong>
-                            ${this.link(
-                                application.portal?.url
-                            )}
-                        </p>
-
-                        <p>
-                            <strong>Benutzer:</strong>
-                            ${HtmlUtils.escape(
-                                application.portal?.username ||
-                                "—"
-                            )}
-                        </p>
-
+                    <div class="field">
+                        <label>Bewerbungsweg</label>
+                        <p>${HtmlUtils.escape(application.application?.method ||"—")}</p>
                     </div>
 
+                    <div class="field">
+                        <label>Portal</label>
+                        <p>${this.link(application.portal?.url)}</p> 
+                    </div>
+                    <div class="field"> 
+                        <label>Benutzer</label>
+                        <p>${HtmlUtils.escape(application.portal?.username || "—")}</p>
+                    </div>
+                    <div class="field"> 
+                        <label>Kennziffer</label>
+                        <p>${HtmlUtils.escape(application.job?.referenceNumber || "—")}</p>
+                    </div>
+                </div>
+                <div class="section section-body">
+                    <div class="field"> 
+                        <label>Lebenslauf</label>
+                        <div class="field-with-button">
+                            ${this.documentButton("Lebenslauf", application.documents?.resume)}
+                            <button>+</button>
+                        </div>
+                    </div>          
+
+                    <div class="field section-body">
+                        <label>Anschreiben</label>
+                        <div class="field-with-button">
+                            ${this.documentButton("Anschreiben", application.documents?.coverLetter)}
+                            <button>+</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <section class="application-card subsection-display">
+                <section class="section-header">
+                    <div>
+                        <span class="section-icon">📤</span>
+                        <div>
+                            <h2>Legende/ History</h2>
+                            <p>Zeigt auf was du bereits alle getan hast</p>
+                        </div
+                    </div>
+                </section>
+
+                <div class="flex-row left-side compact">
+                    <span class="status-badge compact status-rejected">Abgelehnt<br>29.08.2026</span>
+
+                    <div class="application-main">
+                        <strong>via Mail</strong>
+                    </div>
+
+                    <div class="application-main">
+                        <strong>BUTTON Details</strong>
+                    </div>
                 </div>
 
-                <h3>Unterlagen</h3>
+                <div class="flex-row left-side compact">
+                    <span class="status-badge compact status-rejected">Abgelehnt<br>29.08.2026</span>
 
-                <div class="document-actions">
+                    <div class="application-main">
+                        <strong>via Mail</strong>
+                    </div>
 
-                    ${this.documentButton(
-                        "Anschreiben",
-                        application.documents?.coverLetter
-                    )}
-
-                    ${this.documentButton(
-                        "Lebenslauf",
-                        application.documents?.resume
-                    )}
-
+                    <div class="application-main">
+                        <strong>BUTTON Details</strong>
+                    </div>
                 </div>
+                <div class="flex-row left-side compact">
+                    <span class="status-badge compact status-rejected">Abgelehnt<br>29.08.2026</span>
 
+                    <div class="application-main">
+                        <strong>via Mail</strong>
+                    </div>
+
+                    <div class="application-main">
+                        <strong>BUTTON Details</strong>
+                    </div>
+                </div>
             </section>
         `;
+
     }
 
     documentButton(label, url) {

@@ -6,7 +6,7 @@ export class RequirementsTemplate extends DetailBaseTemplate {
 
         return `
             <section class="application-card subsection-display">
-                <section class="section-header section">
+                <section class="section-header">
                     <div>
                         <span class="section-icon">🎯</span>
                         <div>
@@ -16,32 +16,25 @@ export class RequirementsTemplate extends DetailBaseTemplate {
                     </div>
                 </section>
                 
-                <div class="subsection">
+                <section class="section-body">
                     <div class="field">
                         <label>Muss-Anforderungen</label>
                         ${this.list(application.qualifications?.required)}
                     </div>
-                </div>
 
-                <div class="subsection">
                     <div class="field">
                         <label>Fachliche Fähigkeiten / Technologien</label>
                         ${this.list(application.skills)}
                     </div>
-                </div>
-                
-                <div class="subsection">
                     <div class="field">
                         <label>Persönliche Anforderungen</label>
                         ${this.list(application.qualifications?.personal)}
                     </div>
-                </div>
-                <div class="subsection">
                     <div class="field">
                         <label>Wünschenswerte Kenntnisse</label>
                         ${this.list(application.qualifications?.preferred)}
                     </div>
-                </div>
+                </section>
             </section>    
         `;
     }

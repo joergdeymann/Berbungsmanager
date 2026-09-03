@@ -6,7 +6,7 @@ export class BenefitsTemplate extends DetailBaseTemplate {
         return `
 
             <section class="application-card subsection-display">
-                <section class="section-header section">
+                <section class="section-header">
                     <div>
                         <span class="section-icon">🎁</span>
                         <div>
@@ -16,12 +16,12 @@ export class BenefitsTemplate extends DetailBaseTemplate {
                     </div>
                 </section>
                 
-                <div class="subsection">
+                <section class="section-body">
                     <div class="field">
                         <label>Benefits</label>
-                ${this.list(application.benefits)}
+                        ${this.list(application.benefits)}
                     </div>
-                </div>
+                </section>
             </section>
         `;
     }

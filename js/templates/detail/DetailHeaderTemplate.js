@@ -38,15 +38,15 @@ export class DetailHeaderTemplate extends DetailBaseTemplate {
                 <nav class="header-detail-view">
 
                     <button
-                        class="primary"
-                        data-route="#/edit/${encodeURIComponent(application.id)}">
-                        Bearbeiten
-                    </button>
-
-                    <button
                         class="danger"
                         data-action="delete">
                         Löschen
+                    </button>
+
+                    <button
+                        class="primary"
+                        data-route="#/edit/${encodeURIComponent(application.id)}">
+                        Bearbeiten
                     </button>
 
                 </nav>

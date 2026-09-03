@@ -125,7 +125,6 @@ export class DetailView {
         if (section !== "communication") {
             return;
         }
-
         this.communicationController.bind(
             root,
             application,

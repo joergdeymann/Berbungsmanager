@@ -5,56 +5,67 @@ export class CommunicationTemplate extends DetailBaseTemplate {
 
     render(application) {
 
-        const communication =
-            application.communication || [];
 
         return `
-            <section class="card section">
+            <section class="application-card subsection-display">
+                <section class="section-header">
+                    <div>
+                        <span class="section-icon">📞</span>
+                        <div>
+                            <h2>Telefonate / Kommunikation</h2>
+                            <p>Email, Telefonate oder Live Korrespondenz</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="section-body">
+                    <div class="communication-add">
 
-                <h2>📞 Telefonate / Kommunikation</h2>
+                        <textarea
+                            id="communicationText"
+                            rows="10"
+                            placeholder="Informationen zum Telefonat eingeben ..."
+                        ></textarea>
 
-                <div id="communicationList">
+                        <span><button
+                            class="primary"
+                            id="addCommunication">
+                            Telefonat speichern
+                        </button></span>
 
-                    ${
-                        communication.length
-                            ? communication
-                                .map(item =>
-                                    this.communicationItem(item)
-                                )
-                                .join("")
-                            : `
-                                <p class="muted">
-                                    Noch keine Telefonnotizen vorhanden.
-                                </p>
-                            `
-                    }
-
-                </div>
-
-                <div class="communication-add">
-
-                    <textarea
-                        id="communicationText"
-                        rows="4"
-                        placeholder="Informationen zum Telefonat eingeben ..."
-                    ></textarea>
-
-                    <button
-                        class="primary"
-                        id="addCommunication">
-                        Telefonat speichern
-                    </button>
-
-                </div>
-
-            </section>
+                    </div>
+                </section>
+                
+                <section id="communicationList" class="section-body">${this.communicationList(application)}</section>
+            </section>  
         `;
+    }
+
+    communicationList(application) {
+        const communication =
+            application.communication || [];
+        return communication.length
+            ? communication.sort((a, b) => b.date.localeCompare(a.date))
+                .map(item =>
+                    this.communicationItem(item)
+                )
+                .join("")
+            : `
+                <span class="muted">
+                    Noch keine Telefonnotizen vorhanden.
+                </span>
+            `;
     }
 
     communicationItem(item) {
 
         const date = item.date
-            ? new Date(item.date).toLocaleString("de-DE")
+            ? new Date(item.date).toLocaleString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            })
             : "";
 
         return `
@@ -74,16 +85,21 @@ export class CommunicationTemplate extends DetailBaseTemplate {
 
                 </div>
 
-                <p>
-                    ${HtmlUtils.escape(item.text)}
-                </p>
+                <span class="text-content">${HtmlUtils.escape(item.text)}</span>
 
-                <button
-                    data-edit-communication="${HtmlUtils.escape(item.id)}">
-                    Ändern
-                </button>
+                <span>
+                    <button
+                        class="danger"
+                        data-delete-communication="${HtmlUtils.escape(item.id)}">
+                        Löschen
+                    </button>
 
+                    <button
+                        data-edit-communication="${HtmlUtils.escape(item.id)}">
+                        Ändern
+                    </button> 
+                </span>
             </div>
         `;
-    }
+}
 }
