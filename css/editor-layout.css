@@ -1,0 +1,43 @@
+/* ============================================================
+   EDITOR LAYOUT
+   Sorgt dafür, dass der Editor (Header + Tabs + Footer) die
+   volle Bildschirmhöhe nutzt, ohne feste px-Werte zu schätzen.
+============================================================ */
+
+.editor-tab-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#editorTabContent {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* wichtig, damit Kinder innerhalb Flexbox schrumpfen/wachsen dürfen */
+}
+
+/* Normale Tabs (Firma, Ansprechpartner, ...) behalten ihre natürliche Höhe. */
+#editorTabContent > .tab-content {
+    flex: 0 0 auto;
+}
+
+/* Tabs mit dieser Zusatzklasse (aktuell: Import) wachsen auf die volle
+   verfügbare Höhe und werden selbst zur Flex-Spalte, damit ihr Inhalt
+   (z.B. das Textarea) mitwachsen kann. */
+#editorTabContent > .tab-content.tab-content-fill {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.editor-footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-card);
+}

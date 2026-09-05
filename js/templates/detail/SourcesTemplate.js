@@ -11,7 +11,7 @@ export class SourcesTemplate extends DetailBaseTemplate {
             <section class="application-card subsection-display">
                 <section class="section-header">
                     <div>
-                        <span class="section-icon">🎁</span>
+                        <span class="section-icon">🌐</span>
                         <div>
                             <h2>Quellen</h2>
                             <p>Information wo die Daten herkommen</p>

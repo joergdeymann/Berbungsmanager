@@ -48,21 +48,20 @@ export class EditorView {
 
     // Container Struktur rendern
     root.innerHTML = `
-      <header class="main-header">
-        <nav class="detail-navigation editor-navigation">
-          <button type="button" class="tab-button active" data-target="section-import">Import</button>
-          <button type="button" class="tab-button" data-target="section-company">Firma</button>
-          <button type="button" class="tab-button" data-target="section-contact">Ansprechpartner</button>
-          <button type="button" class="tab-button" data-target="section-job">Stelle</button>
-          <button type="button" class="tab-button" data-target="section-requirements">Anforderungen</button>
-          <button type="button" class="tab-button" data-target="section-benefits">Benefits</button>
-          <button type="button" class="tab-button" data-target="section-sources">Quellen</button>
-          <button type="button" class="tab-button" data-target="section-application">Bewerbung</button>
-          <button type="button" class="tab-button" data-target="section-output">Ausgabe</button>
-        </nav>
-      </header>
-
-      <div class="main-area">
+      <div class="editor-tab-container">
+        <header class="header header2">
+          <nav class="detail-navigation editor-navigation">
+            <button type="button" class="tab-button active" data-target="section-import">Import</button>
+            <button type="button" class="tab-button" data-target="section-company">Firma</button>
+            <button type="button" class="tab-button" data-target="section-contact">Ansprechpartner</button>
+            <button type="button" class="tab-button" data-target="section-job">Stelle</button>
+            <button type="button" class="tab-button" data-target="section-requirements">Anforderungen</button>
+            <button type="button" class="tab-button" data-target="section-benefits">Benefits</button>
+            <button type="button" class="tab-button" data-target="section-sources">Quellen</button>
+            <button type="button" class="tab-button" data-target="section-application">Bewerbung</button>
+            <button type="button" class="tab-button" data-target="section-output">Ausgabe</button>
+          </nav>
+        </header>
 
         <main id="editorTabContent">
           ${this.tabs.import.render()}

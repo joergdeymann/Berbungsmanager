@@ -183,10 +183,16 @@ button.output-action:hover {
    .field-wide {
       grid-column: span 1;
    }
+   .field-ultra-wide {
+      grid-column: span 1;
+   }
 }
 
 .field-wide {
    grid-column: span 2;
+}
+.field-ultra-wide {
+   grid-column: 1 / -1;
 }
 
 .field {
@@ -214,7 +220,7 @@ button.output-action:hover {
    font-family: inherit;
    font-size: 14px;
    outline: none;
-   transition: var(--transition);
+   /* transition: var(--transition); */
    box-shadow: var(--shadow-sm);
 }
 

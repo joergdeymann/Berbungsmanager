@@ -49,12 +49,16 @@ export class CompanyTemplate extends DetailBaseTemplate {
                         <p>${HtmlUtils.escape(application.companyInformation?.industry || "—")}</p>
                     </div>
                     <div class="field">
-                        <label>Größe</label>
+                        <label>Unternehmensgröße</label>
                         <p>${HtmlUtils.escape(application.companyInformation?.size || "—")}</p>
                     </div>
                     <div class="field">
                         <label>Gegründet</label>
                         <p>${HtmlUtils.escape(application.companyInformation?.founded || "—")}</p>
+                    </div>
+                    <div class="field">
+                        <label>Verifiziert am</label>
+                        <p>${HtmlUtils.escape(HtmlUtils.toGermanDate(application.companyInformation?.verifiedAt || "—"))}</p>
                     </div>
                     <div class="field">
                         <label>Spezialisierungen</label>

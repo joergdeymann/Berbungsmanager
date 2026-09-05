@@ -63,6 +63,63 @@ export class ApplicationTemplate extends DetailBaseTemplate {
                         </div>
                     </div>
                 </div>
+
+
+                <section class="application-card output-card">
+
+                    <div class="output-actions">
+                        <button class="output-action .flex-column">
+                            <div>
+                                <span>📧</span>
+                                <strong>E-Mail erstellen</strong>
+                            </div>
+                            <small>
+                                Ansprechpartner und Stelleninformationen übernehmen
+                            </small>
+                        </button>
+
+                        <button class="output-action">
+                            <div>
+                                <span>🌐</span>
+                                <strong>Portal vorbereiten</strong>
+                            </div>
+                            <small>
+                                Felder für ein Bewerbungsportal bereitstellen
+                            </small>
+                        </button>
+
+                        <button class="output-action">
+                            <div>
+                                <span>📋</span>
+                                <strong>Felder kopieren</strong>
+                            </div>
+
+                            <small>
+                                Einzelne Informationen schnell übernehmen
+                            </small>
+                        </button>
+                    </div>
+                </section>
+
+
+                <section class="application-card">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-icon">📝</span>
+
+                            <div>
+                                <h2>Notizen</h2>
+                                <p>
+                                    Freie Informationen zur Bewerbung.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <textarea id="notes" class="large-input" rows="7" placeholder="Weitere Notizen ..."></textarea>
+                </section>
+
+
+
             </section>
 
 

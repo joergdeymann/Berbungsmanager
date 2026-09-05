@@ -1,0 +1,35 @@
+button,
+input,
+textarea,
+select {
+   font: inherit;
+}
+
+.max-height {
+    flex:1;
+}
+
+textarea {
+    width: 100%;
+
+    padding: 8px;
+    box-sizing: border-box;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    background-color: var(--bg-card);
+    color: var(--text-input);
+
+    font-size: 14px;
+    outline: none;
+    overflow-y: auto;
+} 
+
+textarea:focus {
+    outline: none !important; 
+    border-color: rgba(129, 140, 248, 0.7);
+    box-shadow: var(--shadow-sm);
+}
+
+

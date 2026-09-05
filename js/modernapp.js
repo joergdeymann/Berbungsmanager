@@ -1,7 +1,7 @@
 import { Router } from "./core/Router.js";
 import { ApplicationRepository } from "./services/ApplicationRepository.js";
 import { OverviewView } from "./views/OverviewView.js";
-import { EditorView } from "./views/ModernEditorView.js";
+import { EditorView } from "./views/EditorView.js";
 import { DetailView } from "./views/DetailView.js";
 
 const repository = new ApplicationRepository();
