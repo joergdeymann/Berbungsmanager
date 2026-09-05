@@ -8,7 +8,7 @@ export class ContactTemplate extends DetailBaseTemplate {
         const contact = application.contacts?.[0] || {};
 
         return `
-            <section class="application-card subsection-display">
+            <section class="subsection-display">
                 <section class="section-header">
                     <div>
                         <span class="section-icon">👤</span>
@@ -86,11 +86,11 @@ export class ContactTemplate extends DetailBaseTemplate {
 
                         <div class="contact-actions">
 
-                            <button class="action-button secondary">
+                            <button class="secondary">
                                 📧 Bewerbung an Ansprechpartner vorbereiten
                             </button>
 
-                            <button class="action-button secondary">
+                            <button class="secondary">
                                 📋 Kontaktdaten kopieren
                             </button>
 

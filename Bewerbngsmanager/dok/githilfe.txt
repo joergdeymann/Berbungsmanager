@@ -1,0 +1,40 @@
+Wenn die dateien wegen den Zeilenende meckern
+================================================================================
+1. core.autocrlf=false global und lokal
+    git config --global --get core.autocrlf
+    git config --local --get core.autocrlf
+
+    git config --global core.autocrlf false
+    git config --local gitcore.autocrlf false
+
+2. .gitattributes anlegen
+    # Alle Textdateien automatisch erkennen
+    * text=auto
+
+    # Web / JavaScript
+    *.js text eol=lf
+    *.mjs text eol=lf
+    *.cjs text eol=lf
+    *.json text eol=lf
+    *.html text eol=lf
+    *.css text eol=lf
+
+    # PHP / Python
+    *.php text eol=lf
+    *.py text eol=lf
+
+    # Markdown
+    *.md text eol=lf
+
+    #Documents
+    *.txt text eol=lf
+    *.doc text eol=lf
+    *.docx text eol=lf
+    *.xls text eol=lf
+    *.xlsx text eol=lf
+
+3. git add --renormalize .
+
+4. Alle Dateien abgleichen
+    git rm --cached -r .
+    git reset --hard

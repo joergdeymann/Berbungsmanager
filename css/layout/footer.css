@@ -1,0 +1,17 @@
+/* ============================================================
+   FOOTER
+   Dunkle Aktionsleiste, passend zum App-Header - für bessere
+   Erkennbarkeit als klar abgegrenzter Aktionsbereich.
+============================================================ */
+
+.app-footer {
+   flex: 0 0 auto;
+   display: flex;
+   justify-content: flex-end;
+   gap: 10px;
+   padding: 16px;
+
+   background: var(--header-bg-soft);
+   border-bottom-left-radius: var(--radius-md);
+   border-bottom-right-radius: var(--radius-md);
+}

@@ -7,7 +7,7 @@ export class CommunicationTemplate extends DetailBaseTemplate {
 
 
         return `
-            <section class="application-card subsection-display">
+            <section class="subsection-display">
                 <section class="section-header">
                     <div>
                         <span class="section-icon">📞</span>

@@ -1,0 +1,22 @@
+| Verwendung             | Zeichen | Unicode | HTML |
+| ---------------------- | ------: | ------- | ---- |
+| Koffer / Bewerbung     |      💼 | U+1F4BC | `💼` |
+| Suche                  |      🔍 | U+1F50D | `🔍` |
+| Plus                   |       ＋ | U+FF0B  | `＋`  |
+| Bearbeiten             |       ✎ | U+270E  | `✎`  |
+| Löschen                |      🗑 | U+1F5D1 | `🗑` |
+| Firma                  |      🏢 | U+1F3E2 | `🏢` |
+| Ansprechpartner        |      👤 | U+1F464 | `👤` |
+| Anforderungen / Liste  |       ☷ | U+2637  | `☷`  |
+| Benefits               |       ☆ | U+2606  | `☆`  |
+| Quellen / Link         |      🔗 | U+1F517 | `🔗` |
+| Bewerbung / Dokument   |      📄 | U+1F4C4 | `📄` |
+| Telefonate             |      📞 | U+1F4DE | `📞` |
+| Gesuchte Stelle / Ziel |       ◎ | U+25CE  | `◎`  |
+| Arbeitsort             |      📍 | U+1F4CD | `📍` |
+| Arbeitsmodell          |      👤 | U+1F464 | `👤` |
+| Gehalt                 |       € | U+20AC  | `€`  |
+| Kennziffer             |      🏷 | U+1F3F7 | `🏷` |
+| Aufgaben / Liste       |       ☷ | U+2637  | `☷`  |
+| Abgelehnt              |       ⛔ | U+26D4  | `⛔`  |
+| Bewerbung / Aufgabe    |      📤 | U+1F4E4 | `📤` |

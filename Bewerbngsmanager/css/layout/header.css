@@ -1,0 +1,121 @@
+/* ============================================================
+   HEADER
+   Einheitliche Kopfleiste für die gesamte App: der große
+   App-Header (Titel + Aktionen) und alle "Sub-Header"-Leisten
+   (Detail-Navigation, Editor-Tabs, Übersicht-Suche) benutzen
+   dieselbe .app-header-Basis, damit sie gleich aussehen.
+============================================================ */
+
+.app-header {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   justify-content: space-between;
+   gap: 20px;
+
+   padding: 20px 16px;
+
+   background: var(--header-bg);
+   color: #fff;
+}
+
+/* Sub-Header innerhalb von <main>, z.B. Detail-/Editor-Navigation
+   und die Übersicht-Suche, etwas transparenter abgesetzt */
+main .app-header {
+   background: var(--header-bg-soft);
+}
+
+.app-header.rounded-top {
+   border-top-left-radius: var(--radius-md);
+   border-top-right-radius: var(--radius-md);
+}
+
+.app-header h1 {
+   margin: 0;
+}
+
+.app-header p {
+   margin: 5px 0 0;
+   color: var(--header-text-muted);
+}
+
+.app-header nav {
+   display: flex;
+   gap: 4px;
+   flex-wrap: wrap;
+   justify-content: flex-end;
+}
+
+.app-header nav.detail-navigation {
+   justify-content: center;
+}
+
+/* Buttons innerhalb eines App-Headers (Navigation/Tabs) */
+.app-header button {
+   border: 0;
+   border-radius: 7px;
+   padding: 10px 15px;
+   cursor: pointer;
+   background: var(--header-button-bg);
+   color: #fff;
+   font-family: inherit;
+   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-header button:hover {
+   background-color: var(--header-button-hover-bg);
+   color: var(--header-button-hover-text);
+}
+
+.app-header button.active {
+   background-color: #444;
+   color: #fff;
+}
+
+/* Such-/Filterfelder innerhalb eines App-Headers (z.B. Übersicht) */
+.app-header input,
+.app-header select {
+   height: 44px;
+   box-sizing: border-box;
+   padding: 0 14px;
+
+   font-family: inherit;
+   font-size: 14px;
+   font-weight: 500;
+   color: var(--text-main);
+
+   background: #fff;
+   border: 1px solid transparent;
+   border-radius: var(--radius-sm);
+
+   outline: none;
+   transition: var(--transition);
+}
+
+.app-header input {
+   flex: 1;
+   min-width: 220px;
+}
+
+.app-header input::placeholder {
+   color: var(--text-light);
+   font-weight: 400;
+}
+
+.app-header select {
+   min-width: 160px;
+   cursor: pointer;
+}
+
+.app-header input:focus,
+.app-header select:focus {
+   box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+@media (max-width: 850px) {
+   .app-header input,
+   .app-header select {
+      flex: 1 1 100%;
+      min-width: 100%;
+   }
+}

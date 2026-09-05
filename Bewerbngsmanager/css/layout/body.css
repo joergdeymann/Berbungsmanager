@@ -1,0 +1,37 @@
+/* ============================================================
+   BODY
+   Grundgerüst der Seite: body sowie die direkten Kinder
+   header / main / footer.
+============================================================ */
+
+body {
+   display: flex;
+   flex-direction: column;
+   height: 100vh;
+
+   background-color: var(--bg-card);
+   font-family: Arial, sans-serif;
+   scroll-behavior: smooth;
+   overflow-y: scroll;
+}
+
+body > header,
+body > main,
+body > footer {
+   display: flex;
+   width: 100%;
+   max-width: 1024px;
+   margin: 0 auto;
+}
+
+body > main {
+   flex: 1;
+   flex-direction: column;
+}
+
+main {
+   display: flex;
+   flex-direction: column;
+   flex: 1;
+   min-height: 0;
+}

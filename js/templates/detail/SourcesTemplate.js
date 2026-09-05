@@ -8,7 +8,7 @@ export class SourcesTemplate extends DetailBaseTemplate {
         const importedUrls = application.sources?.importedUrls || [];
 
         return `
-            <section class="application-card subsection-display">
+            <section class="subsection-display">
                 <section class="section-header">
                     <div>
                         <span class="section-icon">🌐</span>

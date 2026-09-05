@@ -1,0 +1,51 @@
+/* ============================================================
+   ÜBERSICHT (OverviewView)
+============================================================ */
+
+#list {
+   gap: 12px;
+}
+
+#list.compact {
+   gap: 2px;
+}
+
+#list:not(.compact) .toggler.toggler-none {
+   display: none;
+}
+
+#list.compact .toggler:not(.toggler-none) {
+   display: none;
+}
+
+.application-row {
+   display: flex;
+   gap: 16px;
+   align-items: center;
+}
+
+.application-main {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+}
+
+.application-main strong {
+   font-size: 16px;
+}
+
+.application-main small {
+   color: var(--text-muted);
+}
+
+.application-date {
+   white-space: nowrap;
+}
+
+.application-actions {
+   display: flex;
+   justify-content: flex-end;
+   flex-wrap: wrap;
+   gap: 8px;
+   flex-direction: row-reverse;
+}

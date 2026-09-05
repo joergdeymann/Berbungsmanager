@@ -11,7 +11,7 @@ export class DetailHeaderTemplate extends DetailBaseTemplate {
             "Nicht beworben";
 
         return `
-            <header class="header header2 pb-0">
+            <header class="app-header pb-0">
 
                 <span class="status-badge ${StatusUtils.getClass(status)}">
                     ${HtmlUtils.escape(status)}

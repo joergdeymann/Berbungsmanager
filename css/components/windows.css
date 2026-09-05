@@ -1,0 +1,61 @@
+/* ============================================================
+   WINDOWS
+   Aufploppende Fenster (Modal-Overlay), z.B. der Prompt zum
+   Erfassen eines Telefonats.
+============================================================ */
+
+.input-container {
+   position: fixed;
+   inset: 0;
+   width: 100vw;
+   height: 100vh;
+
+   background: rgba(0, 0, 0, 0.5);
+   z-index: 100;
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.input-prompt {
+   display: flex;
+   flex-direction: column;
+
+   width: 50%;
+   height: 50%;
+   max-width: 500px;
+
+   padding: 20px;
+   background: var(--bg-card);
+   border-radius: 10px;
+   box-shadow: 0 2px 8px #00000012;
+}
+
+.input-prompt.auto-height {
+   height: auto;
+}
+
+.input-prompt label {
+   display: block;
+   margin-bottom: 10px;
+}
+
+.input-prompt textarea {
+   flex: 1;
+   min-height: 110px;
+}
+
+.input-prompt .prompt-buttons {
+   display: flex;
+   justify-content: flex-end;
+   gap: 4px;
+}
+
+.input-prompt .prompt-buttons.prompt-center {
+   justify-content: center;
+}
+
+.input-prompt button {
+   margin-top: 10px;
+}

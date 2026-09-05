@@ -1,0 +1,434 @@
+/* ============================================================
+   CONTENT
+   Bausteine für Inhalte, die auf mehreren Seiten (Übersicht,
+   Editor, Detail) gleich aussehen sollen.
+============================================================ */
+
+/* ---------- Seiten-Rahmen ---------- */
+/* Wird von jeder View um ihren Inhalt gelegt, damit Übersicht,
+   Editor und Detail-Ansicht denselben Rahmen/Hintergrund haben. */
+
+/* ---------- Inhalts-Rahmen ---------- */
+/* Liegt NICHT mehr um die ganze Seite (Header inklusive), sondern
+   nur um den eigentlichen Inhalt direkt unterhalb eines
+   .app-header - dadurch grenzen zwei .app-header direkt
+   aneinander, und der Rahmen schließt nahtlos darunter an.
+   Keine eigene max-width/margin: die Seitenbreite wird bereits
+   von "body > main" (siehe layout/body.css) vorgegeben. */
+#editorTabContent {
+   flex: 1 1 auto;   /* ID-Selektor > Klassen-Selektor, überschreibt .content-frame */
+}
+
+.content-frame {
+   padding: 8px;
+   flex: 0 0 auto;
+
+   color: var(--text-main);
+   background-color: var(--bg-page);
+
+   border: 1px solid var(--border-color);
+   border-bottom-left-radius: var(--radius-md);
+   border-bottom-right-radius: var(--radius-md);
+   box-shadow: var(--shadow-sm);
+
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   min-height: 0;
+}
+
+.content-frame:has(+ .app-footer) {
+   border-bottom: none;
+   border-bottom-left-radius: 0;
+   border-bottom-right-radius: 0;
+}
+
+/* ---------- Karten ---------- */
+
+.application-card {
+   padding: 8px;
+   background: var(--bg-card);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-sm);
+   transition: var(--transition);
+}
+
+.application-card:hover {
+   box-shadow: var(--shadow-md);
+}
+
+.import-card {
+   border-left: 4px solid var(--primary);
+}
+
+.output-card {
+   border-top: 3px solid var(--primary);
+}
+
+.output-actions {
+   display: grid;
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+   gap: 14px;
+}
+
+@media (max-width: 900px) {
+   .output-actions {
+      grid-template-columns: 1fr;
+   }
+}
+
+.muted {
+   color: var(--text-muted);
+}
+
+/* ---------- Abschnitts-Header (Editor-Tabs, Detail-Bereiche) ---------- */
+
+.section-header {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin-bottom: 28px;
+   gap: 12px;
+}
+
+.section-header > div {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+}
+
+.section-icon {
+   font-size: 28px;
+   color: var(--primary);
+}
+
+/* Optischer Ausgleich für Icons mit viel Eigen-Weißraum (z.B. 📥/📤) */
+.section-icon.import-adjust {
+   transform: translateY(-6px);
+}
+
+.section-header h2 {
+   margin: 0;
+   font-size: 20px;
+   font-weight: 700;
+   letter-spacing: -0.01em;
+}
+
+.section-header p {
+   margin: 4px 0 0;
+   color: var(--text-muted);
+   font-size: 14px;
+}
+
+.section-body {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+/* ---------- Unterabschnitte ---------- */
+
+.subsection {
+   margin-top: 24px;
+   padding: 12px;
+   background: var(--bg-page);
+   border-radius: var(--radius-md);
+}
+
+.subsection-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   margin-bottom: 20px;
+}
+
+.subsection-header h3 {
+   margin: 0;
+   font-size: 16px;
+   font-weight: 600;
+}
+
+.subsection-header span {
+   display: block;
+   margin-top: 4px;
+   color: var(--text-light);
+   font-size: 13px;
+}
+
+.subsection-display {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   margin-bottom: 8px;
+   background-color: var(--bg-page);
+}
+
+.subsection-display .subsection {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   margin-top: 0;
+}
+
+.subsection-display .section-header {
+   margin-bottom: 8px;
+}
+
+.subsection-display .field {
+   gap: 0;
+}
+
+.subsection-display .field label {
+   margin-left: 7px;
+}
+
+.subsection-display .field :is(p, ul) {
+   margin: 0;
+   padding: 8px;
+   background-color: rgba(0, 0, 0, 0.03);
+   font: inherit;
+   color: rgba(0, 0, 0, 0.6);
+   border: 1px solid rgba(0, 0, 0, 0.1);
+   border-radius: var(--radius-sm);
+}
+
+.subsection-display .field :is(ul) {
+   padding-left: 1.5em;
+}
+
+.field-with-button {
+   display: flex;
+   gap: 8px;
+   align-items: flex-start;
+   justify-content: space-between;
+   background-color: rgba(0, 0, 0, 0.03);
+   color: rgba(0, 0, 0, 0.6);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-md);
+   padding: 8px;
+}
+
+/* ---------- Dynamische Felder ---------- */
+
+.dynamic-fields {
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.subsection-grid {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 16px;
+   margin-top: 16px;
+}
+
+@media (max-width: 640px) {
+   .subsection-grid {
+      grid-template-columns: 1fr;
+   }
+}
+
+.dynamic-field {
+   padding: 18px;
+   background: var(--bg-card);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-md);
+   box-shadow: var(--shadow-sm);
+}
+
+.dynamic-field-title {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 12px;
+   font-size: 14px;
+   font-weight: 600;
+   color: var(--text-muted);
+}
+
+.desired-field {
+   border-left: 4px solid var(--accent);
+}
+
+/* ---------- Wichtige Abschnitte / Badges ---------- */
+
+.important-section {
+   border: var(--important-border-size) solid var(--important-border-color);
+   background: #f5f7ff;
+}
+
+.important-badge {
+   padding: 6px 12px !important;
+   border-radius: var(--radius-lg);
+   background: var(--primary-light);
+   color: var(--primary) !important;
+   font-size: 12px !important;
+   font-weight: 600;
+   letter-spacing: 0.02em;
+   text-transform: uppercase;
+}
+
+.contact-actions {
+   display: flex;
+   gap: 12px;
+   margin-top: 20px;
+}
+
+/* ---------- Benefits ---------- */
+
+.benefits-container {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 16px;
+}
+
+@media (max-width: 640px) {
+   .benefits-container {
+      grid-template-columns: 1fr;
+   }
+}
+
+.benefit-item {
+   display: flex;
+   gap: 16px;
+   padding: 20px;
+   background: var(--bg-card);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-md);
+   box-shadow: var(--shadow-sm);
+   transition: var(--transition);
+}
+
+.benefit-item:hover {
+   transform: translateY(-2px);
+   box-shadow: var(--shadow-md);
+}
+
+.benefit-icon {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 44px;
+   height: 44px;
+   flex-shrink: 0;
+   border-radius: var(--radius-sm);
+   background: var(--accent-light);
+   color: var(--accent);
+   font-size: 22px;
+}
+
+.benefit-content {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.benefit-content input,
+.benefit-content textarea {
+   width: 100%;
+   box-sizing: border-box;
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-sm);
+   padding: 10px;
+   font-family: inherit;
+   transition: var(--transition);
+}
+
+.benefit-content input:focus,
+.benefit-content textarea:focus {
+   border-color: var(--border-focus);
+   outline: none;
+   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+}
+
+.benefit-title {
+   font-weight: 600;
+   color: var(--text-main);
+   font-size: 15px;
+}
+
+/* ---------- Quellen / Links ---------- */
+
+.source-list {
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+}
+
+.source-row {
+   display: grid;
+   grid-template-columns: 220px minmax(0, 1fr) 36px;
+   gap: 14px;
+   align-items: center;
+}
+
+.source-url-field {
+   min-width: 0;
+}
+
+/* ---------- Kommunikation / Telefonate ---------- */
+
+.communication-add {
+   margin-top: 20px;
+   display: grid;
+   gap: 10px;
+}
+
+.communication-item {
+   display: grid;
+   grid-template-columns: max-content 1fr auto;
+   gap: 12px;
+   align-items: start;
+   padding: 8px;
+
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-md);
+   background-color: rgba(0, 0, 0, 0.03);
+   color: rgba(0, 0, 0, 0.6);
+}
+
+.communication-item div:first-of-type {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+   border-right: 1px solid var(--accent);
+   padding-right: 8px;
+}
+
+.communication-item small {
+   color: var(--text-muted);
+}
+
+.communication-item strong {
+   font-feature-settings: "tnum";
+}
+
+.communication-item p {
+   margin: 0;
+   white-space: pre-wrap;
+}
+
+.text-content {
+   white-space: pre-line;
+}
+
+@media (max-width: 900px) {
+   .communication-item {
+      grid-template-columns: 1fr;
+   }
+}
+
+/* ---------- Listenzeile mit Status + Titel (Übersicht & Detail) ---------- */
+
+.left-side {
+   gap: 8px;
+   flex: 1;
+   align-items: center;
+}
+
+#communicationText {
+   resize: vertical;
+}

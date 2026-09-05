@@ -1,0 +1,29 @@
+/* ============================================================
+   EDITOR (EditorView + Tabs)
+   Header, Inhalt und Footer sollen beim ersten Laden komplett
+   in den sichtbaren Bereich passen (Footer-Buttons sofort
+   sichtbar, kein Scrollbalken). Das Import-Textarea bekommt
+   dafür eine moderate Standardhöhe und lässt sich per Hand
+   (resize: vertical, siehe components/input.css) vergrößern.
+============================================================ */
+
+.editor-tab-container {
+   display: flex;
+   flex-direction: column;
+   flex: 1;
+   min-height: 0;
+}
+
+#editorTabContent {
+   flex: 1 1 auto;
+   min-height: 0;
+   overflow-y: auto; /* nur falls ein Tab ausnahmsweise mehr Platz braucht */
+}
+
+#editorTabContent > .tab-content {
+   flex: 0 0 auto;
+}
+
+.tab-section textarea {
+   height: 260px;
+}

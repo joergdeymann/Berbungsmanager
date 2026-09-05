@@ -1,0 +1,118 @@
+/* ============================================================
+   BUTTONS
+   EIN Button-Design für die ganze App. Unterschiede zwischen
+   Buttons entstehen ausschließlich über Farb-Modifikatoren
+   (.primary / .danger / .secondary / .success) - niemals über
+   eigene Formen, Radien oder Innenabstände.
+============================================================ */
+
+button {
+   border: 0;
+   border-radius: 7px;
+   padding: 10px 15px;
+   cursor: pointer;
+   background: var(--secondary);
+   color: var(--secondary-text);
+   font-family: inherit;
+   font-weight: 600;
+   transition: var(--transition);
+}
+
+button:hover {
+   filter: brightness(0.97);
+}
+
+button:active {
+   transform: translateY(1px);
+}
+
+/* ---------- Farb-Modifikatoren (einzige erlaubte Variation) ---------- */
+
+.secondary {
+   background: var(--secondary);
+   color: var(--secondary-text);
+}
+
+.primary {
+   background: var(--primary);
+   color: #fff;
+}
+
+.success,
+button[data-decision="accepted"] {
+   background: rgb(26, 175, 75);
+   color: #fff;
+}
+
+.danger {
+   background: var(--danger);
+   color: #fff;
+}
+
+.primary:hover,
+.success:hover,
+.danger:hover,
+button[data-decision="accepted"]:hover {
+   filter: brightness(1.15);
+}
+
+button.width8em {
+   width: 8em;
+}
+
+/* ---------- Icon-Button (kleiner "×"/Entfernen-Button) ---------- */
+/* Eigene Form (Quadrat statt Pille), daher bewusst kein
+   Farb-Modifikator, sondern eine eigenständige Variante. */
+
+.icon-button {
+   width: 32px;
+   height: 32px;
+   padding: 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: 1px solid rgba(0, 0, 0, 0.1);
+   border-radius: var(--radius-sm);
+   background: var(--secondary);
+   color: var(--text-muted);
+   font-size: 16px;
+}
+
+.icon-button:hover {
+   background: var(--danger-light);
+   color: var(--danger);
+   filter: none;
+}
+
+/* ---------- "Ausgabe"-Aktionsfelder (Button mit Icon + Titel + Text) ---------- */
+/* Eigene Form (großer Block statt Pille), daher ebenfalls eine
+   eigenständige Variante statt eines Farb-Modifikators. */
+
+button.output-action {
+   flex-direction: column;
+   gap: 8px;
+   padding: 16px 10px;
+   background: var(--bg-card);
+   border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+button.output-action:hover {
+   background-color: var(--primary-light);
+   filter: none;
+}
+
+.output-action span {
+   font-size: 24px;
+   margin-bottom: 4px;
+}
+
+.output-action strong {
+   font-size: 14px;
+}
+
+.output-action small {
+   margin-top: 5px;
+   color: var(--text-muted);
+   line-height: 1.4;
+   font-weight: 400;
+}

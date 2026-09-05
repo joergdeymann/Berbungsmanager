@@ -11,14 +11,14 @@ export class ApplicationTemplate extends DetailBaseTemplate {
             "Nicht beworben";
         
             return `
-            <section class="application-card subsection-display ">
-                <section class="section-header section">
+            <section class="subsection-display ">
+                <section class="section-header">
                     <div>
                         <span class="section-icon">📤</span>
                         <div>
                             <h2>Bewerbung & Ausgabe</h2>
                             <p>Histroy der Bewerbungsschritte , Möglichkeiten Bewerbung zu versenden</p>
-                        </div
+                        </div>
                     </div>
                 </section>
                 
@@ -46,7 +46,7 @@ export class ApplicationTemplate extends DetailBaseTemplate {
                         <p>${HtmlUtils.escape(application.job?.referenceNumber || "—")}</p>
                     </div>
                 </div>
-                <div class="section section-body">
+                <div class="section-body">
                     <div class="field"> 
                         <label>Lebenslauf</label>
                         <div class="field-with-button">
@@ -55,7 +55,7 @@ export class ApplicationTemplate extends DetailBaseTemplate {
                         </div>
                     </div>          
 
-                    <div class="field section-body">
+                    <div class="field">
                         <label>Anschreiben</label>
                         <div class="field-with-button">
                             ${this.documentButton("Anschreiben", application.documents?.coverLetter)}
@@ -64,11 +64,10 @@ export class ApplicationTemplate extends DetailBaseTemplate {
                     </div>
                 </div>
 
-
                 <section class="application-card output-card">
 
                     <div class="output-actions">
-                        <button class="output-action .flex-column">
+                        <button class="output-action flex-column">
                             <div>
                                 <span>📧</span>
                                 <strong>E-Mail erstellen</strong>
@@ -101,30 +100,22 @@ export class ApplicationTemplate extends DetailBaseTemplate {
                     </div>
                 </section>
 
+                <div class="section-header">
+                    <div>
+                        <span class="section-icon">📝</span>
 
-                <section class="application-card">
-                    <div class="section-header">
                         <div>
-                            <span class="section-icon">📝</span>
-
-                            <div>
-                                <h2>Notizen</h2>
-                                <p>
-                                    Freie Informationen zur Bewerbung.
-                                </p>
-                            </div>
+                            <h2>Notizen</h2>
+                            <p>
+                                Freie Informationen zur Bewerbung.
+                            </p>
                         </div>
                     </div>
-                    <textarea id="notes" class="large-input" rows="7" placeholder="Weitere Notizen ..."></textarea>
-                </section>
-
-
-
+                </div>
+                <textarea id="notes" class="large-input" rows="7" placeholder="Weitere Notizen ..."></textarea>
             </section>
 
-
-
-            <section class="application-card subsection-display">
+            <section class="subsection-display">
                 <section class="section-header">
                     <div>
                         <span class="section-icon">📤</span>
