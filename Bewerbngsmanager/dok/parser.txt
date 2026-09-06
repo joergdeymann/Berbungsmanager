@@ -1,0 +1,75 @@
+ignorecase vergleich
+
+ignore lines with
+	Premium
+	und vieles mehr zugreifen
+	kostenlose Probeversion
+	geklickt
+	- empty lines
+	LinkedIN
+	Bewerben
+	Speichern
+	Ihr Profil und Lebenslauf erfüllen
+	Details zur Eignung anzeigen
+	BETA 
+	Haben Ihnen diese Informationen weitergeholfen?
+	Erhalten Sie exklusive Einblicke für Bewerber:innen,
+	vieles mehr zugreifen
+
+
+
+Überschriften: und einordnen wo sie hingehören (1 oder meherere Begriffe in der Überschrift)
+	expectedQualification = erforderliche & Qualifikation:
+	wishedQualification = Qualifikation & wahrscheinlich
+			
+
+Überschriften: starten mit
+	weiterbildung = Programme
+	firmeninformation = Übersicht	
+	firmeninformation = Über dieses Unternehmen
+	firmeninformation = Social Impact 
+	firmeninformation = Details zum Jobangebot
+	aufgaben = Dein Aufgabengebiet
+	benefits = Deine Vorteile bei uns
+	weiterbildung = Berufliche Weiterentwicklung 
+		Gründung Zahl oder datum
+	unsortedQualification = Womit du uns überzeugst
+		wishedQualification:
+			Idealerweise
+			Interesse
+			wahrscheinlich
+
+Überschriften: mit Inline informationen
+	Bewirb Dich (inklusive der gefundenen Zeile)
+		Kennziffer: herausfiltern
+		Herr / Frau: name Filtern
+		Berufsbezeichnung filtern:
+			"Talent"
+			"Specialist"
+		Firmanename Filtern
+			"gmbh"
+		Folgezeile als Adresse nehmen
+		PLZ Ort finden -> ".[0-9]{5} (+\w)
+		Danach Deutschland
+		Telefon ?
+			+49 angefangen dann folgen -/Leerzeicehn und zahlen
+		email finden 
+	firmeninformation = Wofür wir stehen:
+
+	
+		
+Gefundene Begriffe
+	arten = "Hybrid"
+	arten = "Vollzeit"
+	jobname = "(m/w/d)
+	
+2-Zeilige angaben, geht natürlcih über die überschrift:
+		Webseite
+		Verifizierte Seite
+		Branche
+		Grösse alias Beschäftigte
+		Gegründet alias gründungsjahr
+		Spezialgebiete
+		
+		
+		

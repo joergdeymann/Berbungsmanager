@@ -1,0 +1,116 @@
+Kannst due den Code Bereinigen und Cleancode machen.
+A) CSS
+Bereiche:
+	default.css: alles was in jeden Projekt verwendet werden kann, wie d-none
+	style.css: Globales für diese Projekt
+	body.css Grundeinstellunegn für den Body mit seinen elementen
+	header.css Halles was mit Header zu tun hat
+	content.css: das was den inhalten entspricht und trotdem allgemein ist
+	buttons.css: normale, aktive, danger, important
+	footer.css: Fussbereiche
+	input.css: Formatierunegn für Eingabefelder textarea , input, selections usw
+	status.css: spezielle formatierunegn für den Status Button	
+	windows.css: für aufploppende Fenster
+	
+	für jede seite spezielle css, falls nötig  (EditorView, WorkView)
+	eventuell eine Ordnerstruktur bauen
+	
+B) alles andere	
+	Das Design soll wieder so aussehen, nur einheitlich:	
+	doppelte oder ähnliche sollen nicht mehr vorkommen-> einheitlich aufgeräumtes System
+	namensgebung gruppenmässig passend
+	nach möglichkeint alles mit Flex und Grid realisieren
+	unnötige verschachtelungen raus
+	bei der Übersicht fehlt der Rahmen im Content
+	Die Suche muss dann auch in standart Header look sein 
+	Bei der Suche soll eine zusätzlicher Filter: Art (Hybrid, Remote, Teilzeit, Vorort) geben
+	unbenötigte Dateien rauslassen
+	Bilder Richtig einsortieren
+	
+	.gitignore  und .gitattributes anpassen
+	
+	
+C) JS
+	so bauen das die Namen wieder normal heissen 
+	mordern ... falls benutzt wieder als original nennen
+D)
+	Fragen: 
+	kann man noch Bereiche auslagern in einzelenen Klassen ? Wenn ja welche.
+	
+	
+
+
+=============================
+E) Anzeige:
+1. Header:
+Die dunklen Header sollen direkt unetreinander liegen ohne eine übergeordnetete Section
+2. Bei der darunter soll ein Rahmen sein der direkt darunter angrenzt, ich bruacht bei der Ansicht nicht den hinzugefügten Rahmen
+Die Application-Page ist also überflüssig, oder man setzt um es einheitlic zu machen die Application Page Dahin wo jetzt der die Application Card ist 
+	
+
+F) Liste
+Application-page ohne den rand in allen bereichen also kein margin auto
+
+
+G) Eingabe
+Die Anzeige soll am anfang so sein dass unten die Buttons unten zusehen sind und das Eingabefeld in der höhe veränder werden kann, also kein Scrollbalken sich aktiert
+derzeit ist die Anzeige zu gross
+
+H) Buttons sind nicht ereinheitlicht
+Es gibt nur Ein Button vom Design her
+Farbliche anpassungen gibt es bei den andern
+Es sollte also in den verscheiden JS Dateien auf einheitliche Buttons geachtet werden
+
+I) der Footer Bereich soll dunkel sein wie der Header Bereich. Besserer Erkennug.
+==============================
+
+D) die angaben umsetzen
+OverviewView.js: Render-Logik (Toolbar-HTML), Filter/Sortier-Logik und Zeilen-Template (ApplicationRowTemplate) sind aktuell in einer Datei – ließen sich wie beim Editor in eigene Klassen trennen (OverviewFilterBar, ApplicationRowTemplate).
+StatusUtils: aktuell util-Funktionen – könnte zu einer echten Status-Domänen-Klasse werden, die auch die Farbklassen kennt (bisher tw. hart im CSS/JS dupliziert, z. B. ART_OPTIONS jetzt in OverviewView.js – gehört eigentlich neben STATUS in ein gemeinsames Constants.js oder ins Application-Modell).
+js/templates/detail/*: Jede Template-Klasse baut ihr HTML direkt zusammen – ein gemeinsames FieldTemplate-Helper (für die wiederkehrenden <div class="field"><label>...<p>...</p></div>-Blöcke) würde viel Duplikation zwischen den 9 Detail-Templates sparen.
+DetailNavigationController/CommunicationSectionController: bereits gut ausgelagert – als Vorbild für die Editor-Tabs, die teils noch ähnliche Wiederholungen (Event-Binding-Pattern) haben; ein gemeinsames bindRemoveButtons(container, selector)-Helper in BaseEditTab könnte das für Sources/Benefits/dynamische Felder vereinheitlichen.
+
+
+J) ApplicationRepository sollte lieber SaveData heissen und unterteilt werden in localStorage und Database, falls angegeben und erreichbar
+	Hier möchte ich also eine Anbindung zu einer echten Datenbank haben die auf dem eigentlicehn Server läuft
+K) Export ermöglichen
+L) eine neuen js Kanlender 
+	Auswahl der verschiedenen Status, und Arten, (checkboxen)
+	Status                                            Arten
+	-----------------------------------------------   --------------
+	! o nicht Beworben o Beworben o Eingang o usw !   ! o ...      !
+	-----------------------------------------------   --------------
+	Filter auch möglich (Firma Stelle ort)
+	
+	Dann den Kalender in Typischer Darstellung mit Wochentag, Woche, Monat als Monatsansicht für ein Jahr, 
+	
+	Das jahr kann nach vorne und nach hinten geblöttert werden
+	Die Tage sind in Kästchen, und der Hintergrund hat die Farbe vom Status, Termine werden Rot umrandet dargestellt oder das man das Schnell sieht=Wichtig.
+	
+	Der Link des Kalenders ganz nach oben links nemen Suche & Übersicht
+	
+	bei eingetragenen Events einen Link zu Firma zum entsprecehnden Bereich ermöglichen
+	
+M)	Status und Legendee
+	zum Thema Status generell, jeder Statuswchesel wird automatisch in ener Liste gesschrieben mit Datum
+	Die anzeige erfolg dann: in Legende History im Bereich Bewerbung und Ausgabe
+	Aufgenommene Werte: Status, Datum der Änderung, KurzInformation, Beschreibung
+	in der Legende werden auch eingetragen Wann eine eine email versendet wurde oder informetionen ins Portal übertagen wurden
+	Wann ein lebenslauf hinzugefügt wurde oder andere Dokumente
+	
+	
+
+
+
+
+	
+	
+	
+	
+	
+	
+
+
+
+	
+	
