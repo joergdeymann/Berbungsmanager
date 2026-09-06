@@ -4,6 +4,7 @@ import { OverviewView } from "./views/OverviewView.js";
 import { EditorView } from "./views/EditorView.js";
 import { DetailView } from "./views/DetailView.js";
 
+
 const repository = new ApplicationRepository();
 const root = document.querySelector("#app");
 

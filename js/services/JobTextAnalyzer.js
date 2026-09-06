@@ -1,3 +1,6 @@
+import { IGNORE_LINE_MARKERS, SECTION_DEFINITIONS } from "./analysis/ParserConfig.js";
+import { stripBulletPrefix, unique as uniqueValues, toLines, isIgnoredLine } from "./analysis/TextCleanup.js";
+
 export class JobTextAnalyzer {
   constructor() {
     this.skillKeywords = [
@@ -13,72 +16,14 @@ export class JobTextAnalyzer {
       "betriebsarzt", "fitness", "firmenwagen"
     ];
 
-    this.noiseMarkers = [
-      "schnellere jobsuche mit premium",
-      "auf unternehmenseinblicke",
-      "premium für 0 € testen",
-      "1-monatige kostenlose probeversion",
-      "einfach kündbar",
-      "sie erhalten 7 tage vor ablauf",
-      "es gibt qualifikationen, die wahrscheinlich",
-      "kandidat:innen haben auf",
-      "vom arbeitgeber gesponsert",
-      "außerhalb von linkedin verwaltete antworten",
-      "und zahlreiche weitere mitglieder nutzen premium",
-      "scheinen gut zu den",
-    ];
+    // Einzige Quelle: js/services/analysis/ParserConfig.js
+    this.noiseMarkers = IGNORE_LINE_MARKERS;
 
-    this.headlines = [
-      "übersicht",
-      "über uns",
-      "über die firma",
-      "was wir machen",
-      "unternehmen",
-      "kontakt",
-      "ansprechpartner",
-      "dein ansprechpartner",
-      "ihre ansprechpartner",
-      "deine vorteile bei uns",
-      "wir bieten",
-      "das bieten wir",
-      "deine benefits",
-      "unsere benefits",
-      "was wir dir bieten",
-      "dein aufgabengebiet",
-      "deine aufgaben",
-      "ihre aufgaben",
-      "das erwartet dich",
-      "aufgabenbereich",
-      "womit du uns überzeugst",
-      "dein profil",
-      "ihr profil",
-      "anforderungen",
-      "qualifikationen",
-      "das bringst du mit",
-      "das bringen sie mit",
-      "deine vorteile bei uns",
-      "wir bieten",
-      "das bieten wir",
-      "deine benefits",
-      "unsere benefits",
-      "was wir dir bieten",
-      "dein aufgabengebiet",
-      "deine aufgaben",
-      "ihre aufgaben",
-      "das erwartet dich",
-      "aufgabenbereich",
-      "womit du uns überzeugst",
-      "dein profil",
-      "ihr profil",
-      "anforderungen",
-      "qualifikationen",
-      "das bringst du mit",
-      "das bringen sie mit",
-      "unser team",
-      "bewirb dich",
-      "Commitment"
-    ];
-
+    // Alle bekannten Überschriften (aus ParserConfig) dienen hier nur
+    // als Grenzmarker, um den "Übersicht"-Block (social impact) zu
+    // begrenzen - die eigentliche Abschnittstrennung übernimmt
+    // SectionParser.
+    this.knownHeadings = SECTION_DEFINITIONS.flatMap(definition => definition.titles || []);
   }
 
   analyze(text) {
@@ -91,7 +36,7 @@ export class JobTextAnalyzer {
     const contact = this.extractContact(contentLines);
     const qualifications = this.extractQualifications(contentLines);
     const companyInformation = this.extractCompanyInformation(lines);
-    const socialImpact = this.extractBlockShortest(contentLines, "übersicht", this.headlines);
+    const socialImpact = this.extractBlockShortest(contentLines, "übersicht", this.knownHeadings);
     const socialFocus = ["Nicht berechnen"];
 
     return {
@@ -143,16 +88,11 @@ export class JobTextAnalyzer {
   }
 
   lines(text) {
-    return text
-      .split(/\r?\n/)
-      .map(line => line.replace(/\s+/g, " ").trim())
-      .filter(Boolean);
+    return toLines(text);
   }
 
   isNoise(line) {
-    const value = line.toLowerCase();
-    return line === "----" ||
-      this.noiseMarkers.some(marker => value.includes(marker));
+    return isIgnoredLine(line, this.noiseMarkers);
   }
 
   extractCompanyName(lines) {
@@ -363,10 +303,7 @@ export class JobTextAnalyzer {
 
   extractQualifications(lines) {
     const candidates = lines
-      .map(line => line
-        .split(/\bbewirb dich\b/i)[0]
-        .replace(/^[•●✓✔\-–—]\s*/, "")
-        .trim())
+      .map(line => stripBulletPrefix(line.split(/\bbewirb dich\b/i)[0]))
       .filter(line =>
       /^(abgeschlossenes|erste berufserfahrung|sicherer umgang|kenntnisse in|sehr gute deutsch|erfahrung mit)/i
         .test(line) ||
@@ -408,6 +345,6 @@ export class JobTextAnalyzer {
   }
 
   unique(values) {
-    return [...new Set(values.map(value => value.trim()).filter(Boolean))];
+    return uniqueValues(values);
   }
 }

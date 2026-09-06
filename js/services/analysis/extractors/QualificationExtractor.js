@@ -1,108 +1,49 @@
+import { QUALIFICATION_SUBFILTERS } from "../ParserConfig.js";
+import { stripBulletPrefix, uniqueSimilar } from "../TextCleanup.js";
+
+/*
+ * QualificationExtractor
+ * -----------------------
+ * Sortiert den rohen "qualifications"-Block zeilenweise anhand von
+ * ParserConfig.QUALIFICATION_SUBFILTERS ein (g: Zwischenüberschrift/
+ * Inhalt wird weiter gefiltert). Ausgabefelder bleiben bewusst
+ * required/preferred/personal, da RequirementsTab.js diese Namen
+ * erwartet - fachlich entspricht das expectedQualification /
+ * wishedQualification / personalQualification.
+ */
 export class QualificationExtractor {
 
+    constructor(subFilters = QUALIFICATION_SUBFILTERS) {
+        this.subFilters = subFilters;
+    }
+
     extract(text) {
+        const lines = (text || "")
+            .split("\n")
+            .map(line => line.trim())
+            .filter(Boolean);
 
-        const lines =
-            text
-                .split("\n")
-                .map(line => line.trim())
-                .filter(Boolean);
-
-        const result = {
-
-            required: [],
-
-            preferred: [],
-
-            personal: []
-        };
+        const result = { required: [], preferred: [], personal: [] };
 
         for (const line of lines) {
+            const value = stripBulletPrefix(line).replace(/^\?\s*/, "");
+            if (!value) continue;
 
-            const value =
-                this.clean(line);
-
-            const lower =
-                value.toLowerCase();
-
-            if (!value) {
-                continue;
-            }
-
-
-            /*
-             * Wunsch-Anforderungen
-             */
-
-            if (
-                lower.includes("idealerweise") ||
-                lower.includes("wünschenswert") ||
-                lower.includes("von vorteil") ||
-                lower.includes("nice to have")
-            ) {
-
-                result.preferred.push(value);
-
-                continue;
-            }
-
-
-            /*
-             * Persönliche Eigenschaften
-             */
-
-            if (
-                lower.includes("zuverlässig") ||
-                lower.includes("strukturiert") ||
-                lower.includes("teamfähig") ||
-                lower.includes("kommunikations") ||
-                lower.includes("interesse") ||
-                lower.includes("eigenständig") ||
-                lower.includes("motiviert")
-            ) {
-
-                result.personal.push(value);
-
-                continue;
-            }
-
-
-            /*
-             * Standardmäßig
-             * → fachliche Anforderung
-             */
-
-            result.required.push(value);
+            const target = this.matchTarget(value.toLowerCase());
+            result[target].push(value);
         }
 
-
         return {
-
-            required:
-                this.unique(result.required),
-
-            preferred:
-                this.unique(result.preferred),
-
-            personal:
-                this.unique(result.personal)
+            required: uniqueSimilar(result.required),
+            preferred: uniqueSimilar(result.preferred),
+            personal: uniqueSimilar(result.personal)
         };
     }
 
-
-    clean(value) {
-
-        return value
-            .replace(/^[✓✔•●\-–—]\s*/g, "")
-            .replace(/^\?\s*/g, "")
-            .trim();
-    }
-
-
-    unique(values) {
-
-        return [
-            ...new Set(values)
-        ];
+    matchTarget(lowerLine) {
+        const rule = this.subFilters.find(({ anyOf }) =>
+            anyOf.some(term => lowerLine.includes(term))
+        );
+        return rule ? rule.target : "required";
     }
 }
