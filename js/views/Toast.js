@@ -3,7 +3,7 @@ export class Toast {
     // Zeigt eine kurze, nicht blockierende Meldung, die von selbst
     // verschwindet - mit "×"-Button für den Fall, dass das
     // Verschwinden zu lange dauert.
-    static show(message, duration = 2500) {
+    static show(message, duration = 5000) {
         const toast = document.createElement("div");
         toast.className = "toast";
         toast.innerHTML = `

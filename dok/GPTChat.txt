@@ -100,6 +100,82 @@ M)	Status und Legendee
 	
 	
 
+================================================
+PS: ich habe das git repository aktualisiert, werde das in zukunft immer vorher aktualisieren, 
+	UrlPromot Text angepasst, ImportTab auch Text angepasst ud Button Farbe , Toast.js längere Displayzeit
+übrigens das alse Berbungsmanager Relikt ist auch wegen des zu späten commits noch da gewesesen
+beim Import: Urd durchsuchen Grün machen
+
+Hier noch weitere Infos:
+
+"verfolgen wir ein Ziel: gutes Essen für Jung und Alt zu kochen" -> aus ziel und kochen ergibt sich die Branche "Gastronomie" 
+
+Perspektiven: Als krisensicheres Unternehmen kannst du dich bei apetito auch mit langfristiger Perspektive weiterentwickeln hier steckt der name apetito drin der auch in der Mail ist
+
+wenn du die Firmenadresse rasufiltern kannst aus dem Buton hier bewerben
+
+dann kann man auch die Seite analysieren
+
+dafür dann eine neue Klasse Schreiben die nach bestimmten begriffen die Seite durchsucht
+
+
+
+die Seite ist diese:
+
+https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fanzeigenvorschau.net%2Fbestmedia%2Fimg%2F1397654%2F2515158%2Fcl%2F8998e20264155ce9a369873ab9a9cb650861fe59%2FL5405874%232598e08cd5980bba679619b5c3de5c14hv5lRQgDLh&urlhash=dTcj&mt=xnO4PWjJldnWdgc7qqk8YYnRfpJSYn98IqU0kz8ANUVQB9Ezfi7s-WSuNKtMdNpHbT6ZHZrrWI-LGEggLsDM2Jo0vVxJ&isSdui=true&lipi=urn%3Ali%3Apage%3Ad_flagship3_job_details%3BW4WI4dy3SkGpZCFp8rQw0Q%3D%3D
+
+und dann kommt man zu der Seite, diese neue Url für die Bewerbungsadresse speichern
+
+
+
+Diese Seite dann durchsuchen nach einen Konatkt bereiche heir ist es nur ein Popup
+
+Deswegen kann vielleicht auf der Seiet zu finden "Wie können wir helfen"
+
+Dort stehen telefonnummer und erreichbarkeiten, die erreichbarkeiten der Firma sollten auch unter Firma gelistet sein
+
+
+
+Über :
+
+Hier sind weitere Firmeninfoermatioenn
+
+die mit aufgenommen werden können
+
+
+
+Später noch eine Bildersammlung zur Firma hinzufügen (all gleich gross nur verlinkungen)
+
+
+
+man kann dieses auch wieder über eine zentrtrale JSON suchen
+
+Suchehilfen = {
+
+Kontaktdaten: ["Wie können wir Helfen","..."]
+
+Firmeninformationen: ["über ...","wir","über uns"]
+
+Bilder:["https://...","https://..."]
+
+}
+
+neu:
+
+foundImages =  ["https://...",""https://..."] in das gerosse JSON einbinden für jede Firma versteht sich
+
+
+
+Wenn unter Rolle / Position nichts gefunden wurde ganz am ende dann "Ansprechpartener Bewerbung eintragen"
+
+
+
+Wenn der Name des Ansprechpartners gefunden wurde durchsuche die Firmenwebseite nach einem Bild und mehr informationen , Zum Ansprechpartner ein Bild zu haben ist perfekt.
+
+
+
+
+
 
 
 

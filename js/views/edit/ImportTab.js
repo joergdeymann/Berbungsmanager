@@ -4,6 +4,7 @@ import { UrlPrompt } from "../UrlPrompt.js";
 import { ParseUrl } from "../../services/analysis/ParseUrl.js";
 
 export class ImportTab extends BaseEditTab {
+    fetchUrlButtonText = "Webadresse der Stellenanzeige";
     render() {
         return `
       <section id="section-import" class="tab-content tab-section">
@@ -11,8 +12,8 @@ export class ImportTab extends BaseEditTab {
           <div><span class="section-icon import-adjust">📥</span><h2>Import / Originaltext</h2></div>
           <span>
                 <button type="button" id="clearOriginalText" class="danger">Text löschen</button>
-                <button type="button" id="fetchUrl" class="secondary">URL durchsuchen</button>
-                <button type="button" id="analyze" class="primary">Übernehmen &amp; Analysieren</button>
+                <button type="button" id="fetchUrl" class="primary">${this.fetchUrlButtonText}</button>
+                <button type="button" id="analyze" class="primary" disabled>Übernehmen &amp; Analysieren</button>
           </span>
         </div>
         <textarea id="originalText" placeholder="Füge hier den Ausschreibungstext oder Notizen ein..."></textarea>
@@ -31,18 +32,25 @@ export class ImportTab extends BaseEditTab {
         this.applyAnalysis = applyAnalysis;
         this.urlPrompt = new UrlPrompt();
         this.parseUrl = new ParseUrl();
-
+        let input = this.root.querySelector("#originalText");
+        let analyse = this.root.querySelector("#analyze")
+        let fetchUrl = this.root.querySelector("#fetchUrl")
         // Eigener, veränderbarer Verlauf für diese Editier-Session -
         // wird in save() zurück ins Application-Objekt geschrieben.
         this.history = (application.importHistory || []).map(entry => ({ ...entry }));
 
         this.set("originalText", application.originalText);
 
-        this.root.querySelector("#clearOriginalText").onclick = () => this.set("originalText", "");
-        this.root.querySelector("#analyze").onclick = () => this.transferCurrentText();
-        this.root.querySelector("#fetchUrl").onclick = () => this.fetchFromUrl();
+        this.root.querySelector("#clearOriginalText").onclick = () => {
+            this.set("originalText", "");
+            analyse.disabled = true;
+        };
+        analyse.onclick = () => this.transferCurrentText();
+        fetchUrl.onclick = () => this.fetchFromUrl();
 
         this.renderHistory();
+
+        input.oninput = () => analyse.disabled = input.value.trim() == "";
     }
 
     // Übernimmt den aktuellen Textarea-Inhalt in den Verlauf, leert
@@ -58,6 +66,7 @@ export class ImportTab extends BaseEditTab {
         const source = this.analyzer.detectSource(text) || "Manuell eingefügt";
         this.addHistoryEntry({ text, source, sections: [], link: null });
         this.set("originalText", "");
+        this.root.querySelector("#analyze").disabled = true;
 
         Toast.show(`Text übernommen (Quelle erkannt: ${source}). ${this.history.length} Einträge insgesamt.`);
     }
@@ -94,7 +103,7 @@ export class ImportTab extends BaseEditTab {
             Toast.show(`Fehler beim Abrufen der URL: ${error.message}`, 4000);
         } finally {
             button.disabled = false;
-            button.textContent = "URL durchsuchen";
+            button.textContent = this.fetchUrlButtonText;
         }
     }
 
@@ -131,6 +140,7 @@ export class ImportTab extends BaseEditTab {
 
         const [entry] = this.history.splice(index, 1);
         this.set("originalText", entry.text);
+        this.root.querySelector("#analyze").disabled = false;
         this.renderHistory();
         this.runCombinedAnalysis();
     }

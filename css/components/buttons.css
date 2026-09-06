@@ -130,3 +130,34 @@ button[data-edit-communication],
 .field-with-button button {
    background-color: var(--button-add-bg);
 }
+
+button:disabled {
+   color: rgba(255,2550,255,0.3);
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.4),
+    -1px -1px 1px rgba(0, 0, 0, 0.4);
+   font-weight: 100;
+   cursor: not-allowed;
+}
+
+button:disabled.primary {
+  color: #3f36d5;
+}
+
+button:disabled:hover {
+   filter: brightness(1);
+   transform: translate(0px, 0px);
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+/* button:disabled {
+   background-color: rgba(0,0,0,0.0);
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   color: var(--text-muted);
+   cursor: not-allowed;
+}
+
+button:disabled:hover {
+   filter: brightness(1);
+   transform: translate(0px, 0px);
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);   
+} */

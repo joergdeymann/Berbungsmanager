@@ -10,12 +10,12 @@ export class UrlPrompt {
             overlay.innerHTML = `
             <div id="url-container" class="input-container">
                 <div class="input-prompt auto-height">
-                    <label for="url-input">Stellenanzeige per URL abrufen:</label>
+                    <label for="url-input">Webadresse der Stellenanzeige hier einfügen:</label>
                     <input id="url-input" type="url" placeholder="https://...">
                     <p class="prompt-hint" id="url-hint"></p>
                     <div class="prompt-buttons">
                         <button id="cancelUrl" class="danger">Abbrechen</button>
-                        <button id="submitUrl" class="primary">Abrufen</button>
+                        <button id="submitUrl" class="primary">Importieren</button>
                     </div>
                 </div>
             </div>
