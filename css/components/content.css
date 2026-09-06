@@ -432,3 +432,70 @@
 #communicationText {
    resize: vertical;
 }
+
+/* ---------- Import-Verlauf ---------- */
+
+.import-history {
+   margin-top: 20px;
+}
+
+.import-history h3 {
+   margin: 0 0 12px;
+   font-size: 14px;
+   font-weight: 600;
+   color: var(--text-muted);
+}
+
+.import-history-list {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.import-history-row {
+   padding: 12px 14px;
+   background: var(--bg-page);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-sm);
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+.import-history-meta {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   flex-wrap: wrap;
+}
+
+.import-history-meta small {
+   color: var(--text-light);
+}
+
+.import-history-meta a {
+   color: var(--primary);
+   font-size: 13px;
+   text-decoration: none;
+}
+
+.import-history-meta a:hover {
+   text-decoration: underline;
+}
+
+.import-history-sections {
+   color: var(--text-muted);
+}
+
+.import-history-preview {
+   margin: 0;
+   color: var(--text-muted);
+   font-size: 13px;
+   line-height: 1.5;
+}
+
+.import-history-actions {
+   display: flex;
+   justify-content: flex-end;
+   gap: 8px;
+}

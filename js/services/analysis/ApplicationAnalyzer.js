@@ -17,6 +17,12 @@ export class ApplicationAnalyzer {
         this.basicAnalyzer = new JobTextAnalyzer();
     }
 
+    // Für den Import-Verlauf: welche Plattform/Quelle steckt hinter
+    // einem einzelnen Text (LinkedIn, Indeed, ...)?
+    detectSource(text) {
+        return this.basicAnalyzer.detectSource(typeof text === "string" ? text : "");
+    }
+
     analyze(text) {
         const originalText =
             typeof text === "string" ? text.trim() : "";

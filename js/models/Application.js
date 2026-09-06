@@ -210,6 +210,15 @@ export class Application {
             data.originalText || "";
 
         /*
+         * Import-Verlauf: jeder übernommene Text (Copy&Paste oder per
+         * URL abgerufen) wird hier mit erkannter Quelle, Sektionen,
+         * Link und Datum archiviert. Beim Analysieren werden alle
+         * Einträge zusammen ausgewertet.
+         */
+        this.importHistory =
+            data.importHistory || [];
+
+        /*
          * Zeitstempel
          */
         this.createdAt =

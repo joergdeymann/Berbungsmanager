@@ -86,9 +86,68 @@ function getContentType(filePath) {
 
 
 /**
+ * Proxy-Endpunkt: ruft eine fremde URL serverseitig ab und gibt das
+ * HTML zurück. Notwendig, weil der Browser fremde Domains wegen CORS
+ * nicht direkt per fetch() lesen darf - der Server hat dieses
+ * Problem nicht.
+ */
+async function handleFetchUrl(req, res, url) {
+    const target = url.searchParams.get("url");
+
+    if (!target || !/^https?:\/\//i.test(target)) {
+        res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: "Ungültige oder fehlende URL." }));
+        return;
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    try {
+        const response = await fetch(target, {
+            signal: controller.signal,
+            headers: {
+                // Manche Seiten liefern ohne "echten" Browser-User-Agent
+                // stark eingeschränkte/andere HTML-Varianten aus.
+                "User-Agent": "Mozilla/5.0 (compatible; Bewerbungsmanager/1.0)"
+            }
+        });
+
+        const html = await response.text();
+
+        res.writeHead(response.ok ? 200 : response.status, {
+            "Content-Type": "text/plain; charset=utf-8"
+        });
+        res.end(html);
+
+    } catch (error) {
+        const timedOut = error.name === "AbortError";
+        console.error(error);
+
+        res.writeHead(timedOut ? 504 : 502, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({
+            error: timedOut
+                ? "Zeitüberschreitung beim Abrufen der URL."
+                : "Die URL konnte nicht abgerufen werden."
+        }));
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
+
+/**
  * HTTP-Server
  */
 const server = http.createServer(async (req, res) => {
+
+    const requestUrl = new URL(req.url, `http://localhost:${PORT}`);
+
+    // Proxy für externe Seiten (siehe ParseUrl.js)
+    if (requestUrl.pathname === "/api/fetch-url") {
+        await handleFetchUrl(req, res, requestUrl);
+        return;
+    }
 
     // Startseite
     if (req.url === "/") {
