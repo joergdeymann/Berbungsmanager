@@ -81,16 +81,28 @@ export class ApplicationAnalyzer {
     // JobTextAnalyzer kommt das auch mit "Name\nAdresse" auf
     // getrennten Zeilen zurecht (statt Name + Satzzeichen in einer
     // Zeile).
+    // Die "contact"-Sektion kann mehrere zusammengeführte Vorkommen
+    // enthalten (z.B. eine allgemeine "Kontakt:"-Überschrift MIT viel
+    // Fließtext, gefolgt vom eigentlichen "Ansprechpartnerin"-Block
+    // weiter unten) - deshalb wird jede Zeile geprüft, nicht nur die
+    // erste, damit ein langer Vorspann-Satz den echten Namen nicht
+    // verdeckt. Eine Zeile zählt als Name, wenn sie NUR aus 2-3
+    // großgeschriebenen Wörtern besteht (kein Satz mit Satzzeichen/
+    // vielen Wörtern dazwischen).
     extractContactFromSection(block) {
         if (!block) return null;
 
-        const [firstLine] = block.split("\n").map(line => line.trim()).filter(Boolean);
-        if (!firstLine) return null;
+        const lines = block.split("\n").map(line => line.trim()).filter(Boolean);
 
-        const nameMatch = firstLine.match(
-            /^(?:herrn?|frau)?\s*([A-ZÄÖÜ][a-zäöüß'-]+(?:\s+[A-ZÄÖÜ][a-zäöüß'-]+)+)$/i
-        );
-        if (!nameMatch) return null;
+        for (const line of lines) {
+            const nameMatch = line.match(
+                /^(?:herrn?|frau)?\s*([A-ZÄÖÜ][a-zäöüß'-]+(?:\s+[A-ZÄÖÜ][a-zäöüß'-]+){1,2})$/i
+            );
+            if (nameMatch) {
+                return { name: nameMatch[1], role: "Ansprechpartner Bewerbung" };
+            }
+        }
 
-        return { name: nameMatch[1], role: "Ansprechpartner Bewerbung" };
-    }}
+        return null;
+    }
+}
