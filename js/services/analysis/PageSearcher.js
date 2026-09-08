@@ -24,8 +24,52 @@ export class PageSearcher {
             contact: this.findContact(doc),
             companyInfo: this.findCompanyInfo(doc),
             images: this.findImages(doc, baseUrl).filter(url => !usedUrls.has(url)),
-            people
+            people,
+            logo: this.findLogo(doc, baseUrl),
+            careerLinks: this.findCareerLinks(doc, baseUrl)
         };
+    }
+
+    // Sucht ein <img>, dessen src/alt/class/id auf "logo" hindeutet -
+    // das ist praktisch immer das Firmenlogo.
+    findLogo(doc, baseUrl) {
+        for (const img of doc.querySelectorAll("img")) {
+            const hint = [
+                img.getAttribute("src"),
+                img.getAttribute("alt"),
+                img.getAttribute("class"),
+                img.getAttribute("id")
+            ].join(" ").toLowerCase();
+
+            if (!hint.includes("logo")) continue;
+
+            try {
+                return new URL(img.getAttribute("src"), baseUrl).href;
+            } catch { /* ungültige Bild-URL überspringen */ }
+        }
+        return null;
+    }
+
+    // Findet Links, die zu einem Karriere-/Jobs-Bereich führen
+    // könnten (siehe SearchHelpers.Karriere) - für die spätere
+    // gezielte Suche auf genau dieser Unterseite.
+    findCareerLinks(doc, baseUrl, limit = 5) {
+        const hints = this.helpers.Karriere || [];
+        const found = [];
+
+        for (const anchor of doc.querySelectorAll("a[href]")) {
+            const label = anchor.textContent.trim().toLowerCase();
+            if (!hints.some(hint => label.includes(hint))) continue;
+
+            try {
+                const url = new URL(anchor.href, baseUrl).href;
+                if (!found.includes(url)) found.push(url);
+            } catch { /* ungültige URL überspringen */ }
+
+            if (found.length >= limit) break;
+        }
+
+        return found;
     }
 
     // Versucht, Bilder mit Personennamen zu verknüpfen (z.B. auf

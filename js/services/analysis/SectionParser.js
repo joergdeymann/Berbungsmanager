@@ -93,14 +93,14 @@ export class SectionParser {
 
         lines.forEach((line, index) => {
             const normalized = this.normalizeHeading(line);
-            const definition = this.matchDefinition(normalized);
+            const match = this.matchDefinition(normalized);
 
-            if (definition) {
+            if (match) {
                 found.push({
-                    name: definition.name,
+                    name: match.definition.name,
                     index,
                     title: line,
-                    inline: this.extractInlineContent(line)
+                    inline: this.extractInlineContent(line, match.matchedGroup)
                 });
             }
         });
@@ -111,10 +111,11 @@ export class SectionParser {
     matchDefinition(normalizedLine) {
         for (const definition of this.definitions) {
             if (this.matchesTitles(normalizedLine, definition.titles)) {
-                return definition;
+                return { definition, matchedGroup: null };
             }
-            if (this.matchesAllOf(normalizedLine, definition.allOf)) {
-                return definition;
+            const matchedGroup = this.findMatchingGroup(normalizedLine, definition.allOf);
+            if (matchedGroup) {
+                return { definition, matchedGroup };
             }
         }
         return null;
@@ -131,20 +132,41 @@ export class SectionParser {
     // Nur auf kurze, überschriftenartige Zeilen anwenden - sonst matcht
     // z.B. ein Fließtext-Satz wie "Passt zu 5 der 6 erforderlichen
     // Qualifikationen:" fälschlich als eigene Überschrift.
-    matchesAllOf(normalizedLine, groups = [], maxHeadingWords = 6) {
-        if (normalizedLine.split(/\s+/).length > maxHeadingWords) return false;
-        return groups.some(group =>
-            group.every(term => normalizedLine.includes(term))
-        );
+    findMatchingGroup(normalizedLine, groups = [], maxHeadingWords = 6) {
+        if (normalizedLine.split(/\s+/).length > maxHeadingWords) return null;
+        return groups.find(group => group.every(term => normalizedLine.includes(term))) || null;
     }
 
     // c) Inhalt, der in derselben Zeile nach einem Doppelpunkt steht,
     // z.B. "Wofür wir stehen: Nachhaltigkeit - soziale Verantwortung"
-    // -> "Nachhaltigkeit - soziale Verantwortung"
-    extractInlineContent(line) {
+    // -> "Nachhaltigkeit - soziale Verantwortung".
+    // Ohne Doppelpunkt (z.B. "Deine Ansprechpartnerin Emma Helling" -
+    // Überschrift und Name auf derselben Zeile, oft bei <span>-Layouts
+    // ohne Block-Trennung): der Rest nach dem letzten erkannten
+    // UND-Schlüsselwort wird stattdessen übernommen.
+    extractInlineContent(line, matchedGroup) {
         const colonIndex = line.indexOf(":");
-        if (colonIndex === -1) return "";
-        return line.slice(colonIndex + 1).trim();
+        if (colonIndex !== -1) {
+            const afterColon = line.slice(colonIndex + 1).trim();
+            if (afterColon) return afterColon;
+        }
+
+        if (matchedGroup) {
+            const lower = line.toLowerCase();
+            const cutIndex = Math.max(...matchedGroup.map(term => {
+                const at = lower.lastIndexOf(term);
+                return at === -1 ? -1 : at + term.length;
+            }));
+
+            if (cutIndex > -1) {
+                // Rest-Buchstaben einer Geschlechts-Endung (z.B. "...in")
+                // und Satzzeichen/Leerraum vor dem eigentlichen Inhalt entfernen.
+                const rest = line.slice(cutIndex).replace(/^[a-zäöüß]*[:.,\-–\s]*/i, "").trim();
+                if (rest) return rest;
+            }
+        }
+
+        return "";
     }
 
     normalizeHeading(value) {

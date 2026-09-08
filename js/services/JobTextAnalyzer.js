@@ -123,6 +123,13 @@ export class JobTextAnalyzer {
     return rule?.industry || "";
   }
 
+  // Gründungsjahr per Freitext erkennen, wenn kein "Gegründet:"-Feld
+  // vorhanden ist (z.B. "Seit 1958 verfolgen wir ein Ziel: ...").
+  detectFoundedYear(lines) {
+    const match = lines.join(" ").match(/\bseit\s+(\d{4})\b/i);
+    return match?.[1] || "";
+  }
+
   extractAddress(lines) {
     const result = { street: "", zip: "", city: "", country: "" };
     const zipIndex = lines.findIndex(line => /^\d{5}\s+.+/.test(line));
@@ -153,7 +160,7 @@ export class JobTextAnalyzer {
     const size = this.valueAfterLabel(lines, "größe|groesse|mitarbeiter");
     const verifiedAt = this.valueAfterLabel(lines, "verifizierte seite");
     const overview = this.extractBlock(lines, "übersicht", "website");
-    const founded = this.valueAfterLabel(lines, "gegründet");
+    const founded = this.valueAfterLabel(lines, "gegründet") || this.detectFoundedYear(lines);
     const specialties = this.extractBlock(lines, "spezialgebiete", "social impact")
       .join(" ")
       .split(",")
@@ -302,10 +309,16 @@ export class JobTextAnalyzer {
   }
 
   extractLocation(lines) {
-    const line = lines.find(value =>
+    const linkedInLine = lines.find(value =>
       /^[^·]+,\s*[A-ZÄÖÜ][^·]+,\s*(Deutschland|Österreich|Schweiz)\s*·/i.test(value)
     );
-    return line?.split("·")[0].trim() || "";
+    if (linkedInLine) return linkedInLine.split("·")[0].trim();
+
+    // Fallback: "...am Standort Rheine...", "Standort: Rheine", ...
+    const standortMatch = lines.join(" ").match(
+      /\bstandort\s*:?\s+([A-ZÄÖÜ][a-zäöüßA-ZÄÖÜ\-]+(?:\s+[A-ZÄÖÜ][a-zäöüßA-ZÄÖÜ\-]+)?)/i
+    );
+    return standortMatch?.[1]?.replace(/\s+(und|,|\.)$/i, "") || "";
   }
 
   extractEmploymentType(lines) {

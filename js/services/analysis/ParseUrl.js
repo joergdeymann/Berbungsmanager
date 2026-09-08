@@ -18,7 +18,18 @@ export class ParseUrl {
     }
 
     async getHtml(url) {
-        const response = await fetch(`/api/fetch-url?url=${encodeURIComponent(url)}`);
+        let response;
+        try {
+            response = await fetch(`/api/fetch-url?url=${encodeURIComponent(url)}`);
+        } catch {
+            // fetch() konnte nicht einmal unseren EIGENEN /api/fetch-url
+            // Endpunkt erreichen - das liegt nicht an der Ziel-URL,
+            // sondern daran, dass der lokale Node-Server nicht läuft.
+            throw new Error(
+                "Der lokale Server ist nicht erreichbar. Läuft \"node server.js\"?"
+            );
+        }
+
         const contentType = response.headers.get("content-type") || "";
 
         if (!response.ok) {

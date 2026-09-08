@@ -25,5 +25,12 @@ export const SEARCH_HELPERS = {
         "über das unternehmen",
         "wer wir sind",
         "wir sind"
+    ],
+    Karriere: [
+        "karriere",
+        "jobs",
+        "stellenangebote",
+        "stellenanzeigen",
+        "offene stellen"
     ]
 };

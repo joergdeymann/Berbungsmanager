@@ -46,7 +46,7 @@ async function serveStaticFile(req, res) {
 
     } catch (error) {
 
-        if (error.code === "ENOENT") {
+        if (error.code === "ENOENT" || error.code === "EISDIR") {
             return false;
         }
 
@@ -122,14 +122,19 @@ async function handleFetchUrl(req, res, url) {
 
     } catch (error) {
         const timedOut = error.name === "AbortError";
+        const code = error.cause?.code;
+        const unreachable = code === "ENOTFOUND" || code === "ECONNREFUSED" || code === "EAI_AGAIN";
         console.error(error);
 
+        let message = "Die URL konnte nicht abgerufen werden.";
+        if (timedOut) {
+            message = "Zeitüberschreitung beim Abrufen der URL (Ziel-Server antwortet nicht).";
+        } else if (unreachable) {
+            message = "Der Ziel-Server ist nicht erreichbar (Domain ungültig oder Server down).";
+        }
+
         res.writeHead(timedOut ? 504 : 502, { "Content-Type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({
-            error: timedOut
-                ? "Zeitüberschreitung beim Abrufen der URL."
-                : "Die URL konnte nicht abgerufen werden."
-        }));
+        res.end(JSON.stringify({ error: message }));
     } finally {
         clearTimeout(timeout);
     }
@@ -149,8 +154,8 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // Startseite
-    if (req.url === "/") {
+    // Startseite (auch mit Query-String, z.B. /?importUrl=... vom Bookmarklet)
+    if (requestUrl.pathname === "/") {
 
         const filePath = path.join(__dirname, "index.html");
 

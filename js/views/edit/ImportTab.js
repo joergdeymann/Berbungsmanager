@@ -43,7 +43,7 @@ export class ImportTab extends BaseEditTab {
         // Zusätzliche Funde von der (zweiten) Bewerbungs-/Karriereseite
         // hinter einem "Bewerben"-Link (Telefonnummern, Firmentext,
         // Bilder) - werden bei jeder Analyse mit eingemischt.
-        this.pageExtras = { phones: [], companyInfoBlocks: [], images: [], peopleImages: [] };
+        this.pageExtras = { phones: [], companyInfoBlocks: [], images: [], peopleImages: [], logo: null };
 
         // Eigener, veränderbarer Verlauf für diese Editier-Session -
         // wird in save() zurück ins Application-Objekt geschrieben.
@@ -85,11 +85,12 @@ export class ImportTab extends BaseEditTab {
     }
 
     // Erzeugt den "javascript:"-Link fürs Lesezeichen: merkt sich die
-    // aktuelle Seiten-URL und springt zu unserer App zurück - siehe
+    // aktuelle Seiten-URL und öffnet unsere App in einem NEUEN Tab
+    // (die Stellenanzeige bleibt dabei unangetastet offen) - siehe
     // app.js für die Gegenseite.
     bookmarkletHref() {
         const appOrigin = location.origin + location.pathname;
-        const code = `(function(){window.location.href=${JSON.stringify(appOrigin)}+"?importUrl="+encodeURIComponent(window.location.href);})();`;
+        const code = `(function(){window.open(${JSON.stringify(appOrigin)}+"?importUrl="+encodeURIComponent(window.location.href),"_blank");})();`;
         return "javascript:" + encodeURIComponent(code);
     }
 
@@ -166,28 +167,63 @@ export class ImportTab extends BaseEditTab {
 
     // Durchsucht die aufgelöste Bewerbungs-/Karriereseite zusätzlich
     // nach Kontaktdaten, Firmeninformationen und Bildern (siehe
-    // PageSearcher.js) und mischt die Funde in die nächste Analyse
-    // ein. Schlägt best-effort fehl, ohne den Haupt-Import zu stören.
+    // Durchsucht die aufgelöste Bewerbungs-/Karriereseite UND
+    // zusätzlich die daraus abgeleitete Firmen-Hauptseite (alles
+    // nach der Domain abgeschnitten) nach Kontaktdaten,
+    // Firmeninformationen, Logo und Bildern (siehe PageSearcher.js).
+    // Die Detail-/Bewerbungsseite selbst hat oft kaum Bilder - die
+    // Hauptseite meist deutlich mehr. Mischt die Funde in die
+    // nächste Analyse ein. Schlägt best-effort fehl, ohne den
+    // Haupt-Import zu stören.
     async searchApplicationPage(applicationLink) {
+        const found = { phones: [], companyInfo: [], images: [], people: [], logo: null, careerLinks: [] };
+        const merge = result => {
+            found.phones.push(...result.contact.phones);
+            found.companyInfo.push(...result.companyInfo);
+            found.images.push(...result.images);
+            found.people.push(...result.people);
+            found.logo = found.logo || result.logo;
+            found.careerLinks.push(...result.careerLinks);
+        };
+
         try {
-            const found = await this.parseUrl.searchPage(applicationLink);
-
-            this.pageExtras.phones.push(...found.contact.phones);
-            this.pageExtras.companyInfoBlocks.push(...found.companyInfo);
-            this.pageExtras.images.push(...found.images);
-            this.pageExtras.peopleImages.push(...found.people);
-
-            this.runCombinedAnalysis();
-
-            const bits = [];
-            if (found.contact.phones.length) bits.push(`${found.contact.phones.length} Telefonnummer(n)`);
-            if (found.people.length) bits.push(`${found.people.length} Person(en) mit Bild`);
-            if (found.images.length) bits.push(`${found.images.length} weitere(s) Bild(er)`);
-            return bits.length ? ` Zusätzlich auf der Bewerbungsseite gefunden: ${bits.join(", ")}.` : "";
-
+            merge(await this.parseUrl.searchPage(applicationLink));
         } catch (error) {
             console.error("Bewerbungsseite konnte nicht durchsucht werden:", error);
-            return "";
+        }
+
+        const homepage = this.deriveHomepage(applicationLink);
+        if (homepage && homepage !== applicationLink) {
+            try {
+                merge(await this.parseUrl.searchPage(homepage));
+            } catch (error) {
+                console.error("Firmen-Hauptseite konnte nicht durchsucht werden:", error);
+            }
+        }
+
+        this.pageExtras.phones.push(...found.phones);
+        this.pageExtras.companyInfoBlocks.push(...found.companyInfo);
+        this.pageExtras.images.push(...found.images);
+        this.pageExtras.peopleImages.push(...found.people);
+        if (found.logo) this.pageExtras.logo = found.logo;
+
+        this.runCombinedAnalysis();
+
+        const bits = [];
+        if (found.phones.length) bits.push(`${found.phones.length} Telefonnummer(n)`);
+        if (found.people.length) bits.push(`${found.people.length} Person(en) mit Bild`);
+        if (found.logo) bits.push(`Logo`);
+        if (found.images.length) bits.push(`${found.images.length} weitere(s) Bild(er)`);
+        return bits.length ? ` Zusätzlich gefunden: ${bits.join(", ")}.` : "";
+    }
+
+    // "...wenn man nach .com/.de usw. den Bereich abschneidet, ist
+    // man auf der Hauptseite" - Protokoll + Domain, ohne Pfad.
+    deriveHomepage(url) {
+        try {
+            return new URL(url).origin;
+        } catch {
+            return null;
         }
     }
 
@@ -227,8 +263,11 @@ export class ImportTab extends BaseEditTab {
                 ? `${result.companyInformation.description}\n\n${extra}`
                 : extra;
         }
-        if (this.pageExtras.images.length) {
-            result.companyInformation.foundImages = [...new Set(this.pageExtras.images)];
+        if (this.pageExtras.images.length || this.pageExtras.logo) {
+            const ordered = this.pageExtras.logo
+                ? [this.pageExtras.logo, ...this.pageExtras.images]
+                : this.pageExtras.images;
+            result.companyInformation.foundImages = [...new Set(ordered)];
         }
         if (this.pageExtras.peopleImages.length) {
             result.companyInformation.peopleImages = this.pageExtras.peopleImages;
@@ -323,14 +362,18 @@ export class ImportTab extends BaseEditTab {
         // repository.save() im localStorage).
         application.importHistory = this.history;
 
-        // Auf der Bewerbungsseite gefundene Bilder sichern (noch kein
-        // eigenes Formularfeld/Anzeige dafür - siehe Notiz zur
-        // Bildersammlung).
-        if (this.pageExtras.images.length) {
+        // Auf der Bewerbungsseite/Firmenseite gefundene Bilder sichern
+        // (noch kein eigenes Formularfeld/Anzeige dafür - siehe Notiz
+        // zur Bildersammlung). Logo kommt zuerst, wird damit zum
+        // Standard-Hauptbild der Galerie.
+        if (this.pageExtras.images.length || this.pageExtras.logo) {
             application.companyInformation = application.companyInformation || {};
+            const ordered = this.pageExtras.logo
+                ? [this.pageExtras.logo, ...this.pageExtras.images]
+                : this.pageExtras.images;
             application.companyInformation.foundImages = [...new Set([
-                ...(application.companyInformation.foundImages || []),
-                ...this.pageExtras.images
+                ...ordered,
+                ...(application.companyInformation.foundImages || [])
             ])];
         }
     }
