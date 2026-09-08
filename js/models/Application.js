@@ -176,7 +176,12 @@ export class Application {
                 "",
 
             specialties:
-                data.companyInformation?.specialties || []
+                data.companyInformation?.specialties || [],
+
+            // Für die spätere Bildersammlung zur Firma (nur Links,
+            // noch keine eigene Anzeige) - gefüllt durch PageSearcher.
+            foundImages:
+                data.companyInformation?.foundImages || []
         };
 
         /*

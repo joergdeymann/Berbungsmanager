@@ -49,6 +49,7 @@ export class SourcesTab extends BaseEditTab {
                 <small>${this.escapeAttribute(this.formatDate(entry.importedAt))}</small>
                 ${entry.link ? `<a href="${this.escapeAttribute(entry.link)}" target="_blank" rel="noopener">Quelle öffnen ↗</a>` : ""}
               </div>
+              ${entry.applicationLink ? `<small class="import-history-sections">Möglicher Bewerbungslink (bitte prüfen): <a href="${this.escapeAttribute(entry.applicationLink)}" target="_blank" rel="noopener">${this.escapeAttribute(entry.applicationLink)}</a></small>` : ""}
               ${entry.sections?.length ? `<small class="import-history-sections">Sektion(en): ${entry.sections.map(name => this.escapeAttribute(name)).join(", ")}</small>` : ""}
             </div>
         `).join("");

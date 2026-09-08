@@ -11,7 +11,10 @@ export class UrlPrompt {
             <div id="url-container" class="input-container">
                 <div class="input-prompt auto-height">
                     <label for="url-input">Webadresse der Stellenanzeige hier einfügen:</label>
-                    <input id="url-input" type="url" placeholder="https://...">
+                    <div class="url-input-row">
+                        <button type="button" id="pasteUrl" class="secondary" title="Aus Zwischenablage einfügen">📋 Einfügen</button>
+                        <input id="url-input" type="url" placeholder="https://...">
+                    </div>
                     <p class="prompt-hint" id="url-hint"></p>
                     <div class="prompt-buttons">
                         <button id="cancelUrl" class="danger">Abbrechen</button>
@@ -28,8 +31,22 @@ export class UrlPrompt {
             const hint = overlay.querySelector("#url-hint");
             const submitBtn = overlay.querySelector("#submitUrl");
             const cancelBtn = overlay.querySelector("#cancelUrl");
+            const pasteBtn = overlay.querySelector("#pasteUrl");
 
             input.focus();
+
+            pasteBtn.onclick = async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (text) {
+                        input.value = text.trim();
+                        hint.textContent = "";
+                        input.focus();
+                    }
+                } catch {
+                    hint.textContent = "Einfügen per Button nicht möglich - bitte Strg+V im Feld benutzen.";
+                }
+            };
 
             const submit = () => {
                 const value = input.value.trim();

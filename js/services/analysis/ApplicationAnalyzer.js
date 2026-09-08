@@ -45,11 +45,14 @@ export class ApplicationAnalyzer {
             ? qualifications
             : basic.qualifications;
 
+        const sectionContact = this.extractContactFromSection(sections.contact);
+        const contact = sectionContact?.name ? sectionContact : basic.contact;
+
         return {
             analysisVersion: "1.1",
             companyName: basic.companyName,
             company: basic.company,
-            contact: basic.contact,
+            contact,
             job: basic.job,
             source: basic.source,
             skills: basic.skills,
@@ -60,7 +63,7 @@ export class ApplicationAnalyzer {
             qualifications: finalQualifications,
             companyInformation: {
                 ...basic.companyInformation,
-                description: sections.company || basic.companyInformation.description
+                description: sections.companyInformation || basic.companyInformation.description
             },
             social: basic.social,
             sections: {
@@ -71,4 +74,23 @@ export class ApplicationAnalyzer {
             originalText
         };
     }
-}
+
+    // Die "contact"-Sektion (Überschrift "Ansprechpartner(in)" +
+    // folgende Zeilen, meist Name + Adresse) hat den Namen fast immer
+    // in der ERSTEN Zeile - im Gegensatz zum Fließtext-Regex in
+    // JobTextAnalyzer kommt das auch mit "Name\nAdresse" auf
+    // getrennten Zeilen zurecht (statt Name + Satzzeichen in einer
+    // Zeile).
+    extractContactFromSection(block) {
+        if (!block) return null;
+
+        const [firstLine] = block.split("\n").map(line => line.trim()).filter(Boolean);
+        if (!firstLine) return null;
+
+        const nameMatch = firstLine.match(
+            /^(?:herrn?|frau)?\s*([A-ZÄÖÜ][a-zäöüß'-]+(?:\s+[A-ZÄÖÜ][a-zäöüß'-]+)+)$/i
+        );
+        if (!nameMatch) return null;
+
+        return { name: nameMatch[1], role: "Ansprechpartner Bewerbung" };
+    }}

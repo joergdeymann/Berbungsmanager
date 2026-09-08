@@ -462,6 +462,11 @@
    gap: 6px;
 }
 
+.import-history-row.selected {
+   border-color: var(--primary);
+   box-shadow: 0 0 0 2px var(--primary-light);
+}
+
 .import-history-meta {
    display: flex;
    align-items: center;
@@ -498,4 +503,112 @@
    display: flex;
    justify-content: flex-end;
    gap: 8px;
+}
+
+/* ---------- Bilder-Galerie (Firma & Ansprechpartner) ---------- */
+
+.image-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+   gap: 12px;
+   margin-bottom: 12px;
+}
+
+.image-card {
+   position: relative;
+   aspect-ratio: 1 / 1;
+   border: 2px solid var(--border-color);
+   border-radius: var(--radius-sm);
+   overflow: hidden;
+   cursor: pointer;
+   background: var(--bg-page);
+   transition: var(--transition);
+}
+
+.image-card:hover {
+   border-color: var(--border-focus);
+}
+
+.image-card.main {
+   border-color: var(--primary);
+   box-shadow: 0 0 0 2px var(--primary-light);
+   order: -1;
+}
+
+.image-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   display: block;
+}
+
+.image-card-badge {
+   position: absolute;
+   top: 4px;
+   left: 4px;
+   padding: 2px 6px;
+   background: var(--primary);
+   color: #fff;
+   font-size: 10px;
+   font-weight: 700;
+   border-radius: var(--radius-sm);
+   z-index: 1;
+}
+
+.image-card-name {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   padding: 4px 6px;
+   background: rgba(0, 0, 0, 0.6);
+   color: #fff;
+   font-size: 11px;
+   text-align: center;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.image-card-remove {
+   position: absolute;
+   top: 4px;
+   right: 4px;
+   width: 22px;
+   height: 22px;
+   font-size: 13px;
+   z-index: 1;
+}
+
+.image-add-row {
+   display: flex;
+   gap: 8px;
+}
+
+.image-add-row input {
+   flex: 1;
+   box-sizing: border-box;
+   padding: 8px 10px;
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-sm);
+   font: inherit;
+}
+
+/* ---------- Bookmarklet-Hinweis (Import-Tab) ---------- */
+
+.bookmarklet-hint {
+   margin: 8px 0 16px;
+   font-size: 13px;
+}
+
+.bookmarklet-link {
+   display: inline-block;
+   margin-left: 6px;
+   padding: 4px 10px;
+   background: var(--secondary);
+   color: var(--secondary-text);
+   border-radius: var(--radius-sm);
+   font-weight: 600;
+   text-decoration: none;
+   cursor: grab;
 }

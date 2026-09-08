@@ -1,4 +1,5 @@
 import { BaseEditTab } from "./BaseEditTab.js";
+import { ImageGallery } from "./ImageGallery.js";
 
 export class ContactTab extends BaseEditTab {
   render() {
@@ -13,17 +14,29 @@ export class ContactTab extends BaseEditTab {
           <div class="field"><label>Zentrale Telefonnummern (Zeilengetrennt)</label><textarea id="phones" rows="3"></textarea></div>
           <div class="field"><label>Zentrale E-Mails (Zeilengetrennt)</label><textarea id="emails" rows="3"></textarea></div>
         </div>
+
+        <div class="subsection">
+          <div class="subsection-header">
+            <h3>Bilder zum Ansprechpartner</h3>
+            <span>Das Hauptbild (★) gehört zur oben eingetragenen Person und wird zuerst angezeigt. Klick auf ein anderes Bild macht es zum Hauptbild.</span>
+          </div>
+          <div id="contactImages"></div>
+        </div>
       </section>
     `;
   }
 
   init(application) {
-    this.set("contactName", application.contacts?.[0]?.name);
-    this.set("contactRole", application.contacts?.[0]?.role);
-    this.set("contactEmail", application.contacts?.[0]?.email || application.company?.emails?.[0]);
-    this.set("contactPhone", application.contacts?.[0]?.phone || application.company?.phones?.[0]);
+    const contact = application.contacts?.[0] || {};
+    this.set("contactName", contact.name);
+    this.set("contactRole", contact.role);
+    this.set("contactEmail", contact.email || application.company?.emails?.[0]);
+    this.set("contactPhone", contact.phone || application.company?.phones?.[0]);
     this.set("phones", (application.company?.phones || []).join("\n"));
     this.set("emails", (application.company?.emails || []).join("\n"));
+
+    this.imageGallery = new ImageGallery(this.root.querySelector("#contactImages"), { showNames: true });
+    this.imageGallery.setImages(contact.images || []);
   }
 
   applyAnalysis(result) {
@@ -38,16 +51,30 @@ export class ContactTab extends BaseEditTab {
     if (!this.root.querySelector("#contactPhone")?.value && result.phones?.length) {
       this.set("contactPhone", result.phones[0]);
     }
+
+    // Der wichtige Ansprechpartner (Name stimmt mit dem oben
+    // eingetragenen überein) steht oben und wird als Hauptbild
+    // markiert; andere gefundene Personen bleiben als Vorschläge
+    // in der Galerie.
+    const contactName = (result.contact?.name || "").toLowerCase();
+    (result.companyInformation?.peopleImages || result.contact?.images || []).forEach(person => {
+      const isMatch = contactName && person.name && (
+        contactName.includes(person.name.toLowerCase()) ||
+        person.name.toLowerCase().includes(contactName)
+      );
+      this.imageGallery.addImage(person.url, person.name);
+      if (isMatch) this.imageGallery.selectMain(person.url);
+    });
   }
 
   save(application) {
-    application.contacts = this.get("contactName") || this.get("contactRole") || this.get("contactEmail") || this.get("contactPhone")
-      ? [{
-          name: this.get("contactName"),
-          role: this.get("contactRole"),
-          email: this.get("contactEmail"),
-          phone: this.get("contactPhone")
-        }]
+    const name = this.get("contactName");
+    const role = this.get("contactRole");
+    const email = this.get("contactEmail");
+    const phone = this.get("contactPhone");
+
+    application.contacts = (name || role || email || phone)
+      ? [{ name, role, email, phone, images: this.imageGallery.getImages() }]
       : [];
 
     // phones/emails gehören inhaltlich zur Firma, werden aber hier im Ansprechpartner-Tab erfasst.

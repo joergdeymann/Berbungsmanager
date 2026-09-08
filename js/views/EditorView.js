@@ -84,7 +84,7 @@ export class EditorView {
     `;
 
     // Alle Tabs initialisieren (Werte eintragen und Event-Listener binden)
-    Object.values(this.tabs).forEach(tab => tab.init(application, this.analyzer, this.applyAnalysis.bind(this)));
+    Object.values(this.tabs).forEach(tab => tab.init(application, this.analyzer, this.applyAnalysis.bind(this), this.persist.bind(this, application)));
 
     // Eigene Tab-Navigation binden
     this.bindTabNavigation(root);
@@ -120,11 +120,15 @@ export class EditorView {
     this.tabs.application.applyAnalysis(result);
   }
 
-  save(application) {
-    // Sammle alle Daten aus den einzelnen Tabs
+  // Speichert im Hintergrund (z.B. nach automatischer Übernahme im
+  // Import-Tab), OHNE die Seite zu wechseln.
+  persist(application) {
     Object.values(this.tabs).forEach(tab => tab.save(application));
-
     this.repository.save(application);
+  }
+
+  save(application) {
+    this.persist(application);
     location.hash = "#/detail/" + encodeURIComponent(application.id);
   }
 }

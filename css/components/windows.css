@@ -114,6 +114,21 @@
    font: inherit;
 }
 
+.url-input-row {
+   display: flex;
+   gap: 8px;
+   align-items: stretch;
+}
+
+.url-input-row input[type="url"] {
+   flex: 1;
+}
+
+.url-input-row button {
+   flex: 0 0 auto;
+   white-space: nowrap;
+}
+
 .input-prompt .prompt-hint {
    margin-top: 8px;
    font-size: 12px;

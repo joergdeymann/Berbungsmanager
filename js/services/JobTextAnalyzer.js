@@ -1,4 +1,4 @@
-import { IGNORE_LINE_MARKERS, SECTION_DEFINITIONS } from "./analysis/ParserConfig.js";
+import { IGNORE_LINE_MARKERS, SECTION_DEFINITIONS, INDUSTRY_KEYWORD_RULES } from "./analysis/ParserConfig.js";
 import { stripBulletPrefix, unique as uniqueValues, toLines, isIgnoredLine } from "./analysis/TextCleanup.js";
 
 export class JobTextAnalyzer {
@@ -96,9 +96,31 @@ export class JobTextAnalyzer {
   }
 
   extractCompanyName(lines) {
-    return lines.find(line =>
+    const withLegalForm = lines.find(line =>
       /\b(gmbh|ag|kg|ug|gbr|ohg|ltd|inc)\b/i.test(line)
-    ) || "";
+    );
+    if (withLegalForm) return withLegalForm;
+
+    // Fallback: Firmenname aus einer E-Mail-Domain ableiten
+    // (z.B. "bewerbung@apetito.de" -> "apetito") und, falls das
+    // Wort so auch im Text vorkommt, dessen echte Schreibweise
+    // übernehmen (z.B. "apetito" statt "Apetito").
+    const email = lines.join(" ").match(/[\w.+-]+@([\w-]+)\.[a-z]{2,}/i);
+    const domainName = email?.[1];
+    if (!domainName) return "";
+
+    const inText = lines.join(" ").match(new RegExp(`\\b${domainName}\\b`, "i"));
+    return inText?.[0] || domainName.charAt(0).toUpperCase() + domainName.slice(1);
+  }
+
+  // Branche per Schlüsselwort erkennen, wenn kein "Branche:"-Feld
+  // vorhanden ist (siehe ParserConfig.INDUSTRY_KEYWORD_RULES).
+  detectIndustryFromText(lines) {
+    const text = lines.join(" ").toLowerCase();
+    const rule = INDUSTRY_KEYWORD_RULES.find(({ anyOf }) =>
+      anyOf.some(term => text.includes(term))
+    );
+    return rule?.industry || "";
   }
 
   extractAddress(lines) {
@@ -127,7 +149,7 @@ export class JobTextAnalyzer {
       .join(" ")
       .match(/\bhttps?:\/\/[^\s]+/i)?.[0]
       ?.replace(/[),.;]+$/, "") || "";
-    const industry = this.valueAfterLabel(lines, "branche");
+    const industry = this.valueAfterLabel(lines, "branche") || this.detectIndustryFromText(lines);
     const size = this.valueAfterLabel(lines, "größe|groesse|mitarbeiter");
     const verifiedAt = this.valueAfterLabel(lines, "verifizierte seite");
     const overview = this.extractBlock(lines, "übersicht", "website");
@@ -232,12 +254,14 @@ export class JobTextAnalyzer {
       ?.replace(/^(herrn?|frau)\s+/i, "")
       .trim();
     const previousLine = roleIndex > 0 ? lines[roleIndex - 1] : "";
-    return {
-      name: contactName || (this.looksLikePersonName(previousLine)
-        ? previousLine
-        : ""),
-      role: roleIndex >= 0 ? lines[roleIndex] : ""
-    };
+    const name = contactName || (this.looksLikePersonName(previousLine) ? previousLine : "");
+
+    // Kein erkennbarer Titel/Rolle, aber ein Name wurde gefunden ->
+    // wenigstens eine sinnvolle Standard-Bezeichnung eintragen,
+    // statt das Feld leer zu lassen.
+    const role = roleIndex >= 0 ? lines[roleIndex] : (name ? "Ansprechpartner Bewerbung" : "");
+
+    return { name, role };
   }
 
   looksLikePersonName(value) {
@@ -333,8 +357,12 @@ export class JobTextAnalyzer {
   }
 
   detectWorkModel(text) {
+    // "hybrid" bzw. "teils/teilweise remote" ist eine Mischform und muss
+    // VOR der reinen Remote-Prüfung greifen, sonst gewinnt fälschlich Remote.
+    if (text.includes("hybrid") || /teils?\s+remote|teilweise\s+remote|anteilig\s+remote/.test(text)) {
+      return "Hybrid";
+    }
     if (text.includes("homeoffice") || text.includes("remote")) return "Remote";
-    if (text.includes("hybrid")) return "Hybrid";
     return "Unbekannt";
   }
 

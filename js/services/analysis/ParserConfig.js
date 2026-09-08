@@ -65,7 +65,8 @@ export const SECTION_DEFINITIONS = [
             "deine aufgaben",
             "ihre aufgaben",
             "das erwartet dich",
-            "aufgabenbereich"
+            "aufgabenbereich",
+            "darauf kannst du dich freuen"
         ]
     },
     {
@@ -77,7 +78,8 @@ export const SECTION_DEFINITIONS = [
             "anforderungen",
             "qualifikationen",
             "das bringst du mit",
-            "das bringen sie mit"
+            "das bringen sie mit",
+            "das ist dein erfolgsrezept"
         ],
         // Direkt benannte Erforderlich-/Wunsch-Überschriften landen ebenfalls
         // im selben Rohblock - die Feinsortierung übernimmt danach
@@ -126,6 +128,11 @@ export const SECTION_DEFINITIONS = [
             "ansprechpartner",
             "dein ansprechpartner",
             "ihre ansprechpartner"
+        ],
+        // Deckt alle Geschlechtsformen ab (Ansprechpartner/-in, Dein/Deine/
+        // Ihr/Ihre ...), ohne jede Kombination einzeln auflisten zu müssen.
+        allOf: [
+            ["ansprechpartner"]
         ]
     },
     {
@@ -135,6 +142,31 @@ export const SECTION_DEFINITIONS = [
             "bewirb dich"
         ]
     }
+];
+
+/*
+ * Zusätzlich zur überschriftenbasierten Erkennung: einzelne Sätze,
+ * die MITTEN im Fließtext stehen (ohne eigene Überschrift), aber
+ * inhaltlich klar einem Zielfeld zuzuordnen sind - z.B. ein Satz
+ * über die Firma innerhalb der Stellenbeschreibung. Wird von
+ * SectionParser zusätzlich zu den Überschriften-Blöcken ausgewertet.
+ */
+export const INLINE_KEYWORD_RULES = [
+    {
+        target: "companyInformation",
+        anyOf: ["familienunternehmen", "familienbetrieb", "traditionsunternehmen", "inhabergeführt"]
+    }
+];
+
+/*
+ * Branchen-Erkennung per Schlüsselwort, falls die Anzeige kein
+ * explizites "Branche:"-Feld hat (z.B. "...ein Ziel: gutes Essen
+ * für Jung und Alt zu kochen" -> Gastronomie).
+ */
+export const INDUSTRY_KEYWORD_RULES = [
+    { industry: "Gastronomie", anyOf: ["kochen", "küche", "kulinarisch", "catering", "gastronomie"] },
+    { industry: "IT / Softwareentwicklung", anyOf: ["softwareentwicklung", "it-dienstleister", "software-unternehmen"] },
+    { industry: "Handwerk", anyOf: ["handwerksbetrieb", "handwerksunternehmen"] }
 ];
 
 /*

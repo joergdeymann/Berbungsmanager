@@ -1,4 +1,5 @@
 import { BaseEditTab } from "./BaseEditTab.js";
+import { ImageGallery } from "./ImageGallery.js";
 
 export class CompanyTab extends BaseEditTab {
   render() {
@@ -19,6 +20,14 @@ export class CompanyTab extends BaseEditTab {
           <div class="field field-wide"><label>Firmenbeschreibung</label><textarea id="companyDescription" rows="4"></textarea></div>
           <div class="field"><label>Spezialgebiete</label><textarea id="specialties" rows="4"></textarea></div>
         </div>
+
+        <div class="subsection">
+          <div class="subsection-header">
+            <h3>Bilder zur Firma</h3>
+            <span>Klick auf ein Bild macht es zum Hauptbild. Weitere Bilder können per URL ergänzt werden.</span>
+          </div>
+          <div id="companyImages"></div>
+        </div>
       </section>
     `;
   }
@@ -36,6 +45,11 @@ export class CompanyTab extends BaseEditTab {
     this.set("verifiedAt", application.company?.verifiedAt || application.companyInformation?.verifiedAt);
     this.set("companyDescription", application.companyInformation?.description);
     this.set("specialties", (application.companyInformation?.specialties || []).join("\n"));
+
+    this.imageGallery = new ImageGallery(this.root.querySelector("#companyImages"));
+    this.imageGallery.setImages(
+      (application.companyInformation?.foundImages || []).map(url => ({ url }))
+    );
   }
 
   applyAnalysis(result, formatDateFn) {
@@ -51,6 +65,13 @@ export class CompanyTab extends BaseEditTab {
     this.set("founded", result.companyInformation?.founded);
     this.set("specialties", (result.companyInformation?.specialties || []).join("\n"));
     this.set("companyDescription", result.companyInformation?.description);
+
+    if (result.companyInformation?.foundImages?.length) {
+      const existing = this.imageGallery.getImages().map(image => image.url);
+      result.companyInformation.foundImages
+        .filter(url => !existing.includes(url))
+        .forEach(url => this.imageGallery.addImage(url));
+    }
   }
 
   save(application) {
@@ -71,7 +92,8 @@ export class CompanyTab extends BaseEditTab {
       size: this.get("companySize"),
       founded: this.get("founded"),
       verifiedAt: this.get("verifiedAt"),
-      specialties: this.list("specialties")
+      specialties: this.list("specialties"),
+      foundImages: this.imageGallery.getImages().map(image => image.url)
     };
   }
 }

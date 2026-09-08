@@ -1,4 +1,4 @@
-import { SECTION_DEFINITIONS, IGNORE_LINE_MARKERS } from "./ParserConfig.js";
+import { SECTION_DEFINITIONS, IGNORE_LINE_MARKERS, INLINE_KEYWORD_RULES } from "./ParserConfig.js";
 import { toLines, isIgnoredLine } from "./TextCleanup.js";
 
 /*
@@ -18,14 +18,19 @@ import { toLines, isIgnoredLine } from "./TextCleanup.js";
  *    Vorkommen zusammengehängt statt sich zu überschreiben.
  * e) Ähnliche/enthaltene Inhalte werden nicht doppelt übernommen
  *    (siehe TextCleanup.uniqueSimilar, von den Extractoren genutzt).
+ * Zusätzlich: einzelne Sätze OHNE eigene Überschrift, die per
+ * INLINE_KEYWORD_RULES erkannt werden (z.B. ein Satz über die Firma
+ * mitten in der Stellenbeschreibung), werden ebenfalls ins passende
+ * Zielfeld übernommen.
  * Ignore-Lines (Werbe-/Rausch-Zeilen) werden vor der Zuordnung
  * entfernt, damit sie in keinem Abschnitt landen.
  */
 export class SectionParser {
 
-    constructor(definitions = SECTION_DEFINITIONS, ignoreMarkers = IGNORE_LINE_MARKERS) {
+    constructor(definitions = SECTION_DEFINITIONS, ignoreMarkers = IGNORE_LINE_MARKERS, inlineRules = INLINE_KEYWORD_RULES) {
         this.definitions = definitions;
         this.ignoreMarkers = ignoreMarkers;
+        this.inlineRules = inlineRules;
     }
 
     parse(text) {
@@ -33,12 +38,15 @@ export class SectionParser {
         const headings = this.findHeadings(lines);
 
         const sections = {};
+        const consumed = new Set();
 
         for (let i = 0; i < headings.length; i++) {
             const current = headings[i];
             const next = headings[i + 1];
             const start = current.index + 1;
             const end = next ? next.index : lines.length;
+
+            for (let index = current.index; index < end; index++) consumed.add(index);
 
             // c) Inline-Inhalt der Überschriftenzeile (falls vorhanden)
             //    kommt vor den restlichen Zeilen des Blocks.
@@ -55,7 +63,29 @@ export class SectionParser {
                 : block;
         }
 
+        this.applyInlineKeywordRules(lines, consumed, sections);
+
         return sections;
+    }
+
+    // Sätze außerhalb jedes Überschriften-Blocks, die auf eine der
+    // INLINE_KEYWORD_RULES passen, werden zusätzlich ins Zielfeld
+    // übernommen - z.B. ein Satz über ein Familienunternehmen mitten
+    // in der Stellenbeschreibung, ohne eigene Überschrift.
+    applyInlineKeywordRules(lines, consumed, sections) {
+        lines.forEach((line, index) => {
+            if (consumed.has(index)) return;
+
+            const lower = line.toLowerCase();
+            const rule = this.inlineRules.find(({ anyOf }) =>
+                anyOf.some(term => lower.includes(term))
+            );
+            if (!rule) return;
+
+            sections[rule.target] = sections[rule.target]
+                ? `${sections[rule.target]}\n${line}`
+                : line;
+        });
     }
 
     findHeadings(lines) {
