@@ -4,8 +4,8 @@ export class TextCleaner {
         this.text = text;
         const lines  = this
             .removeInvisibleCharacters()
-            .stripBulletPrefix()
-            .split(/\r?\n/);
+            .split(/\r?\n/)
+            .map(line => this.stripBulletPrefix(line));
         this.lines = this.removeSimilar(lines)
             .map(line => line.trim())
             .filter(Boolean)

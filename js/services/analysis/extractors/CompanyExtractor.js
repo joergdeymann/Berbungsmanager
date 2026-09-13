@@ -1,46 +1,12 @@
-import { WebConstants } from "../../../constants/WebConstants.js";
 import { CompanyConstants } from "../../../constants/CompanyConstants.js";
-
 export class CompanyExtractor {
     constructor(lines) {
         this.lines = lines;
-        // this.suffixRegex = /\b(gmbh|ohg|kg|ag|ug|gbr|ltd|inc|ek)\b/i;
     }
-
-    // extractCompany() {
-    //     return {
-    //         CompanyName: this.extractCompanyName(),
-    //         Adressse: this.extractAddress(),
-    //         Email: this.extractEmail(),
-    //         Telefon: this.extractPhone(),
-    //         Website: this.extractWebsite(),
-    //     }
-    // }
 
     extractCompanyName() {
         return this.extractBySuffix() ?? this.extractByContextPattern() ?? this.extractByHeader() ?? this.extractByFrequency() ;
     }
-
-    extrtactPhoner() {
-        const email = this.text.match(/[\w.+-]+@([\w-]+)\.[a-z]{2,}/i);
-        const domainName = email?.[1];
-        if (!domainName) return "";
-
-    }
-
-    extractDomain() {
-        const domains = (text.match(WebConstants.DOMAIN_REGEX) ?? [])
-        .map(domain =>
-            domain
-                .replace(/^https?:\/\//i, "")
-                .replace(/^www\./i, "")
-        );
-        // try to match nearest to company name later
-        this.data.domain = domains[0];
-    }
-
-
-
 
     extractBySuffix() {
         for (const line of this.lines) {

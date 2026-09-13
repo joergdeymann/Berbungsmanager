@@ -11,7 +11,6 @@ import { PostBoxExtractor } from "../extractors/PostBoxExtractor.js"
 
 export class ParseText {
     constructor(text) {
-        this.sectionParser = new SectionParser(ParserConstants.SECTION_HEADLINES, ParserConstants.TAGS);
         this.lines = [];
         this.text = '';
 
@@ -25,7 +24,8 @@ export class ParseText {
     }
 
     parse() {
-        const sections = this.sectionParser.parse(this.lines);
+        const sectionParser = new SectionParser(ParserConstants.SECTION_HEADLINES, ParserConstants.TAGS);
+        const sections = sectionParser.parse(this.lines);
         const companyContent = sections["companyInformation"]?.lines??[];
         const contactContent = sections["contact"]?.lines??[];
         const addressContent = [...companyContent, ...contactContent];
