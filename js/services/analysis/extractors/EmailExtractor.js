@@ -17,6 +17,6 @@ export class EmailExtractor {
     }
 
     extractFirstEmail() {
-        return this.extractEmails()[0] ?? null;
+        return this.extractEmails()[0] ?? "";
     }
 }

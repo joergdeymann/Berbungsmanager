@@ -15,6 +15,6 @@ export class PhoneExtractor {
     }
 
     extractFirstPhoneNumber() {
-        return this.extractPhoneNumbers()[0] ?? null;
+        return this.extractPhoneNumbers()[0] ?? "";
     }
 }

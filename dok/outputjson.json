@@ -7,36 +7,51 @@
       "updatedAt": ""
     },
 
-    "source": "",
-
-    "contents": {
-      "company": [],
-      "contact": [],
-      "job": [],
-      "qualifications": []
-    },
-
-    "selectedCompanyId": 0,
-    "selectedContactId": 0,
-
-    "companies": [
+    "sources": [
       {
         "id": 0,
         "name": "",
-        "legalForm": "",
-        "relationship": "",
-        "address": {
-          "street": "",
-          "houseNumber": "",
-          "postcode": "",
-          "postcodeCountry": "",
-          "country": "",
-          "poBox": ""
-        },
-        "website": "",
-        "verifiedAt": "",
-        "img": ""
+        "capturedAt": "",
+        "title": "",
+        "sourceCode": ""
       }
+    ],
+
+    "job": {
+      "id": 0,
+      "companyId": 0,
+      "contactId": 0,
+
+      "title": "",
+      "referenceNumber": "",
+      "employmentType": "",
+      "salary": "",
+      "vacationPay": "",
+      "christmasPay": "",
+      "workModel": "",
+      "tasks": [],
+      "tags": []
+    },
+
+
+    "companies": [
+        {
+          "id": 0,
+          "name": "",
+          "legalForm": "",
+          "relationship": "Hauptsitz",
+          "address": {
+            "street": "",
+            "houseNumber": "",
+            "postcode": "",
+            "postcodeCountry": "",
+            "country": "",
+            "poBox": ""
+          },
+          "website": "",
+          "verifiedAt": "",
+          "img": ""
+        }
     ],
 
     "contacts": [
@@ -47,22 +62,6 @@
         "img": "",
         "phone": "",
         "email": ""
-      }
-    ],
-
-    "jobs": [
-      {
-        "id": 0,
-        "title": "",
-        "referenceNumber": "",
-        "workAddressId": 0,
-        "employmentType": "",
-        "salary": "",
-        "vacationPay": "",
-        "christmasPay": "",
-        "workModel": "",
-        "tasks": [],
-        "tags": []
       }
     ],
 

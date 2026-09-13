@@ -2,12 +2,7 @@ import { ParserConstants } from "../../../constants/ParserConstants.js"
 import { SectionParser } from "./SectionParser.js"
 import { TextCleaner } from "./TextCleaner.js"
 import { CompanyExtractor } from "../extractors/CompanyExtractor.js"
-import { PhoneExtractor } from "../extractors/PhoneExtractor.js"
-import { EmailExtractor } from "../extractors/EmailExtractor.js"
-import { StreetExtractor as StreetExtractor } from "../extractors/AddressExtractor.js"
-import { LocationExtractor } from "../extractors/LocationExtractor.js"
-import { DomainExtractor } from "../extractors/DomainExtractor.js"
-import { PostBoxExtractor } from "../extractors/PostBoxExtractor.js"    
+import { JobExtractor } from "../extractors/JobExtractor.js"
 
 export class ParseText {
     constructor(text) {
@@ -33,16 +28,9 @@ export class ParseText {
 
         return {
             sections: sections,
-            
-            
-            companyName: new CompanyExtractor(addressContent).extractCompanyName(),
-
-            phone: new PhoneExtractor(addressContent).extractFirstPhoneNumber(),
-            email: new EmailExtractor(addressContent).extractFirstEmail(),
-            street: new StreetExtractor(addressContent).extractStreet(),
-            location: new LocationExtractor(addressContent).extractLocation(),
-            domain: new DomainExtractor(addressContent).extractDomain(),
-            postbox: new PostBoxExtractor(addressContent).extractPostbox(),
+            company: new CompanyExtractor(addressContent).extractCompany(),     
+            job: new JobExtractor(addressContent).extractJob(),
         };
     }
 }
+

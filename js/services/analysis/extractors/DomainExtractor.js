@@ -11,20 +11,20 @@ export class DomainExtractor {
 
         // beide gefunden und identisch -> höchste Sicherheit
         if (emailDomain && frequencyDomain && emailDomain === frequencyDomain) {
-            return { domain: emailDomain, confidence: 'high' };
+            return { name: emailDomain, confidence: 'high' };
         }
 
         // E-Mail-Domain hat Priorität, wenn vorhanden
         if (emailDomain) {
-            return { domain: emailDomain, confidence: 'medium' };
+            return { name: emailDomain, confidence: 'medium' };
         }
 
         // sonst Häufigkeits-Fallback (hier greift die Ignore-Liste)
         if (frequencyDomain) {
-            return { domain: frequencyDomain, confidence: 'medium' };
+            return { name: frequencyDomain, confidence: 'medium' };
         }
 
-        return null;
+        return { name: "", confidence: 'not found' };
     }
 
     // liefert die rohe Domain aus der E-Mail, OHNE Ignore-Liste zu prüfen
