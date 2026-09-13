@@ -7,7 +7,7 @@ import { EmailExtractor } from "../extractors/EmailExtractor.js"
 import { AddressExtractor } from "../extractors/AddressExtractor.js"
 import { LocationExtractor } from "../extractors/LocationExtractor.js"
 import { DomainExtractor } from "../extractors/DomainExtractor.js"
-import { PostboxExtractor } from "../extractors/PostBoxExtractor.js"    
+import { PostBoxExtractor } from "../extractors/PostBoxExtractor.js"    
 
 export class ParseText {
     constructor(text) {
@@ -38,7 +38,7 @@ export class ParseText {
             address: new AddressExtractor(addressContent).extractAddress(),
             location: new LocationExtractor(addressContent).extractLocation(),
             domain: new DomainExtractor(addressContent).extractDomain(),
-            postbox: new PostboxExtractor(addressContent).extractPostbox(),
+            postbox: new PostBoxExtractor(addressContent).extractPostbox(),
         };
     }
 }
