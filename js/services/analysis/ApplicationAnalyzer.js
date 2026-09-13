@@ -3,6 +3,7 @@ import { QualificationExtractor } from "./extractors/QualificationExtractor.js";
 import { TaskExtractor } from "./extractors/TaskExtractor.js";
 import { BenefitExtractor } from "./extractors/BenefitExtractor.js";
 import { JobTextAnalyzer } from "../JobTextAnalyzer.js";
+import { dedupeSentences } from "./TextCleanup.js";
 
 /*
  * Facade for all rule-based extraction.  The returned object is deliberately
@@ -48,6 +49,26 @@ export class ApplicationAnalyzer {
         const sectionContact = this.extractContactFromSection(sections.contact);
         const contact = sectionContact?.name ? sectionContact : basic.contact;
 
+        // 2) Die echten Aufzählungspunkte bleiben erhalten UND werden um
+        // bekannte Benefit-Stichworte ergänzt, die z.B. nur beiläufig in
+        // einem Satz erwähnt wurden. Bewusst NUR exakte Duplikate raus
+        // (nicht uniqueSimilar/Enthalten-Prüfung) - ein kurzer Stichpunkt
+        // wie "Homeoffice" soll trotzdem einzeln stehen bleiben, auch
+        // wenn er als Wort schon in einem längeren Satz vorkommt.
+        const seen = new Set();
+        const excluded = new Set(
+            [basic.job.salary, basic.job.vacationPay, basic.job.christmasPay]
+                .filter(Boolean)
+                .map(value => value.trim().toLowerCase())
+        );
+        const combinedBenefits = [...(sectionBenefits.length ? sectionBenefits : []), ...basic.benefits]
+            .filter(value => {
+                const key = value.trim().toLowerCase();
+                if (!key || seen.has(key) || excluded.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+
         return {
             analysisVersion: "1.1",
             companyName: basic.companyName,
@@ -56,14 +77,17 @@ export class ApplicationAnalyzer {
             job: basic.job,
             source: basic.source,
             skills: basic.skills,
-            benefits: sectionBenefits.length ? sectionBenefits : basic.benefits,
+            benefits: combinedBenefits,
             tasks: sectionTasks.length ? sectionTasks : basic.tasks,
             phones: basic.company.phones,
             emails: basic.company.emails,
             qualifications: finalQualifications,
             companyInformation: {
                 ...basic.companyInformation,
-                description: sections.companyInformation || basic.companyInformation.description
+                // 5) Wiederholt sich ein ganzer Absatz (z.B. LinkedIn
+                // zeigt die Stellenbeschreibung manchmal doppelt), wird
+                // das hier auf Satzebene bereinigt.
+                description: dedupeSentences(sections.companyInformation || basic.companyInformation.description)
             },
             social: basic.social,
             sections: {

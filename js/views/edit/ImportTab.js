@@ -43,7 +43,7 @@ export class ImportTab extends BaseEditTab {
         // Zusätzliche Funde von der (zweiten) Bewerbungs-/Karriereseite
         // hinter einem "Bewerben"-Link (Telefonnummern, Firmentext,
         // Bilder) - werden bei jeder Analyse mit eingemischt.
-        this.pageExtras = { phones: [], companyInfoBlocks: [], images: [], peopleImages: [], logo: null };
+        this.pageExtras = { phones: [], companyInfoBlocks: [], images: [], peopleImages: [], logo: null, applicationLink: null };
 
         // Eigener, veränderbarer Verlauf für diese Editier-Session -
         // wird in save() zurück ins Application-Objekt geschrieben.
@@ -149,9 +149,11 @@ export class ImportTab extends BaseEditTab {
                 applicationLink: result.applicationLink
             });
 
+            if (result.applicationLink) this.pageExtras.applicationLink = result.applicationLink;
+
             let linkHint = "";
             if (result.applicationLink) {
-                linkHint = ` Möglicher Bewerbungslink gefunden (bitte prüfen, siehe "Quellen"-Tab).`;
+                linkHint = ` Möglicher Bewerbungslink gefunden und ins Feld "Link zur Stellenanzeige" übernommen (bitte prüfen).`;
                 linkHint += await this.searchApplicationPage(result.applicationLink);
             }
             Toast.show(`"${result.source}" abgerufen, übernommen und gespeichert (${result.sections.length} Bereich(e)).${linkHint}`, 5000);
@@ -271,6 +273,9 @@ export class ImportTab extends BaseEditTab {
         }
         if (this.pageExtras.peopleImages.length) {
             result.companyInformation.peopleImages = this.pageExtras.peopleImages;
+        }
+        if (this.pageExtras.applicationLink) {
+            result.applicationLink = this.pageExtras.applicationLink;
         }
 
         this.applyAnalysis(result);

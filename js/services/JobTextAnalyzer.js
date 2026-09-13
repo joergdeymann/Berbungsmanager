@@ -1,8 +1,12 @@
-import { IGNORE_LINE_MARKERS, SECTION_DEFINITIONS, INDUSTRY_KEYWORD_RULES } from "./analysis/ParserConfig.js";
+import { ParseText } from "./analysis/parser/ParseText.js";
 import { stripBulletPrefix, unique as uniqueValues, toLines, isIgnoredLine } from "./analysis/TextCleanup.js";
-
+import { ParserConstants } from "../constants/ParserConstants.js";
 export class JobTextAnalyzer {
   constructor() {
+
+
+
+
     this.skillKeywords = [
       "javascript", "typescript", "html", "css", "php", "python",
       "mysql", "sql", "nosql", "react", "angular", "java", "c++", "c#",
@@ -10,26 +14,28 @@ export class JobTextAnalyzer {
       "kubernetes", "linux", "windows", "teamfähigkeit", "kommunikation"
     ];
 
-    this.benefitKeywords = [
-      "homeoffice", "remote", "hybrid", "weiterbildung", "jobrad",
-      "altersvorsorge", "flexible arbeitszeiten", "bonus", "urlaub",
-      "betriebsarzt", "fitness", "firmenwagen"
-    ];
+    // Einzige Quelle: js/services/analysis/ParserConfig.js
+    // this.benefitKeywords = BENEFIT_KEYWORDS;
 
     // Einzige Quelle: js/services/analysis/ParserConfig.js
-    this.noiseMarkers = IGNORE_LINE_MARKERS;
+    // this.noiseMarkers = IGNORE_LINE_MARKERS;
 
     // Alle bekannten Überschriften (aus ParserConfig) dienen hier nur
     // als Grenzmarker, um den "Übersicht"-Block (social impact) zu
     // begrenzen - die eigentliche Abschnittstrennung übernimmt
     // SectionParser.
-    this.knownHeadings = SECTION_DEFINITIONS.flatMap(definition => definition.titles || []);
+    // this.knownHeadings = SECTION_DEFINITIONS.flatMap(definition => definition.titles || []);
   }
 
   analyze(text) {
+    const parseText = new ParseText(text);
+    const sections = parseText.parse();
+
+
+
     const originalText = typeof text === "string" ? text : "";
     const lines = this.lines(originalText);
-    const contentLines = lines.filter(line => !this.isNoise(line));
+    const contentLines = lines; // .filter(line => !this.isNoise(line));
     const contentText = contentLines.join("\n");
     const lowerText = contentText.toLowerCase();
     const address = this.extractAddress(contentLines);
@@ -41,17 +47,16 @@ export class JobTextAnalyzer {
 
     return {
       analysisVersion: "1.1",
-      companyName: this.extractCompanyName(contentLines),
       company: {
-        name: this.extractCompanyName(contentLines),
-        street: address.street,
-        zip: address.zip,
-        city: address.city,
-        country: address.country,
-        website: companyInformation.website,
-        verifiedAt: companyInformation.verifiedAt,
-        phones: this.extractPhones(lines),
-        emails: this.unique(originalText.match(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g) || [])
+        name: sections.companyName,
+        street: sections.address.street,
+        zip: sections.address.zip,
+        city: sections.address.city,
+        country: sections.address.country,
+        website: sections.domain.domain,
+        verifiedAt: "", // companyInformation.verifiedAt
+        phones: sections.phone,
+        emails: sections.email
       },
       contact,
       job: {
@@ -60,21 +65,24 @@ export class JobTextAnalyzer {
         location: this.extractLocation(lines) || address.city,
         employmentType: this.extractEmploymentType(lines),
         salary: this.extractSalary(lines),
-        workModel: this.detectWorkModel(lines.join("\n").toLowerCase())
+        vacationPay: this.extractBonusLine(lines, "urlaubsgeld"),
+        christmasPay: this.extractBonusLine(lines, "weihnachtsgeld"),
+        workModel: this.detectWorkModel(lines.join("\n").toLowerCase()),
+        tags: this.extractJobTags(lines)
       },
       source: this.detectSource(originalText),
       skills: this.skillKeywords.filter(skill =>
         this.containsKeyword(lowerText, skill)
       ),
-      benefits: this.benefitKeywords.filter(benefit =>
-        this.containsKeyword(lowerText, benefit)
-      ),
+      benefits: ParserConstants.BENEFIT_TAGS
+        .filter(benefit => this.containsKeyword(lowerText, benefit.term))
+        .map(benefit => benefit.label),
       qualifications,
       companyInformation,
       social: {
-        benefits: this.benefitKeywords.filter(benefit =>
-          this.containsKeyword(lowerText, benefit)
-        ),
+        benefits: ParserConstants.BENEFIT_TAGS
+          .filter(benefit => this.containsKeyword(lowerText, benefit.term))
+          .map(benefit => benefit.label),
         impact: socialImpact,
         focus: socialFocus
       },
@@ -117,7 +125,7 @@ export class JobTextAnalyzer {
   // vorhanden ist (siehe ParserConfig.INDUSTRY_KEYWORD_RULES).
   detectIndustryFromText(lines) {
     const text = lines.join(" ").toLowerCase();
-    const rule = INDUSTRY_KEYWORD_RULES.find(({ anyOf }) =>
+    const rule = ParserConstants.INDUSTRY_KEYWORD_RULES.find(({ anyOf }) =>
       anyOf.some(term => text.includes(term))
     );
     return rule?.industry || "";
@@ -303,9 +311,28 @@ export class JobTextAnalyzer {
 
   extractSalary(lines) {
     const line = lines.find(value =>
-      /(gehalt|vergütung|verdienst|jahresgehalt|brutto|€|eur\b)/i.test(value)
+      /(gehalt|vergütung|verdienst|jahresgehalt|brutto|€|eur\b)/i.test(value) &&
+      !/urlaubsgeld|weihnachtsgeld|13\.?\s*gehalt|dreizehntes?\s*gehalt/i.test(value)
     );
     return line || "";
+  }
+
+  // Urlaubsgeld/Weihnachtsgeld gehören NICHT ins Gehaltsfeld (sonst
+  // landet z.B. "...mit einem halben Gehalt Urlaubsgeld im Gepäck"
+  // fälschlich als Gehaltsangabe) - eigene Felder dafür.
+  extractBonusLine(lines, keyword) {
+    const line = lines.find(value => new RegExp(keyword, "i").test(value));
+    return line || "";
+  }
+
+  // b) Mehrfachnennungen erkennen: Stellenanzeigen zeigen oft mehrere
+  // kurze "Badges" nebeneinander (z.B. "Remote" UND "Vollzeit" als
+  // zwei getrennte Buttons) - ALLE sammeln statt nur den ersten Treffer.
+  extractJobTags(lines) {
+    const text = lines.join(" ");
+    return ParserConstants.JOB_TAG_KEYWORDS.filter(tag =>
+      this.containsKeyword(text.toLowerCase(), tag.toLowerCase())
+    );
   }
 
   extractLocation(lines) {

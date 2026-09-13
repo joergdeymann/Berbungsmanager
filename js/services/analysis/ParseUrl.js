@@ -152,6 +152,8 @@ export class ParseUrl {
         const doc = new DOMParser().parseFromString(html, "text/html");
         return this.pageSearcher.search(doc, url);
     }
+
+    
     // Kompletter Ablauf: Quelle anhand der URL erkennen, Seite
     // abrufen, relevante Bereiche extrahieren.
     async fetchAndExtract(url) {

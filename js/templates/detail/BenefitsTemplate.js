@@ -12,7 +12,7 @@ export class BenefitsTemplate extends DetailBaseTemplate {
                         <div>
                             <h2>Benefits</h2>
                             <p>Ausgleichmöglichkeiten von der Firma unterstützt</p>
-                        </div
+                        </div>
                     </div>
                 </section>
                 

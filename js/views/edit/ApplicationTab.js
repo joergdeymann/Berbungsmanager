@@ -42,6 +42,9 @@ export class ApplicationTab extends BaseEditTab {
 
   applyAnalysis(result) {
     if (!this.root.querySelector("#source")?.value) this.set("source", result.source);
+    if (!this.get("jobUrl") && result.applicationLink) {
+      this.set("jobUrl", result.applicationLink);
+    }
   }
 
   save(application) {

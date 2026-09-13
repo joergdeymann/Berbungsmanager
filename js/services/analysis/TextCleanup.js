@@ -2,7 +2,7 @@
  * Gemeinsame Text-Helfer für den Parser. Ersetzt die früher pro
  * Extractor kopierten Bullet-Regex und unique()-Implementierungen.
  */
-
+import { ParserConstants } from "../../constants/ParserConstants.js";
 const BULLET_PREFIX = /^[•●✓✔\-–—]\s*/;
 
 export function stripBulletPrefix(line) {
@@ -72,5 +72,22 @@ export function toLines(text) {
 
 export function isIgnoredLine(line, ignoreMarkers) {
     const value = line.toLowerCase();
-    return line === "----" || ignoreMarkers.some(marker => value.includes(marker));
+    return line === "----" || ParserConstants.IGNORE_LINE_MARKERS.anyOf.some(marker => value.includes(marker)); // HIER UNVOLLSTÄNDIG !!!
+}
+
+/*
+ * Manche Quellen (z.B. LinkedIn) wiederholen einen ganzen
+ * Beschreibungstext einmal komplett - das trennt Sätze auf und
+ * entfernt exakte/enthaltene Wiederholungen (uniqueSimilar), damit
+ * ein doppelt vorkommender Absatz nicht doppelt im Ergebnis landet.
+ */
+export function dedupeSentences(text) {
+    if (!text) return text;
+
+    const sentences = text
+        .split(/(?<=[.!?])\s+/)
+        .map(sentence => sentence.trim())
+        .filter(Boolean);
+
+    return uniqueSimilar(sentences).join(" ");
 }

@@ -186,3 +186,51 @@ export const QUALIFICATION_SUBFILTERS = [
     }
     // kein Treffer -> "required" (expectedQualification)
 ];
+
+/*
+ * Bekannte Benefit-Stichworte: werden zusätzlich zu den echten
+ * Aufzählungspunkten (aus "Das bieten wir" o.ä.) gesucht und als
+ * eigene Stichpunkte ergänzt, auch wenn sie nur beiläufig in einem
+ * Satz erwähnt werden (z.B. "...mit einem halben Gehalt Urlaubsgeld
+ * im Gepäck" -> Stichpunkt "Urlaubsgeld"). term = wonach gesucht
+ * wird (lowercase), label = wie der Stichpunkt angezeigt wird.
+ */
+export const BENEFIT_KEYWORDS = [
+    { term: "jobrad", label: "JobRad" },
+    { term: "13. gehalt", label: "13. Gehalt" },
+    { term: "weihnachtsgeld", label: "Weihnachtsgeld" },
+    { term: "urlaubsgeld", label: "Urlaubsgeld" },
+    { term: "sportmitgliedschaft", label: "Kostenlose Sportmitgliedschaft" },
+    { term: "fitnessstudio", label: "Kostenlose Sportmitgliedschaft" },
+    { term: "essensgeldzuschuss", label: "Essensgeldzuschuss" },
+    { term: "essenszuschuss", label: "Essensgeldzuschuss" },
+    { term: "homeoffice", label: "Homeoffice" },
+    { term: "home office", label: "Homeoffice" },
+    { term: "betriebliche altersvorsorge", label: "Betriebliche Altersvorsorge" },
+    { term: "vermögenswirksame leistungen", label: "Vermögenswirksame Leistungen" },
+    { term: "weiterbildung", label: "Weiterbildung" },
+    { term: "betriebsarzt", label: "Betriebsarzt" },
+    { term: "firmenwagen", label: "Firmenwagen" },
+    { term: "flexible arbeitszeiten", label: "Flexible Arbeitszeiten" },
+    { term: "kitazuschuss", label: "Kinderbetreuungszuschuss" },
+    { term: "kinderbetreuung", label: "Kinderbetreuungszuschuss" }
+];
+
+/*
+ * Kurze "Badges" auf Stellenanzeigen (Arbeitsmodell/Anstellungsart),
+ * die mehrfach und nebeneinander auftreten können (z.B. "Remote" UND
+ * "Vollzeit" als zwei getrennte Buttons) - werden ALLE gesammelt,
+ * nicht nur der erste Treffer.
+ */
+export const JOB_TAG_KEYWORDS = [
+    "Remote", "Hybrid", "Vor Ort", "Vollzeit", "Teilzeit", "Minijob",
+    "Werkstudent", "Praktikum", "Befristet", "Unbefristet", "Freelance"
+];
+
+
+/* 
+ * begriffe aus falschen bereiche rausfiltern und in den richtigen Bereich einsortieren
+*/
+export const PERSONAL_STRENGHTS = [
+    "du begeisterst","werde teil","gestaltest du","deine expertise"
+];

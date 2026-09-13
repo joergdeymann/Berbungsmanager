@@ -44,7 +44,17 @@ export class Application {
             workModel:
                 data.job?.workModel ||
                 data.remote ||
-                "Unbekannt"
+                "Unbekannt",
+
+            vacationPay:
+                data.job?.vacationPay || "",
+
+            christmasPay:
+                data.job?.christmasPay || "",
+
+            // Mehrfach-Badges wie "Remote" + "Vollzeit" nebeneinander
+            tags:
+                data.job?.tags || []
         };
 
         /*

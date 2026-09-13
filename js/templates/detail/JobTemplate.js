@@ -13,7 +13,7 @@ export class JobTemplate extends DetailBaseTemplate {
                         <div>
                             <h2>Stelle</h2>
                             <p>Arbeitsstelle, die das Unternehmen anbietet</p>
-                        </div
+                        </div>
                     </div>
                 </section>
                 
@@ -39,8 +39,22 @@ export class JobTemplate extends DetailBaseTemplate {
                         <p>${HtmlUtils.escape(application.job?.salary || "—")}</p>
                     </div>
                     <div class="field">
+                        <label>Urlaubsgeld</label>
+                        <p>${HtmlUtils.escape(application.job?.vacationPay || "—")}</p>
+                    </div>
+                    <div class="field">
+                        <label>Weihnachtsgeld</label>
+                        <p>${HtmlUtils.escape(application.job?.christmasPay || "—")}</p>
+                    </div>
+                    <div class="field">
                         <label>Kennziffer</label>
                         <p>${HtmlUtils.escape(application.job?.referenceNumber || "—")}</p>
+                    </div>
+                    <div class="field">
+                        <label>Badges</label>
+                        <p>${(application.job?.tags || []).length
+                            ? application.job.tags.map(tag => `<span class="tag-badge">${HtmlUtils.escape(tag)}</span>`).join(" ")
+                            : "—"}</p>
                     </div>
                     <div class="field">
                         <label>Aufgaben</label>

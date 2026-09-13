@@ -15,7 +15,13 @@ export class JobTab extends BaseEditTab {
             <select id="remote">${WORK_MODELS.map(model => `<option value="${model}">${model}</option>`).join("")}</select>
           </div>
           <div class="field"><label>Gehalt</label><input id="salary"></div>
+          <div class="field"><label>Urlaubsgeld</label><input id="vacationPay"></div>
+          <div class="field"><label>Weihnachtsgeld</label><input id="christmasPay"></div>
           <div class="field"><label>Referenznummer</label><input id="referenceNumber"></div>
+          <div class="field field-ultra-wide">
+            <label>Erkannte Badges (Arbeitsmodell/Art)</label>
+            <div id="jobTags" class="tag-badge-list"></div>
+          </div>
           <div class="field field-ultra-wide"><label>Aufgaben (Zeilengetrennt)</label><textarea id="tasks" rows="6"></textarea></div>
         </div>
       </section>
@@ -27,8 +33,12 @@ export class JobTab extends BaseEditTab {
     this.set("jobLocation", application.job?.location);
     this.set("employmentType", application.job?.employmentType);
     this.set("salary", application.job?.salary);
+    this.set("vacationPay", application.job?.vacationPay);
+    this.set("christmasPay", application.job?.christmasPay);
     this.set("referenceNumber", application.job?.referenceNumber);
     this.set("tasks", (application.tasks || []).join("\n"));
+    this.tags = application.job?.tags || [];
+    this.renderTags();
 
     const remote = this.root.querySelector("#remote");
     if (remote) remote.value = application.job?.workModel || "Unbekannt";
@@ -39,13 +49,28 @@ export class JobTab extends BaseEditTab {
     this.set("jobLocation", result.job?.location);
     this.set("employmentType", result.job?.employmentType);
     this.set("salary", result.job?.salary);
+    this.set("vacationPay", result.job?.vacationPay);
+    this.set("christmasPay", result.job?.christmasPay);
     this.set("referenceNumber", result.job?.referenceNumber);
     this.set("tasks", (result.tasks || []).join("\n"));
+
+    if (result.job?.tags?.length) {
+      this.tags = [...new Set([...this.tags, ...result.job.tags])];
+      this.renderTags();
+    }
 
     if (result.job?.workModel && result.job.workModel !== "Unbekannt") {
       const remote = this.root.querySelector("#remote");
       if (remote) remote.value = result.job.workModel;
     }
+  }
+
+  renderTags() {
+    const container = this.root.querySelector("#jobTags");
+    if (!container) return;
+    container.innerHTML = this.tags.length
+      ? this.tags.map(tag => `<span class="tag-badge">${this.escapeAttribute(tag)}</span>`).join("")
+      : `<span class="muted">Keine erkannt</span>`;
   }
 
   save(application) {
@@ -56,7 +81,10 @@ export class JobTab extends BaseEditTab {
       employmentType: this.get("employmentType"),
       workModel: this.get("remote"),
       salary: this.get("salary"),
-      referenceNumber: this.get("referenceNumber")
+      vacationPay: this.get("vacationPay"),
+      christmasPay: this.get("christmasPay"),
+      referenceNumber: this.get("referenceNumber"),
+      tags: this.tags
     };
     application.tasks = this.list("tasks");
   }
