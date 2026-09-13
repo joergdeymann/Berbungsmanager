@@ -1,0 +1,75 @@
+{
+  "application": {
+    "meta": {
+      "id": "",
+      "status": "",
+      "createdAt": "",
+      "updatedAt": ""
+    },
+
+    "source": "",
+
+    "contents": {
+      "company": [],
+      "contact": [],
+      "job": [],
+      "qualifications": []
+    },
+
+    "selectedCompanyId": 0,
+    "selectedContactId": 0,
+
+    "companies": [
+      {
+        "id": 0,
+        "name": "",
+        "legalForm": "",
+        "relationship": "",
+        "address": {
+          "street": "",
+          "houseNumber": "",
+          "postcode": "",
+          "postcodeCountry": "",
+          "country": "",
+          "poBox": ""
+        },
+        "website": "",
+        "verifiedAt": "",
+        "img": ""
+      }
+    ],
+
+    "contacts": [
+      {
+        "id": 0,
+        "relation": "",
+        "name": "",
+        "img": "",
+        "phone": "",
+        "email": ""
+      }
+    ],
+
+    "jobs": [
+      {
+        "id": 0,
+        "title": "",
+        "referenceNumber": "",
+        "workAddressId": 0,
+        "employmentType": "",
+        "salary": "",
+        "vacationPay": "",
+        "christmasPay": "",
+        "workModel": "",
+        "tasks": [],
+        "tags": []
+      }
+    ],
+
+    "qualifications": {
+      "expected": { "tags": [], "content": [] },
+      "wished": { "tags": [], "content": [] },
+      "personal": { "tags": [], "content": [] }
+    }
+  }
+}
