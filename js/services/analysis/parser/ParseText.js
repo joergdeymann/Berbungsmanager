@@ -24,7 +24,8 @@ export class ParseText {
 
         const companyContent = sections["companyInformation"]?.lines??[];
         const contactContent = sections["contact"]?.lines??[];
-        const addressContent = [...companyContent, ...contactContent];
+        const closingContent = sections["closing"]?.lines??[];
+        const addressContent = [...contactContent, ...closingContent, ...companyContent];
 
         return {
             sections: sections,
@@ -33,4 +34,3 @@ export class ParseText {
         };
     }
 }
-
