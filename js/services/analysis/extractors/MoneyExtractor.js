@@ -1,3 +1,4 @@
+// MoneyExtractor.js
 export class MoneyExtractor {
     constructor(lines) {
         this.lines = lines;
@@ -5,13 +6,13 @@ export class MoneyExtractor {
 
     extractMoney() {
         return {
-            salery: this.extractSalery(),
+            salary: this.extractSalary(),
             vacationPay: this.extractVacationPay(),
             christmasPay: this.extractChristmasPay(),
         }
     }
 
-    extractSalery() {
+    extractSalary() {
     }
 
     extractVacationPay() {

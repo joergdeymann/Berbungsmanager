@@ -5,10 +5,11 @@ export class JobExtractor {
         this.lines = lines;
     }
 
+    // JobExtractor.js
     extractJob() {
-        const money = MoneyExtractor(this.lines).extractMoney();
+        const money = new MoneyExtractor(this.lines).extractMoney();
         return {
-            salery: money.salery,
+            salary: money.salary,
             vacationPay: money.vacationPay,
             christmasPay: money.christmasPay,
             workModel: "",

@@ -1,6 +1,4 @@
 export class LocationConstants {
-    // z.B. "49610 Quakenbrück", "10115 Berlin-Mitte"
-    static ZIP_CITY_REGEX = /\b(\d{5})[\s,]+([\p{Lu}][\p{L}ß]*(?:[\s-][\p{Lu}][\p{L}]*)*)/gu;
 
     // Signalwörter, die auf einen Ort ohne PLZ hindeuten
     static LOCATION_KEYWORDS_REGEX = /\b(standort|sitz|firmensitz|hauptsitz|niederlassung|filiale|arbeitsort|einsatzort)\b\s*:?\s*/i;

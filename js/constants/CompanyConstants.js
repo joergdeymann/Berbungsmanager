@@ -3,8 +3,8 @@ export class CompanyConstants {
     static PHONE_REGEX = /\b\+?[0-9]{1,3}[ .-][0-9]{3}[ .-][0-9]{3}\b/gi;
     static COMPANY_TYPE_PATTERN = /\b(gmbh|ohg|kg|ag|ug|gbr|ltd|inc|ek)\b/i;
     static COMPANY_HEADER_REGEX = /\b(firmenname|fimenname|firma)\b\s*:?\s*(.*)$/i;
-    static PHONE_PATTERN   = /\+?\d[\d\s/()-]{6,}\d/;
-    static PHONE_PATTERN_G = /\+?\d[\d\s/()-]{6,}\d/g;
+    static PHONE_PATTERN   = /(?:\+\d{1,3}[\s/-]?|\b0)[\d\s/()-]{5,}\d\b/;
+    static PHONE_PATTERN_G = /(?:\+\d{1,3}[\s/-]?|\b0)[\d\s/()-]{5,}\d\b/g;
     static EMAIL_PATTERN   = /[\w.+-]+@[\w-]+\.[\w.-]+/;
     static EMAIL_PATTERN_G = /[\w.+-]+@[\w-]+\.[\w.-]+/g;
     static NAME_TOKEN_REGEX = /^[\p{Lu}][\p{L}\p{N}.\-]*$/u;
@@ -20,6 +20,6 @@ export class CompanyConstants {
         'stelle', 'unternehmen', 'mitarbeitende', 'mitarbeiter', 'standort',
         'bewerbung', 'kontakt', 'fragen', 'jahre', 'wenn', 'dann', 'noch',
         'mehr', 'oder', 'aber', 'werden', 'werde', 'kannst', 'kann', 'hast',
-        'haben', 'verfügst', 'vertraut', 'inklusive', 'sowie'
+        'haben', 'verfügst', 'vertraut', 'inklusive', 'sowie', 'innen'
     ]);
 }
