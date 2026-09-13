@@ -1,12 +1,12 @@
-import { PostboxConstants } from "../../../constants/PostBoxConstants.js";
+import { PostBoxConstants } from "../../../constants/PostBoxConstants.js";
 
-export class PostboxExtractor {
+export class PostBoxExtractor {
     constructor(lines) {
         this.lines = lines;
     }
 
     extractPostbox() {
-        const regex = new RegExp(PostboxConstants.POSTBOX_REGEX.source, PostboxConstants.POSTBOX_REGEX.flags);
+        const regex = new RegExp(PostBoxConstants.POSTBOX_REGEX.source, PostBoxConstants.POSTBOX_REGEX.flags);
 
         for (const line of this.lines) {
             regex.lastIndex = 0; // 'g'-Flag ist stateful, pro Zeile zurücksetzen
@@ -19,7 +19,7 @@ export class PostboxExtractor {
     }
 
     extractAllPostboxes() {
-        const regex = new RegExp(PostboxConstants.POSTBOX_REGEX.source, PostboxConstants.POSTBOX_REGEX.flags);
+        const regex = new RegExp(PostBoxConstants.POSTBOX_REGEX.source, PostBoxConstants.POSTBOX_REGEX.flags);
         const found = [];
 
         for (const line of this.lines) {

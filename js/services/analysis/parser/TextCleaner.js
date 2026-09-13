@@ -4,6 +4,7 @@ export class TextCleaner {
         this.text = text;
         const lines  = this
             .removeInvisibleCharacters()
+            .stripBulletPrefix()
             .split(/\r?\n/);
         this.lines = this.removeSimilar(lines)
             .map(line => line.trim())
@@ -18,28 +19,10 @@ export class TextCleaner {
         return this.text.replace(ParserConstants.INVISIBLE_CHARS_REGEX, "");
     }
 
-    toLines() {
-        return this.text.split(/\r?\n/);
-    }
-
-    clean() {
-        return this.text
-            .replace(/[\p{Cc}\p{Cf}]/gu, "")
-            .replace(/\u00a0/g, " ")
-            .split(/\r?\n/)
-            .map(line => line.trim())
-            .filter(Boolean)
-            .filter(e => !(
-                ParserConstants.IGNORE_LINE_MARKERS.anyOf.some(marker => e.includes(marker)) ||
-                ParserConstants.IGNORE_LINE_MARKERS.allOf.some(markers => markers.every(marker => e.includes(marker)))
-            ));
-    }
-
     /*
     * Gemeinsame Text-Helfer für den Parser. Ersetzt die früher pro
     * Extractor kopierten Bullet-Regex und unique()-Implementierungen.
     */
-
 
     stripBulletPrefix(line) {
         return line.replace(ParserConstants.BULLET_PREFIX_REGEX, "").trim();
@@ -98,17 +81,4 @@ export class TextCleaner {
             .filter((_, index) => !remove.has(index))
             .map(entry => entry.value);
     }
-
-    toLines(text) {
-        return (text || "")
-            .split(/\r?\n/)
-            .map(line => line.replace(/\s+/g, " ").trim())
-            .filter(Boolean);
-    }
-
-    isIgnoredLine(line, ignoreMarkers) {
-        const value = line.toLowerCase();
-        return line === "----" || ignoreMarkers.some(marker => value.includes(marker));
-    }
-
 }
