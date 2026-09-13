@@ -13,13 +13,13 @@ export class CompanyExtractor {
 
     extractCompany() {
         return {
-            name: new CompanyNameExtractor(addressContent).extractCompanyName(), //name
-            phone: new PhoneExtractor(addressContent).extractFirstPhoneNumber(), //phone
-            email: new EmailExtractor(addressContent).extractFirstEmail(),       //email
-            street: new StreetExtractor(addressContent).extractStreet(),         //street.name, street.houseNumber
-            location: new LocationExtractor(addressContent).extractLocation(),   //location.zip, location.country
-            domain: new DomainExtractor(addressContent).extractDomain(),         //domain.name, domain.confidence
-            postbox: new PostBoxExtractor(addressContent).extractPostbox(),      //postbox
+            name: new CompanyNameExtractor(this.lines).extractCompanyName(), //name
+            phone: new PhoneExtractor(this.lines).extractFirstPhoneNumber(), //phone
+            email: new EmailExtractor(this.lines).extractFirstEmail(),       //email
+            street: new StreetExtractor(this.lines).extractStreet(),         //street.name, street.houseNumber
+            location: new LocationExtractor(this.lines).extractLocation(),   //location.zip, location.country
+            domain: new DomainExtractor(this.lines).extractDomain(),         //domain.name, domain.confidence
+            postbox: new PostBoxExtractor(this.lines).extractPostbox(),      //postbox
         }
     }
 }

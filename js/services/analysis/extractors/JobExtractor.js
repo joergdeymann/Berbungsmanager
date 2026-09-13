@@ -6,7 +6,7 @@ export class JobExtractor {
     }
 
     extractJob() {
-        const money = MoneyExtractor(addressContent).extractMoney();
+        const money = MoneyExtractor(this.lines).extractMoney();
         return {
             salery: money.salery,
             vacationPay: money.vacationPay,

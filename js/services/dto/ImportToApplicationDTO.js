@@ -1,17 +1,5 @@
 import { ApplicationParser } from "../analysis/ApplicationParser.js";
 
-/*
- * Rohdaten (application.sources[]) -> Application-JSON.
- * Führt alle sources[].sourceCode zusammen, lässt sie gemeinsam vom
- * ApplicationParser analysieren und merged das Ergebnis in die
- * bestehende Application-Struktur (überschreibt nicht alles).
- *
- * Aktuell werden nur die firmen-/kontaktbezogenen Felder befüllt
- * (companyName/Adresse/Domain/Telefon/E-Mail) - tasks/qualifications
- * kommen vorerst nur als Rohzeilen mit, weil TaskExtractor/
- * QualificationExtractor/BenefitExtractor noch nicht an die neue
- * parser/-Pipeline angebunden sind (siehe ApplicationAnalyzer alt).
- */
 export class ImportToApplicationDTO {
     static convert(application, parser = new ApplicationParser()) {
         for (const source of application.sources) {
@@ -20,50 +8,45 @@ export class ImportToApplicationDTO {
 
         const result = parser.parse();
 
-        this.applyCompany(application, result);
-        this.applyContact(application, result);
+        this.applyCompany(application, result.company);
+        this.applyJob(application, result.job);
+        this.applyContact(application, result.company);
         this.applyJobRawSections(application, result);
 
         return application;
     }
 
-    // companies[0] ist per Konvention immer der Hauptsitz. Ohne
-    // erkannte Zuordnung landen alle gefundenen Firmendaten dort.
-    static applyCompany(application, result) {
-        const hauptsitz = application.job.companies[0];
+    static applyCompany(application, company) {
+        const hauptsitz = application.companies[0];
 
-        if (result.companyName) hauptsitz.name = result.companyName;
+        if (company.name) hauptsitz.name = company.name;
+        if (company.domain?.name) hauptsitz.website = `https://${company.domain.name}`;
 
-        if (result.domain?.domain) {
-            hauptsitz.website = `https://${result.domain.domain}`;
+        if (company.street?.name) {
+            hauptsitz.address.street = company.street.name;
+            hauptsitz.address.houseNumber = company.street.houseNumber;
         }
 
-        if (result.address?.street) {
-            hauptsitz.address.street = result.address.street;
-            hauptsitz.address.houseNumber = result.address.houseNumber;
+        if (company.location) {
+            hauptsitz.address.postcode = company.location.zip ?? hauptsitz.address.postcode;
+            hauptsitz.address.postcodeCountry = company.location.country ?? hauptsitz.address.postcodeCountry;
         }
 
-        if (result.location) {
-            hauptsitz.address.postcode = result.location.zip ?? hauptsitz.address.postcode;
-            hauptsitz.address.postcodeCountry = result.location.country ?? hauptsitz.address.postcodeCountry;
-        }
+        if (company.postbox) hauptsitz.address.poBox = company.postbox;
 
-        if (result.postbox) {
-            hauptsitz.address.poBox = result.postbox;
-        }
-
-        // Arbeitsort ohne eigene Adresse = automatisch Hauptsitz
-        if (application.job.workAddressId == null) {
-            application.job.workAddressId = 0;
+        if (application.job.companyId == null) {
+            application.job.companyId = 0;
         }
     }
 
-    // Noch keine Namens-Erkennung in der neuen Pipeline (die alte
-    // ApplicationAnalyzer.extractContactFromSection() ist nicht
-    // portiert) - Telefon/E-Mail landen deshalb vorerst auf einem
-    // generischen "Allgemein"-Kontakt statt auf einer Person.
-    static applyContact(application, result) {
-        if (!result.phone && !result.email) return;
+    static applyJob(application, job) {
+        if (job.salary) application.job.salary = job.salary;
+        if (job.vacationPay) application.job.vacationPay = job.vacationPay;
+        if (job.christmasPay) application.job.christmasPay = job.christmasPay;
+    }
+
+    static applyContact(application, company) {
+        if (!company.phone && !company.email) return;
 
         let contact = application.contacts[0];
         if (!contact) {
@@ -71,12 +54,14 @@ export class ImportToApplicationDTO {
             application.contacts.push(contact);
         }
 
-        if (result.phone) contact.phone = result.phone;
-        if (result.email) contact.email = result.email;
+        if (company.phone) contact.phone = company.phone;
+        if (company.email) contact.email = company.email;
+
+        if (application.job.contactId == null) {
+            application.job.contactId = contact.id;
+        }
     }
 
-    // Platzhalter, bis TaskExtractor/QualificationExtractor/BenefitExtractor
-    // an die neue Pipeline angebunden sind - Rohzeilen statt Struktur.
     static applyJobRawSections(application, result) {
         const tasks = result.sections["tasks"]?.lines;
         if (tasks?.length) application.job.tasks = tasks;
