@@ -13,10 +13,15 @@ export class LocationExtractor {
         const regex = new RegExp(LocationConstants.ZIP_CITY_REGEX.source, LocationConstants.ZIP_CITY_REGEX.flags);
 
         for (const line of this.lines) {
-            regex.lastIndex = 0; // 'g'-Flag ist stateful, pro Zeile zurücksetzen
+            regex.lastIndex = 0;
             const match = regex.exec(line);
             if (match) {
-                return {country:LocationConstants.DEFAULT_COUNTRY, zip: match[1], city: match[2].trim()};
+                const rawCountry = match[1];
+                const country = rawCountry && LocationConstants.COUNTRY_CODES.has(rawCountry)
+                    ? rawCountry
+                    : LocationConstants.DEFAULT_COUNTRY;
+
+                return { country:country, zip: match[2], city: match[3].trim() };
             }
         }
         return null;
@@ -37,22 +42,5 @@ export class LocationExtractor {
         return null;
     }
     
-    extractByZipCity() {
-        const regex = new RegExp(LocationConstants.ZIP_CITY_REGEX.source, LocationConstants.ZIP_CITY_REGEX.flags);
-
-        for (const line of this.lines) {
-            regex.lastIndex = 0;
-            const match = regex.exec(line);
-            if (match) {
-                const rawCountry = match[1];
-                const country = rawCountry && LocationConstants.COUNTRY_CODES.has(rawCountry)
-                    ? rawCountry
-                    : LocationConstants.DEFAULT_COUNTRY;
-
-                return { country:country, zip: match[2], city: match[3].trim() };
-            }
-        }
-        return null;
-    }
 
 }
