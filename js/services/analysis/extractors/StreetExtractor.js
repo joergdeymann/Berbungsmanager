@@ -1,12 +1,12 @@
 import { CompanyConstants } from "../../../constants/CompanyConstants.js";
 import { AddressConstants } from "../../../constants/AddressConstants.js";
 
-export class AddressExtractor {
+export class StreetExtractor {
     constructor(lines) {
         this.lines = lines;
     }
 
-    extractAddress() {
+    extractStreet() {
         const anchorIndex = this.findAnchorIndex();
 
         return (
@@ -18,7 +18,7 @@ export class AddressExtractor {
     }
 
     emptyData() {
-        return { street: "", houseNumber: "" };
+        return { name: "", houseNumber: "" };
     }
 
     // findet die erste Zeile mit E-Mail, Telefonnummer oder Firmen-Überschrift
@@ -59,7 +59,7 @@ export class AddressExtractor {
                 // match[1] = Suffix-Variante ("Bahnhofstraße"), match[2] = Präpositions-Variante ("Am Bahnhof")
                 const street = match[1] ?? match[2];
                 const houseNumber = match[3];
-                return {street: street, houseNumber: houseNumber};
+                return {name: street, houseNumber: houseNumber};
             }
         }
         return null;

@@ -4,7 +4,7 @@ import { TextCleaner } from "./TextCleaner.js"
 import { CompanyExtractor } from "../extractors/CompanyExtractor.js"
 import { PhoneExtractor } from "../extractors/PhoneExtractor.js"
 import { EmailExtractor } from "../extractors/EmailExtractor.js"
-import { AddressExtractor } from "../extractors/AddressExtractor.js"
+import { StreetExtractor as StreetExtractor } from "../extractors/AddressExtractor.js"
 import { LocationExtractor } from "../extractors/LocationExtractor.js"
 import { DomainExtractor } from "../extractors/DomainExtractor.js"
 import { PostBoxExtractor } from "../extractors/PostBoxExtractor.js"    
@@ -26,16 +26,20 @@ export class ParseText {
     parse() {
         const sectionParser = new SectionParser(ParserConstants.SECTION_HEADLINES);
         const sections = sectionParser.parse(this.lines);
+
         const companyContent = sections["companyInformation"]?.lines??[];
         const contactContent = sections["contact"]?.lines??[];
         const addressContent = [...companyContent, ...contactContent];
 
         return {
             sections: sections,
+            
+            
             companyName: new CompanyExtractor(addressContent).extractCompanyName(),
+
             phone: new PhoneExtractor(addressContent).extractFirstPhoneNumber(),
             email: new EmailExtractor(addressContent).extractFirstEmail(),
-            address: new AddressExtractor(addressContent).extractAddress(),
+            street: new StreetExtractor(addressContent).extractStreet(),
             location: new LocationExtractor(addressContent).extractLocation(),
             domain: new DomainExtractor(addressContent).extractDomain(),
             postbox: new PostBoxExtractor(addressContent).extractPostbox(),
