@@ -19,6 +19,6 @@ export class SectionPart {
     }
 
     addTags(tags) {
-        this.tags.push(...tags);
+        this.tags = [...new Set([...this.tags, ...tags])];
     }
 }

@@ -24,7 +24,7 @@ export class ParseText {
     }
 
     parse() {
-        const sectionParser = new SectionParser(ParserConstants.SECTION_HEADLINES, ParserConstants.TAGS);
+        const sectionParser = new SectionParser(ParserConstants.SECTION_HEADLINES);
         const sections = sectionParser.parse(this.lines);
         const companyContent = sections["companyInformation"]?.lines??[];
         const contactContent = sections["contact"]?.lines??[];
