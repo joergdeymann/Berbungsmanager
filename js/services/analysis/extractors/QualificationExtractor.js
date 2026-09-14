@@ -1,43 +1,29 @@
-import { QUALIFICATION_SUBFILTERS } from "../ParserConfig.js";
-import { stripBulletPrefix, uniqueSimilar } from "../TextCleanup.js";
+import { ParserConstants } from "../../../constants/ParserConstants.js";
+import { LineParser } from "../parser/LineParser.js";
 
-/*
- * QualificationExtractor
- * -----------------------
- * Sortiert den rohen "qualifications"-Block zeilenweise anhand von
- * ParserConfig.QUALIFICATION_SUBFILTERS ein (g: Zwischenüberschrift/
- * Inhalt wird weiter gefiltert). Ausgabefelder bleiben bewusst
- * required/preferred/personal, da RequirementsTab.js diese Namen
- * erwartet - fachlich entspricht das expectedQualification /
- * wishedQualification / personalQualification.
- */
 export class QualificationExtractor {
 
-    constructor(subFilters = QUALIFICATION_SUBFILTERS) {
+    constructor(lines, subFilters = ParserConstants.QUALIFICATION_SUBFILTERS) {
+        this.lines = lines;
         this.subFilters = subFilters;
     }
 
-    extract(text) {
-        const lines = (text || "")
-            .split("\n")
-            .map(line => line.trim())
-            .filter(Boolean);
+    extractQualifications() {
+        const result = {
+            required: { tags: [], content: [] },
+            preferred: { tags: [], content: [] },
+            personal: { tags: [], content: [] }
+        };
 
-        const result = { required: [], preferred: [], personal: [] };
+        for (const line of this.lines) {
+            const target = this.matchTarget(line.toLowerCase());
+            result[target].content.push(line);
 
-        for (const line of lines) {
-            const value = stripBulletPrefix(line).replace(/^\?\s*/, "");
-            if (!value) continue;
-
-            const target = this.matchTarget(value.toLowerCase());
-            result[target].push(value);
+            const tags = new LineParser(line).getTags();
+            result[target].tags = [...new Set([...result[target].tags, ...tags])];
         }
 
-        return {
-            required: uniqueSimilar(result.required),
-            preferred: uniqueSimilar(result.preferred),
-            personal: uniqueSimilar(result.personal)
-        };
+        return result;
     }
 
     matchTarget(lowerLine) {

@@ -112,7 +112,7 @@ export class ImportTab extends BaseEditTab {
             this.renderHistory();
             this.runCombinedAnalysis();
             this.autoSave?.();
-            Toast.show("Änderung automatisch übernommen und gespeichert.");
+            Toast.show("Änderung automatisch übernommen und gespeichert.", "success");
             return;
         }
 
@@ -120,7 +120,7 @@ export class ImportTab extends BaseEditTab {
         this.set("originalText", "");
         this.lastCommittedText = "";
 
-        Toast.show(`Text automatisch übernommen und gespeichert (${this.history.length} Einträge insgesamt).`);
+        Toast.show(`Text automatisch übernommen und gespeichert (${this.history.length} Einträge insgesamt).`, "success");
     }
 
     // Öffnet das URL-Eingabefenster, ruft die Seite über den
@@ -156,11 +156,10 @@ export class ImportTab extends BaseEditTab {
                 linkHint = ` Möglicher Bewerbungslink gefunden und ins Feld "Link zur Stellenanzeige" übernommen (bitte prüfen).`;
                 linkHint += await this.searchApplicationPage(result.applicationLink);
             }
-            Toast.show(`"${result.source}" abgerufen, übernommen und gespeichert (${result.sections.length} Bereich(e)).${linkHint}`, 5000);
-
+            Toast.show(`"${result.source}" abgerufen, übernommen und gespeichert (${result.sections.length} Bereich(e)).${linkHint}`, "success");
         } catch (error) {
             console.error(error);
-            Toast.show(`Fehler beim Abrufen der URL: ${error.message}`, 4000);
+            Toast.show(`Fehler beim Abrufen der URL: ${error.message}`, "error");
         } finally {
             button.disabled = false;
             button.textContent = this.fetchUrlButtonText;

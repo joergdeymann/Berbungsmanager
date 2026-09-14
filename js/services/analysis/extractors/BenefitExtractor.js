@@ -1,15 +1,27 @@
-import { stripBulletPrefix, uniqueSimilar } from "../TextCleanup.js";
+import { ParserConstants } from "../../../constants/ParserConstants.js";
 
 export class BenefitExtractor {
 
-    extract(text) {
-        if (!text) return [];
+    constructor(lines, benefitTags = ParserConstants.BENEFIT_TAGS) {
+        this.lines = lines;
+        this.benefitTags = benefitTags;
+    }
 
-        const lines = text
-            .split("\n")
-            .map(line => line.trim())
-            .filter(Boolean);
+    extractBenefits() {
+        const text = this.lines.join(" ").toLowerCase();
 
-        return uniqueSimilar(lines.map(stripBulletPrefix));
+        const tags = this.benefitTags
+            .filter(benefit => this.containsKeyword(text, benefit.term))
+            .map(benefit => benefit.label);
+
+        return {
+            tags: [...new Set(tags)],
+            content: this.lines
+        };
+    }
+
+    containsKeyword(text, keyword) {
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        return new RegExp(`(^|[^a-z0-9+#])${escaped}($|[^a-z0-9+#])`, "i").test(text);
     }
 }

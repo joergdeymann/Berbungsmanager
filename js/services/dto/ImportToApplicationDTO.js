@@ -12,6 +12,8 @@ export class ImportToApplicationDTO {
         this.applyJob(application, result.job);
         this.applyContact(application, result.company);
         this.applyJobRawSections(application, result);
+        this.applyQualifications(application, result.qualifications);
+        this.applyBenefits(application, result.benefits);
 
         return application;
     }
@@ -66,5 +68,21 @@ export class ImportToApplicationDTO {
     static applyJobRawSections(application, result) {
         const tasks = result.sections["tasks"]?.lines;
         if (tasks?.length) application.job.tasks = tasks;
+    }
+
+    static applyQualifications(application, qualifications) {
+        for (const bucket of ["required", "preferred", "personal"]) {
+            if (qualifications[bucket].content.length) {
+                application.qualifications[bucket].content = qualifications[bucket].content;
+            }
+            if (qualifications[bucket].tags.length) {
+                application.qualifications[bucket].tags = qualifications[bucket].tags;
+            }
+        }
+    }
+
+    static applyBenefits(application, benefits) {
+        if (benefits.content.length) application.benefits.content = benefits.content;
+        if (benefits.tags.length) application.benefits.tags = benefits.tags;
     }
 }

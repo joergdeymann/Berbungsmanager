@@ -49,14 +49,14 @@ export class JobTextAnalyzer {
       analysisVersion: "1.1",
       company: {
         name: sections.companyName,
-        street: sections.street.street,
-        zip: sections.street.zip,
-        city: sections.street.city,
-        country: sections.street.country,
-        website: sections.domain.domain,
+        street: sections.address.street,
+        zip: sections.address.zip,
+        city: sections.address.city,
+        country: sections.address.country,
+        website: sections.domain.name,
         verifiedAt: "", // companyInformation.verifiedAt
-        phones: sections.phone,
-        emails: sections.email
+        phones: sections.company.phone,
+        emails: sections.company.email
       },
       contact,
       job: {

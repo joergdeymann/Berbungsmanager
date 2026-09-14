@@ -1,32 +1,18 @@
 {
   "application": {
-    "meta": {
-      "id": "",
-      "status": "",
-      "createdAt": "",
-      "updatedAt": ""
-    },
+    "meta": { "id": "", "status": "", "createdAt": "", "updatedAt": "" },
 
     "sources": [
-      {
-        "id": 0,
-        "name": "",
-        "capturedAt": "",
-        "title": "",
-        "sourceCode": ""
-      }
+      { "id": 0, "name": "", "capturedAt": "", "title": "", "sourceCode": "" }
     ],
 
     "references": {
-      "importedUrls": [
-        { "name": "", "url": "" }
-      ]
+      "importedUrls": [ { "name": "", "url": "" } ]
     },
 
     "job": {
       "companyId": 0,
       "contactId": 0,
-
       "title": "",
       "referenceNumber": "",
       "employmentType": "",
@@ -45,35 +31,31 @@
         "legalForm": "",
         "relationship": "Hauptsitz",
         "address": {
-          "street": "",
-          "houseNumber": "",
-          "zip": "",
-          "city": "",
-          "postcodeCountry": "",
-          "country": "",
-          "poBox": ""
+          "street": "", "houseNumber": "", "zip": "", "city": "",
+          "postcodeCountry": "", "country": "", "poBox": ""
         },
         "website": "",
         "verifiedAt": "",
-        "img": ""
+        "img": "",
+        "industry": "",
+        "size": "",
+        "founded": "",
+        "description": "",
+        "specialties": [],
+        "foundImages": []
       }
     ],
 
     "contacts": [
-      {
-        "id": 0,
-        "role": "",
-        "name": "",
-        "img": "",
-        "phone": "",
-        "email": ""
-      }
+      { "id": 0, "role": "", "name": "", "img": "", "phone": "", "email": "" }
     ],
 
     "qualifications": {
       "required": { "tags": [], "content": [] },
       "preferred": { "tags": [], "content": [] },
       "personal": { "tags": [], "content": [] }
-    }
+    },
+
+    "benefits": { "tags": [], "content": [] }
   }
 }
