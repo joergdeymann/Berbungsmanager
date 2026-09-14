@@ -181,7 +181,7 @@ export class ParserConstants {
         },
 
         {
-            name: "closing",
+            name: "signature",
 
             titles: [
                 "unser team",

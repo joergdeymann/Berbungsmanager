@@ -28,7 +28,8 @@ export class ImportToApplicationDTO {
         }
 
         if (company.location) {
-            hauptsitz.address.postcode = company.location.zip ?? hauptsitz.address.postcode;
+            hauptsitz.address.zip = company.location.zip ?? hauptsitz.address.zip;
+            hauptsitz.address.city = company.location.city ?? hauptsitz.address.city;
             hauptsitz.address.postcodeCountry = company.location.country ?? hauptsitz.address.postcodeCountry;
         }
 
@@ -50,7 +51,7 @@ export class ImportToApplicationDTO {
 
         let contact = application.contacts[0];
         if (!contact) {
-            contact = { id: 0, relation: "Allgemein", name: "", img: "", phone: "", email: "" };
+            contact = { id: 0, role: "Allgemein", name: "", img: "", phone: "", email: "" };
             application.contacts.push(contact);
         }
 

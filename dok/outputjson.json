@@ -17,6 +17,12 @@
       }
     ],
 
+    "references": {
+      "importedUrls": [
+        { "name": "", "url": "" }
+      ]
+    },
+
     "job": {
       "companyId": 0,
       "contactId": 0,
@@ -32,31 +38,31 @@
       "tags": []
     },
 
-
     "companies": [
-        {
-          "id": 0,
-          "name": "",
-          "legalForm": "",
-          "relationship": "Hauptsitz",
-          "address": {
-            "street": "",
-            "houseNumber": "",
-            "postcode": "",
-            "postcodeCountry": "",
-            "country": "",
-            "poBox": ""
-          },
-          "website": "",
-          "verifiedAt": "",
-          "img": ""
-        }
+      {
+        "id": 0,
+        "name": "",
+        "legalForm": "",
+        "relationship": "Hauptsitz",
+        "address": {
+          "street": "",
+          "houseNumber": "",
+          "zip": "",
+          "city": "",
+          "postcodeCountry": "",
+          "country": "",
+          "poBox": ""
+        },
+        "website": "",
+        "verifiedAt": "",
+        "img": ""
+      }
     ],
 
     "contacts": [
       {
         "id": 0,
-        "relation": "",
+        "role": "",
         "name": "",
         "img": "",
         "phone": "",
@@ -65,8 +71,8 @@
     ],
 
     "qualifications": {
-      "expected": { "tags": [], "content": [] },
-      "wished": { "tags": [], "content": [] },
+      "required": { "tags": [], "content": [] },
+      "preferred": { "tags": [], "content": [] },
       "personal": { "tags": [], "content": [] }
     }
   }
