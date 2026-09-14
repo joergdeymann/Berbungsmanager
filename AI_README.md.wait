@@ -1,0 +1,18 @@
+# AI Context Guide
+
+Lese diese Dateien in der vorgegebenen Reihenfolge, BEVOR du Code generierst oder vorschlägst. Das spart Token und verhindert Fehlplatzierungen von Code.
+
+## 📖 Lese-Reihenfolge
+
+1. **`AI/DIRECTORY_STRUCTURE.md`**
+   - Aktueller physischer Dateibaum des Projekts.
+   - Zeigt dir genau, wo neue Klassen oder CSS-Komponenten abgelegt werden müssen.
+
+2. **`AI/ARCHITECTURE.md`**
+   - Erklärt die System-Architektur, UI-Verschachtelung und den Datenfluss des Parsers.
+   - Enthält die kritische Refactoring-Anweisung für den Wechsel vom alten `analysis/`-Pfad auf das neue Parser-System.
+
+## 🤖 Verhaltens-Regeln für die KI
+- **Keine alten Pfade nutzen:** Generiere Code *ausschließlich* basierend auf der neuen Struktur in `js/services/analysis/`.
+- **TextCleaner statt TextCleanup:** Nutze niemals `TextCleanup.js`. Verwende stattdessen immer `js/services/analysis/parser/TextCleaner.js`.
+- **Modularität halten:** Halte dich strikt an die Aufteilung in Extractor-, Parser- und View-Klassen.

@@ -27,11 +27,12 @@ export class LineParser {
         )];
     }
 
-    getPhoneNumbers() {
-        return [...this.line.matchAll(CompanyConstants.PHONE_PATTERN_G)].map(m => m[0].trim());
-    }
+    // Wird eigentlich nicht verwendet daher sollte ich sie inaktiv setzten
+    // getPhoneNumbers() {
+    //     return [...this.line.matchAll(CompanyConstants.PHONE_PATTERN_G)].map(m => m[0].trim());
+    // }
 
-    getEmails() {
-        return [...this.line.matchAll(CompanyConstants.EMAIL_PATTERN_G)].map(m => m[0].trim());
-    }
+    // getEmails() {
+    //     return [...this.line.matchAll(CompanyConstants.EMAIL_PATTERN_G)].map(m => m[0].trim());
+    // }
 }

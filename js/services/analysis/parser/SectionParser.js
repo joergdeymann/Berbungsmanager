@@ -1,17 +1,18 @@
 import { LineParser } from "./LineParser.js";
 import { SectionPart } from "./SectionPart.js";
+
 export class SectionParser {
 
     // Überschriften mit mehr Wörtern als das werden nicht mehr als
-    // allOf-Kandidat behandelt, damit ein Fließtext-Satz, der zufällig
-    // alle Begriffe einer Gruppe enthält, nicht fälschlich als eigene
-    // Überschrift erkannt wird.
+    // allOf-Kandidat behandelt.
     static MAX_HEADING_WORDS = 6;
 
-    constructor(sectionDefinitions) {
+    constructor(sectionHeaders) {
         this.linecount = 0;
+        this.currentSectionName = "rubbish";
+        this.sections = {};
 
-        this.definitions = sectionDefinitions.map(section => ({
+        this.sectionDefinitions = sectionHeaders.map(section => ({
             name: section.name,
             titles: section.titles.map(title =>
                 title.toLowerCase()
@@ -20,35 +21,41 @@ export class SectionParser {
                 group.map(term => term.toLowerCase())
             )
         }));
-
-        this.currentSection = "rubbish";
-        this.sections = {};
     }
 
     addLine(line) {
         this.linecount++;
-        const foundSection = this.findSection(line);
 
-        if (foundSection) {
+        const sectionName = this.findSection(line);
 
-            this.currentSection = foundSection;
-
-            if (!this.sections[foundSection]) {
-                this.sections[foundSection] =
-                    new SectionPart(foundSection);
-            }
-
-            this.sections[foundSection].addHeadline(line,this.linecount);
-
+        if (sectionName) {
+            this.startSection(sectionName, line);
             return;
         }
 
-        if (this.currentSection === "rubbish") {
+        this.addContentLine(line);
+    }
+
+    startSection(sectionName, line) {
+        this.currentSectionName = sectionName;
+
+        if (!this.sections[sectionName]) {
+            this.sections[sectionName] =
+                new SectionPart(sectionName);
+        }
+
+        this.sections[sectionName].addHeadline(
+            line,
+            this.linecount
+        );
+    }
+
+    addContentLine(line) {
+        if (this.currentSectionName === "rubbish") {
             return;
         }
 
-        const section = this.sections[this.currentSection];
-
+        const section = this.sections[this.currentSectionName];
         const parser = new LineParser(line);
 
         section.addTags(parser.getTags());
@@ -56,37 +63,53 @@ export class SectionParser {
     }
 
     findSection(line) {
-
         const lowerLine = line.toLowerCase();
 
-        const found = this.definitions.find(section =>
-            this.matchesTitles(lowerLine, section.titles) ||
-            this.matchesAllOf(lowerLine, section.allOf)
-        );
+        for (const sectionDefinition of this.sectionDefinitions) {
+            if (
+                this.matchesTitles(
+                    lowerLine,
+                    sectionDefinition.titles
+                ) ||
+                this.matchesAllOf(
+                    lowerLine,
+                    sectionDefinition.allOf
+                )
+            ) {
+                return sectionDefinition.name;
+            }
+        }
 
-        return found?.name ?? null;
+        return null;
     }
 
-    // exakter Treffer oder Überschrift beginnt mit dem Suchbegriff
+    // Exakter Treffer oder Überschrift beginnt mit dem Suchbegriff.
     matchesTitles(lowerLine, titles) {
         return titles.some(title =>
             lowerLine.startsWith(title)
         );
     }
 
-    // alle Begriffe einer Gruppe müssen in der Überschrift vorkommen
-    // (UND-Verknüpfung), z.B. ["erforderlich", "qualifikation"].
-    // Nur auf kurze, überschriftenartige Zeilen anwenden.
+    // Alle Begriffe einer Gruppe müssen vorkommen.
     matchesAllOf(lowerLine, groups) {
-        if (!groups.length) return false;
-        if (lowerLine.split(/\s+/).length > SectionParser.MAX_HEADING_WORDS) return false;
+        if (!groups.length) {
+            return false;
+        }
+
+        const wordCount = lowerLine.split(/\s+/).length;
+
+        if (wordCount > SectionParser.MAX_HEADING_WORDS) {
+            return false;
+        }
 
         return groups.some(group =>
-            group.every(term => lowerLine.includes(term))
+            group.every(term =>
+                lowerLine.includes(term)
+            )
         );
     }
 
-    addLines(lines) {           
+    addLines(lines) {
         for (const line of lines) {
             this.addLine(line);
         }
@@ -100,5 +123,4 @@ export class SectionParser {
     getSections() {
         return this.sections;
     }
-
 }
